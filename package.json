@@ -1,0 +1,11 @@
+{
+  "name": "fastfood-app",
+  "version": "1.0.0",
+  "description": "Applicazione per la gestione di ordini in un fast food.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "marcoportante",
+  "license": "MIT"
+}
