@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrazione - Fast Food App</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">🍔 Fast Food</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/menu.html">Menu</a></li>
+        <li><a href="/login.html">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="container mt-2 mb-2">
+    <div style="max-width: 600px; margin: 0 auto;">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title text-center">Registrazione</h2>
+        </div>
+        <div class="card-body">
+          <div id="alert"></div>
+          <form id="registerForm">
+            <div class="form-group">
+              <label for="nome">Nome *</label>
+              <input type="text" id="nome" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="cognome">Cognome *</label>
+              <input type="text" id="cognome" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="password">Password (min 6 caratteri) *</label>
+              <input type="password" id="password" class="form-control" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+              <label for="ruolo">Tipo di account *</label>
+              <select id="ruolo" class="form-control" required>
+                <option value="cliente">Cliente</option>
+                <option value="ristoratore">Ristoratore</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="telefono">Telefono</label>
+              <input type="tel" id="telefono" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="via">Via</label>
+              <input type="text" id="via" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="citta">Città</label>
+              <input type="text" id="citta" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="cap">CAP</label>
+              <input type="text" id="cap" class="form-control">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Registrati</button>
+          </form>
+          
+          <p class="text-center mt-1">
+            Hai già un account? <a href="/login.html">Accedi</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <script src="/js/register.js"></script>
+</body>
+</html>

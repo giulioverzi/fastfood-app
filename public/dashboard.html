@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Fast Food App</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">🍔 Fast Food</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/menu.html">Menu</a></li>
+        <li id="authLinks"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" style="padding: 2rem 0;">
+    <div class="container">
+      <h1>Dashboard</h1>
+      <p id="welcomeMessage"></p>
+    </div>
+  </section>
+
+  <section class="container mt-2 mb-2">
+    <div id="alert"></div>
+
+    <!-- Client Dashboard -->
+    <div id="clientDashboard" class="hidden">
+      <h2 class="mb-1">I Miei Ordini</h2>
+      <div id="clientOrders" class="loading">Caricamento ordini...</div>
+    </div>
+
+    <!-- Restaurant Owner Dashboard -->
+    <div id="restaurantDashboard" class="hidden">
+      <div class="mb-2">
+        <h2 class="mb-1">I Miei Ristoranti</h2>
+        <a href="/restaurant-form.html" class="btn btn-primary">+ Nuovo Ristorante</a>
+        <div id="restaurants" class="grid mt-1"></div>
+      </div>
+
+      <div class="mb-2">
+        <h2 class="mb-1">Ordini Ricevuti</h2>
+        <div id="restaurantOrders"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>
