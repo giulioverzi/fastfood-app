@@ -13,14 +13,14 @@
       <ul class="nav-links">
         <li><a href="/">Home</a></li>
         <li><a href="/menu.html">Menu</a></li>
-        <li><a href="/login.html">Login</a></li>
+        <li><a href="/login.html" class="btn btn-outline" style="border-color: white; color: white;">Login</a></li>
       </ul>
     </nav>
   </header>
 
-  <section class="container mt-2 mb-2">
-    <div style="max-width: 600px; margin: 0 auto;">
-      <div class="card">
+  <section class="auth-container" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=800&fit=crop');">
+    <div style="max-width: 600px; margin: 0 auto; width: 100%; padding: 2rem;">
+      <div class="card auth-card">
         <div class="card-header">
           <h2 class="card-title text-center">Registrazione</h2>
         </div>
@@ -79,7 +79,7 @@
           </form>
           
           <p class="text-center mt-1">
-            Hai già un account? <a href="/login.html">Accedi</a>
+            Hai già un account? <a href="/login.html" style="color: var(--primary-color); font-weight: bold;">Accedi</a>
           </p>
         </div>
       </div>
@@ -92,6 +92,7 @@
     </div>
   </footer>
 
+  <script src="/js/auth.js"></script>
   <script src="/js/register.js"></script>
 </body>
 </html>
