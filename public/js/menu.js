@@ -200,6 +200,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadDishes();
   updateCartSummary();
 
+  // Check if there's a restaurant filter in URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const restaurantId = urlParams.get('ristorante');
+  if (restaurantId) {
+    document.getElementById('restaurantFilter').value = restaurantId;
+  }
+
   // Aggiungi event listeners ai filtri
   document.getElementById('restaurantFilter').addEventListener('change', applyFilters);
   document.getElementById('categoryFilter').addEventListener('change', applyFilters);

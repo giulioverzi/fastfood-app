@@ -3,6 +3,9 @@
  * @module public/js/app
  */
 
+// Default fallback image for restaurants
+const DEFAULT_RESTAURANT_IMAGE = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop';
+
 /**
  * Carica i ristoranti consigliati per la homepage
  */
@@ -32,10 +35,10 @@ async function loadRecommendedRestaurants() {
       empty.classList.add('hidden');
 
       container.innerHTML = restaurants.map(restaurant => `
-        <div class="restaurant-card" onclick="window.location.href='/menu.html'">
-          <img src="${restaurant.immagine || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop'}" 
+        <div class="restaurant-card" onclick="window.location.href='/menu.html?ristorante=${restaurant._id}'">
+          <img src="${restaurant.immagine || DEFAULT_RESTAURANT_IMAGE}" 
                alt="${restaurant.nome}"
-               onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop'">
+               onerror="this.src='${DEFAULT_RESTAURANT_IMAGE}'">
           <div class="restaurant-card-content">
             <h3 class="restaurant-card-title">${restaurant.nome}</h3>
             <p class="restaurant-card-address">📍 ${restaurant.indirizzo.via}, ${restaurant.indirizzo.citta}</p>
