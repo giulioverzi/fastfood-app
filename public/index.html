@@ -20,7 +20,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=1200&h=400&fit=crop');">
     <div class="container">
       <h1>Benvenuto in Fast Food App</h1>
       <p>Ordina il tuo cibo preferito online, veloce e delizioso!</p>
@@ -31,31 +31,13 @@
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- Recommended Restaurants Section -->
   <section class="container mt-2">
-    <h2 class="text-center mb-2">Perché scegliere Fast Food App?</h2>
-    <div class="grid">
-      <div class="card text-center">
-        <div class="card-body">
-          <h3 style="font-size: 3rem; margin-bottom: 1rem;">🚀</h3>
-          <h3>Veloce</h3>
-          <p>Ordina in pochi click e ricevi il tuo cibo rapidamente</p>
-        </div>
-      </div>
-      <div class="card text-center">
-        <div class="card-body">
-          <h3 style="font-size: 3rem; margin-bottom: 1rem;">🍕</h3>
-          <h3>Qualità</h3>
-          <p>Ingredienti freschi e di alta qualità per ogni piatto</p>
-        </div>
-      </div>
-      <div class="card text-center">
-        <div class="card-body">
-          <h3 style="font-size: 3rem; margin-bottom: 1rem;">📱</h3>
-          <h3>Facile</h3>
-          <p>Interfaccia semplice e intuitiva per tutti</p>
-        </div>
-      </div>
+    <h2 class="text-center mb-2">Ristoranti Consigliati</h2>
+    <div id="restaurantsLoading" class="loading">Caricamento ristoranti...</div>
+    <div id="restaurantsContainer" class="grid hidden"></div>
+    <div id="restaurantsEmpty" class="hidden text-center">
+      <p>Nessun ristorante disponibile al momento.</p>
     </div>
   </section>
 

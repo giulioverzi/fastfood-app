@@ -85,12 +85,12 @@ function updateNavLinks() {
     const user = getUser();
     authLinksContainer.innerHTML = `
       <li><a href="/dashboard.html">Dashboard</a></li>
-      <li><a href="#" onclick="logout(); return false;">Logout (${user.nome})</a></li>
+      <li><a href="#" onclick="logout(); return false;" style="color: var(--secondary-color); font-weight: bold;">Logout (${user.nome})</a></li>
     `;
   } else {
     authLinksContainer.innerHTML = `
-      <li><a href="/login.html">Login</a></li>
-      <li><a href="/register.html">Registrati</a></li>
+      <li><a href="/login.html" class="btn btn-outline" style="border-color: white; color: white;">Login</a></li>
+      <li><a href="/register.html" class="btn btn-secondary">Registrati</a></li>
     `;
   }
 }
