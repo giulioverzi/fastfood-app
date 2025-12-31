@@ -1,9 +1,9 @@
 /**
- * Script principale dell'applicazione
- * @module public/js/app
+ * app.js - Script principale per la homepage
+ * Carica e visualizza i ristoranti consigliati
  */
 
-// Default fallback image for restaurants
+// Immagine di fallback per i ristoranti
 const DEFAULT_RESTAURANT_IMAGE = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop';
 
 /**
@@ -14,28 +14,24 @@ async function loadRecommendedRestaurants() {
   const container = document.getElementById('restaurantsContainer');
   const empty = document.getElementById('restaurantsEmpty');
 
-  // Check if elements exist (only on homepage)
+  // Verifica se gli elementi esistono (solo su homepage)
   if (!loading || !container || !empty) {
     return;
   }
 
   try {
-    loading.classList.remove('hidden');
+    toggleElement('restaurantsLoading', true);
+    toggleElement('restaurantsContainer', false);
+    toggleElement('restaurantsEmpty', false);
     
-    const response = await fetch(`${API_URL}/restaurants`);
-    const data = await response.json();
+    const response = await apiCall('/restaurants');
 
-    loading.classList.add('hidden');
-
-    if (data.success && data.data.length > 0) {
-      // Show up to 6 recommended restaurants
-      const restaurants = data.data.slice(0, 6);
+    if (response.success && response.data.length > 0) {
+      // Mostra fino a 6 ristoranti consigliati
+      const restaurants = response.data.slice(0, 6);
       
-      container.classList.remove('hidden');
-      empty.classList.add('hidden');
-
       container.innerHTML = restaurants.map(restaurant => `
-        <div class="restaurant-card" onclick="window.location.href='/menu.html?ristorante=${restaurant._id}'">
+        <div class="restaurant-card" onclick="handleRestaurantClick('${restaurant._id}')">
           <img src="${restaurant.immagine || DEFAULT_RESTAURANT_IMAGE}" 
                alt="${restaurant.nome}"
                onerror="this.src='${DEFAULT_RESTAURANT_IMAGE}'">
@@ -46,19 +42,30 @@ async function loadRecommendedRestaurants() {
           </div>
         </div>
       `).join('');
+
+      toggleElement('restaurantsLoading', false);
+      toggleElement('restaurantsContainer', true);
     } else {
-      container.classList.add('hidden');
-      empty.classList.remove('hidden');
+      toggleElement('restaurantsLoading', false);
+      toggleElement('restaurantsEmpty', true);
     }
   } catch (error) {
     console.error('Errore nel caricamento dei ristoranti:', error);
-    loading.classList.add('hidden');
-    container.classList.add('hidden');
-    empty.classList.remove('hidden');
+    toggleElement('restaurantsLoading', false);
+    toggleElement('restaurantsEmpty', true);
   }
 }
 
-// Inizializzazione generale dell'applicazione
+/**
+ * Gestisce il click su un ristorante
+ * @param {string} restaurantId - ID del ristorante
+ */
+function handleRestaurantClick(restaurantId) {
+  // Per ora mostra un alert, in futuro potrebbe andare alla pagina del menu
+  alert('Funzionalità in arrivo! ID Ristorante: ' + restaurantId);
+}
+
+// Inizializzazione della homepage
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Fast Food App caricata correttamente');
   loadRecommendedRestaurants();
