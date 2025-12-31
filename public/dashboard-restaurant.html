@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Ristoratore - Fast Food App</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/layout.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">🍔 Fast Food</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard-restaurant.html">Dashboard</a></li>
+        <li id="authLinks"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" style="padding: 2rem 0;">
+    <div class="container">
+      <h1>Dashboard Ristoratore</h1>
+      <p id="welcomeMessage">Benvenuto!</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Content -->
+  <section class="container mt-2 mb-2">
+    <div id="alert"></div>
+
+    <!-- Sezione Gestione Ristorante -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2>Il Mio Ristorante</h2>
+        <button id="btnEditRestaurant" class="btn btn-secondary">✏️ Modifica Dati</button>
+      </div>
+      <div id="restaurantLoading" class="loading">Caricamento dati ristorante...</div>
+      <div id="restaurantContainer" class="hidden"></div>
+      <div id="restaurantEmpty" class="hidden text-center">
+        <p>Non hai ancora creato un ristorante.</p>
+        <button id="btnCreateRestaurant" class="btn btn-primary mt-1">+ Crea Ristorante</button>
+      </div>
+    </div>
+
+    <!-- Modal per Modifica/Creazione Ristorante -->
+    <div id="restaurantModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Gestisci Ristorante</h3>
+          <button class="modal-close" id="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="restaurantForm">
+            <div class="form-group">
+              <label for="nome">Nome Ristorante *</label>
+              <input type="text" id="nome" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="descrizione">Descrizione *</label>
+              <textarea id="descrizione" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="telefono">Telefono *</label>
+              <input type="tel" id="telefono" class="form-control" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="via">Via *</label>
+                <input type="text" id="via" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="citta">Città *</label>
+                <input type="text" id="citta" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="cap">CAP *</label>
+                <input type="text" id="cap" class="form-control" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="cancelBtn">Annulla</button>
+              <button type="submit" class="btn btn-primary">Salva</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sezione Gestione Menu -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2>Menu del Ristorante</h2>
+        <button id="btnAddDishes" class="btn btn-primary" disabled>+ Aggiungi Piatti</button>
+      </div>
+      <div id="menuLoading" class="loading hidden">Caricamento menu...</div>
+      <div id="menuContainer" class="grid hidden"></div>
+      <div id="menuEmpty" class="hidden text-center">
+        <p>Il menu è vuoto. Aggiungi i primi piatti!</p>
+      </div>
+    </div>
+
+    <!-- Modal per Aggiunta Piatti da meals 1.json -->
+    <div id="dishesModal" class="modal hidden">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h3>Seleziona Piatti dal Catalogo</h3>
+          <button class="modal-close" id="closeDishesModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="search-box mb-1">
+            <input type="text" id="searchDishes" class="form-control" placeholder="Cerca piatti per nome o categoria...">
+          </div>
+          <div id="dishesLoading" class="loading">Caricamento catalogo piatti...</div>
+          <div class="dishes-grid" id="availableDishes"></div>
+          <div class="modal-footer">
+            <p class="selection-info">
+              <strong>Suggerimento:</strong> Usa Ctrl (o Cmd su Mac) + Click per selezionare più piatti
+            </p>
+            <button type="button" class="btn btn-secondary" id="cancelDishesBtn">Annulla</button>
+            <button type="button" class="btn btn-primary" id="addSelectedDishes" disabled>
+              Aggiungi Selezionati (<span id="selectedCount">0</span>)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sezione Ordini Ricevuti -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Ordini Ricevuti</h2>
+        <div class="filter-buttons">
+          <button class="btn-filter active" data-status="all">Tutti</button>
+          <button class="btn-filter" data-status="ordinato">Ordinati</button>
+          <button class="btn-filter" data-status="in_preparazione">In Preparazione</button>
+          <button class="btn-filter" data-status="pronto">Pronti</button>
+        </div>
+      </div>
+      <div id="ordersLoading" class="loading">Caricamento ordini...</div>
+      <div id="ordersContainer" class="orders-list hidden"></div>
+      <div id="ordersEmpty" class="hidden text-center">
+        <p>Non hai ancora ricevuto ordini.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <!-- Script per funzionalità comuni e autenticazione -->
+  <script src="/js/common.js"></script>
+  <!-- Script specifico per la dashboard ristoratore -->
+  <script src="/js/restaurant.js"></script>
+</body>
+</html>
