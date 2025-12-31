@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu - Fast Food App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">
+        <i class="fas fa-burger"></i>
+        <span>Fast Food</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/menu.html">Menu</a></li>
+        <li id="authLinks"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" style="padding: 2rem 0;">
+    <div class="container">
+      <h1><i class="fas fa-utensils"></i> Il Nostro Menu</h1>
+      <p>Scopri tutti i piatti disponibili nei nostri ristoranti</p>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="container mt-2">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="categoryFilter"><i class="fas fa-filter"></i> Categoria:</label>
+        <select id="categoryFilter" class="form-control" style="max-width: 200px;">
+          <option value="">Tutte</option>
+          <option value="antipasti">Antipasti</option>
+          <option value="primi">Primi</option>
+          <option value="secondi">Secondi</option>
+          <option value="contorni">Contorni</option>
+          <option value="dessert">Dessert</option>
+          <option value="bevande">Bevande</option>
+          <option value="panini">Panini</option>
+          <option value="pizze">Pizze</option>
+          <option value="insalate">Insalate</option>
+        </select>
+
+        <label for="restaurantFilter" style="margin-left: 1rem;"><i class="fas fa-store"></i> Ristorante:</label>
+        <select id="restaurantFilter" class="form-control" style="max-width: 250px;">
+          <option value="">Tutti</option>
+        </select>
+
+        <label style="margin-left: 1rem;">
+          <input type="checkbox" id="vegetarianFilter"> Vegetariano
+        </label>
+        <label style="margin-left: 0.5rem;">
+          <input type="checkbox" id="veganFilter"> Vegano
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Menu Items Section -->
+  <section class="container mt-2 mb-2">
+    <div id="alert"></div>
+    <div id="menuLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Caricamento menu...
+    </div>
+    <div id="menuContainer" class="grid hidden"></div>
+    <div id="menuEmpty" class="hidden text-center">
+      <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+      <p>Nessun piatto disponibile con i filtri selezionati.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/menu.js"></script>
+</body>
+</html>
