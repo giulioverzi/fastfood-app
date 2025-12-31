@@ -3,6 +3,10 @@
  * Gestisce il ristorante, il menu (con caricamento da meals 1.json), e gli ordini ricevuti
  */
 
+// Costanti
+const MIN_DISH_PRICE = 5;
+const MAX_DISH_PRICE = 20;
+
 // Variabili globali
 let restaurant = null;
 let menuDishes = [];
@@ -395,7 +399,7 @@ async function addSelectedDishesToMenu() {
       const dishData = {
         nome: meal.strMeal,
         descrizione: meal.strInstructions ? meal.strInstructions.substring(0, 200) : 'Delizioso piatto',
-        prezzo: Math.floor(Math.random() * 15) + 5, // Prezzo casuale tra 5 e 20 euro
+        prezzo: Math.floor(Math.random() * (MAX_DISH_PRICE - MIN_DISH_PRICE + 1)) + MIN_DISH_PRICE,
         categoria: meal.strCategory,
         ristorante: restaurant._id,
         disponibile: true,
