@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Cliente - Fast Food App</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/layout.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">🍔 Fast Food</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard-customer.html">Dashboard</a></li>
+        <li id="authLinks"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" style="padding: 2rem 0;">
+    <div class="container">
+      <h1>Dashboard Cliente</h1>
+      <p id="welcomeMessage">Benvenuto!</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Content -->
+  <section class="container mt-2 mb-2">
+    <div id="alert"></div>
+
+    <!-- Sezione Ordini Attivi -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2>Ordini Attivi</h2>
+      </div>
+      <div id="activeOrdersLoading" class="loading">Caricamento ordini attivi...</div>
+      <div id="activeOrdersContainer" class="grid hidden"></div>
+      <div id="activeOrdersEmpty" class="hidden text-center">
+        <p>Non hai ordini attivi al momento.</p>
+        <a href="/" class="btn btn-primary mt-1">Esplora i Ristoranti</a>
+      </div>
+    </div>
+
+    <!-- Sezione Storico Ordini -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Storico Ordini</h2>
+        <div class="filter-buttons">
+          <button class="btn-filter active" data-status="all">Tutti</button>
+          <button class="btn-filter" data-status="completato">Completati</button>
+          <button class="btn-filter" data-status="annullato">Annullati</button>
+        </div>
+      </div>
+      <div id="orderHistoryLoading" class="loading">Caricamento storico ordini...</div>
+      <div id="orderHistoryContainer" class="orders-list hidden"></div>
+      <div id="orderHistoryEmpty" class="hidden text-center">
+        <p>Non hai ancora effettuato ordini.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <!-- Script per funzionalità comuni e autenticazione -->
+  <script src="/js/common.js"></script>
+  <!-- Script specifico per la dashboard cliente -->
+  <script src="/js/customer.js"></script>
+</body>
+</html>

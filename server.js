@@ -23,6 +23,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve i file statici dalla cartella public
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve anche i file dalla cartella data (per meals 1.json)
+app.use('/data', express.static(path.join(__dirname, 'data')));
+
 // Routes API
 app.use('/api/auth', require('./backend/routes/auth'));
 app.use('/api/users', require('./backend/routes/users'));

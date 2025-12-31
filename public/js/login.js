@@ -1,9 +1,29 @@
 /**
- * Script per la pagina di login
- * @module public/js/login
+ * login.js - Script per la pagina di login
+ * Gestisce il form di login e l'autenticazione utente
  */
 
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
+// Inizializza la pagina di login
+document.addEventListener('DOMContentLoaded', () => {
+  // Se l'utente è già autenticato, reindirizza alla dashboard appropriata
+  if (isAuthenticated()) {
+    const user = getUserData();
+    const dashboardUrl = user.ruolo === 'ristoratore' 
+      ? '/dashboard-restaurant.html' 
+      : '/dashboard-customer.html';
+    window.location.href = dashboardUrl;
+    return;
+  }
+
+  // Gestione submit del form di login
+  document.getElementById('loginForm').addEventListener('submit', handleLogin);
+});
+
+/**
+ * Gestisce il submit del form di login
+ * @param {Event} e - L'evento di submit
+ */
+async function handleLogin(e) {
   e.preventDefault();
 
   const formData = {
@@ -12,32 +32,30 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   };
 
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
+    const response = await apiCall('/auth/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(formData)
     });
 
-    const data = await response.json();
-
-    if (data.success) {
+    if (response.success) {
       // Salva token e dati utente
-      setToken(data.data.token);
-      setUser(data.data);
+      saveAuthData(response.data.token, response.data);
 
-      showAlert('Login effettuato con successo!', 'success');
+      showAlert('Login effettuato con successo! Reindirizzamento...', 'success');
       
-      // Redirect dopo 1 secondo
+      // Redirect dopo 1 secondo alla dashboard appropriata
       setTimeout(() => {
-        window.location.href = '/dashboard.html';
+        const dashboardUrl = response.data.ruolo === 'ristoratore' 
+          ? '/dashboard-restaurant.html' 
+          : '/dashboard-customer.html';
+        window.location.href = dashboardUrl;
       }, 1000);
     } else {
-      showAlert(data.message || 'Credenziali non valide', 'error');
+      showAlert(response.message || 'Credenziali non valide', 'error');
     }
   } catch (error) {
-    console.error('Errore:', error);
-    showAlert('Errore di connessione al server', 'error');
+    console.error('Errore login:', error);
+    showAlert(error.message || 'Errore di connessione al server', 'error');
   }
-});
+}
+
