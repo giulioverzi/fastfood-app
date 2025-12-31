@@ -1,9 +1,29 @@
 /**
- * Script per la pagina di registrazione
- * @module public/js/register
+ * register.js - Script per la pagina di registrazione
+ * Gestisce il form di registrazione e la creazione nuovo utente
  */
 
-document.getElementById('registerForm').addEventListener('submit', async (e) => {
+// Inizializza la pagina di registrazione
+document.addEventListener('DOMContentLoaded', () => {
+  // Se l'utente è già autenticato, reindirizza alla dashboard appropriata
+  if (isAuthenticated()) {
+    const user = getUserData();
+    const dashboardUrl = user.ruolo === 'ristoratore' 
+      ? '/dashboard-restaurant.html' 
+      : '/dashboard-customer.html';
+    window.location.href = dashboardUrl;
+    return;
+  }
+
+  // Gestione submit del form di registrazione
+  document.getElementById('registerForm').addEventListener('submit', handleRegister);
+});
+
+/**
+ * Gestisce il submit del form di registrazione
+ * @param {Event} e - L'evento di submit
+ */
+async function handleRegister(e) {
   e.preventDefault();
 
   const formData = {
@@ -21,32 +41,30 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
   };
 
   try {
-    const response = await fetch(`${API_URL}/auth/register`, {
+    const response = await apiCall('/auth/register', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(formData)
     });
 
-    const data = await response.json();
-
-    if (data.success) {
+    if (response.success) {
       // Salva token e dati utente
-      setToken(data.data.token);
-      setUser(data.data);
+      saveAuthData(response.data.token, response.data);
 
-      showAlert('Registrazione completata con successo!', 'success');
+      showAlert('Registrazione completata con successo! Reindirizzamento...', 'success');
       
-      // Redirect dopo 1 secondo
+      // Redirect dopo 1 secondo alla dashboard appropriata
       setTimeout(() => {
-        window.location.href = '/dashboard.html';
+        const dashboardUrl = response.data.ruolo === 'ristoratore' 
+          ? '/dashboard-restaurant.html' 
+          : '/dashboard-customer.html';
+        window.location.href = dashboardUrl;
       }, 1000);
     } else {
-      showAlert(data.message || 'Errore durante la registrazione', 'error');
+      showAlert(response.message || 'Errore durante la registrazione', 'error');
     }
   } catch (error) {
-    console.error('Errore:', error);
-    showAlert('Errore di connessione al server', 'error');
+    console.error('Errore registrazione:', error);
+    showAlert(error.message || 'Errore di connessione al server', 'error');
   }
-});
+}
+
