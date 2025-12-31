@@ -21,6 +21,8 @@
   --white: #FFFFFF;
   --shadow: 0 2px 10px rgba(0,0,0,0.1);
   --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+  --header-height: 80px;
+  --footer-height: 100px;
 }
 
 body {
@@ -462,7 +464,7 @@ body > footer {
 
 /* Auth pages styling */
 .auth-container {
-  min-height: calc(100vh - 80px - 100px); /* viewport height minus header and footer */
+  min-height: calc(100vh - var(--header-height) - var(--footer-height)); /* viewport height minus header and footer */
   display: flex;
   align-items: center;
   justify-content: center;

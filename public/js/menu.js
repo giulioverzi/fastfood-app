@@ -64,6 +64,20 @@ async function loadDishes() {
 }
 
 /**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} unsafe - Unsafe string
+ * @returns {string} Escaped string
+ */
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Visualizza i piatti nel container
  * @param {Array} dishes - Array di piatti da visualizzare
  */
@@ -80,7 +94,10 @@ function displayDishes(dishes) {
   }
 
   container.innerHTML = dishes.map(dish => {
-    const restaurantName = dish.ristorante?.nome || 'Ristorante';
+    const restaurantName = escapeHtml(dish.ristorante?.nome || 'Ristorante');
+    const dishName = escapeHtml(dish.nome);
+    const dishDescription = escapeHtml(dish.descrizione);
+    const dishId = escapeHtml(dish._id);
     const badges = [];
     
     if (dish.vegetariano) badges.push('<span class="badge badge-success"><i class="fas fa-leaf"></i> Vegetariano</span>');
@@ -89,11 +106,11 @@ function displayDishes(dishes) {
     return `
       <div class="menu-item">
         <img src="${dish.immagine || DEFAULT_DISH_IMAGE}" 
-             alt="${dish.nome}"
+             alt="${dishName}"
              onerror="this.src='${DEFAULT_DISH_IMAGE}'">
         <div class="menu-item-content">
-          <h3 class="menu-item-title">${dish.nome}</h3>
-          <p class="menu-item-description">${dish.descrizione}</p>
+          <h3 class="menu-item-title">${dishName}</h3>
+          <p class="menu-item-description">${dishDescription}</p>
           <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
             <i class="fas fa-store"></i> ${restaurantName}
           </p>
@@ -106,7 +123,7 @@ function displayDishes(dishes) {
           <div class="menu-item-footer">
             <span class="menu-item-price">${formatPrice(dish.prezzo)}</span>
             ${isAuthenticated() ? 
-              `<button class="btn btn-primary" onclick="addToCart('${dish._id}')">
+              `<button class="btn btn-primary" onclick="addToCart('${dishId}')">
                 <i class="fas fa-cart-plus"></i> Aggiungi
               </button>` : 
               `<a href="/login.html" class="btn btn-primary">
@@ -181,13 +198,17 @@ function applyFilters() {
 }
 
 /**
- * Aggiungi piatto al carrello (placeholder)
+ * Aggiungi piatto al carrello
+ * NOTA: Questa è una funzionalità placeholder. Per creare ordini completi,
+ * gli utenti devono usare la dashboard cliente che supporta la selezione
+ * multipla di piatti e la creazione di ordini completi.
+ * 
  * @param {string} dishId - ID del piatto
  */
 function addToCart(dishId) {
-  // TODO: Implementare logica carrello
-  showAlert('Funzionalità carrello in sviluppo. Usa la dashboard per creare ordini.', 'info');
-  console.log('Aggiungi al carrello:', dishId);
+  // TODO: Implementare logica carrello completa in una futura versione
+  showAlert('Per effettuare ordini, vai alla Dashboard Cliente dove puoi selezionare più piatti e creare un ordine completo.', 'info');
+  console.log('Piatto selezionato:', dishId);
 }
 
 // Inizializzazione della pagina menu
