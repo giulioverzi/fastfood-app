@@ -21,9 +21,94 @@ const generateToken = (id) => {
 };
 
 /**
- * @route   POST /api/auth/register
- * @desc    Registra un nuovo utente
- * @access  Public
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Registrazione nuovo utente
+ *     description: Crea un nuovo account utente nel sistema (cliente o ristoratore)
+ *     tags: [Autenticazione]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - nome
+ *               - cognome
+ *               - email
+ *               - password
+ *               - ruolo
+ *             properties:
+ *               nome:
+ *                 type: string
+ *                 example: Mario
+ *               cognome:
+ *                 type: string
+ *                 example: Rossi
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: mario@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 6
+ *                 example: password123
+ *               ruolo:
+ *                 type: string
+ *                 enum: [cliente, ristoratore]
+ *                 example: cliente
+ *               telefono:
+ *                 type: string
+ *                 example: "+39 123 456 7890"
+ *               indirizzo:
+ *                 type: object
+ *                 properties:
+ *                   via:
+ *                     type: string
+ *                     example: Via Roma 1
+ *                   citta:
+ *                     type: string
+ *                     example: Milano
+ *                   cap:
+ *                     type: string
+ *                     example: "20100"
+ *     responses:
+ *       201:
+ *         description: Utente registrato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     nome:
+ *                       type: string
+ *                     cognome:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     ruolo:
+ *                       type: string
+ *                     token:
+ *                       type: string
+ *                       description: Token JWT per l'autenticazione
+ *       400:
+ *         description: Dati non validi o email già esistente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Errore del server
  */
 router.post('/register', [
   body('nome').trim().notEmpty().withMessage('Il nome è obbligatorio'),
@@ -85,9 +170,65 @@ router.post('/register', [
 });
 
 /**
- * @route   POST /api/auth/login
- * @desc    Login utente
- * @access  Public
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login utente
+ *     description: Autentica un utente esistente e restituisce un token JWT
+ *     tags: [Autenticazione]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: mario@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Login effettuato con successo
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                     nome:
+ *                       type: string
+ *                     cognome:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     ruolo:
+ *                       type: string
+ *                     token:
+ *                       type: string
+ *                       description: Token JWT per l'autenticazione
+ *       401:
+ *         description: Credenziali non valide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Errore del server
  */
 router.post('/login', [
   body('email').isEmail().withMessage('Inserisci un\'email valida'),
