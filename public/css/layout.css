@@ -570,6 +570,158 @@
   }
 }
 
+/* Profile Info Section */
+.profile-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.profile-item {
+  background: var(--light-color);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.profile-item-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.profile-item-value {
+  font-size: 1rem;
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+/* Payment Methods Section */
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.payment-card {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  border-radius: 15px;
+  padding: 1.5rem;
+  color: var(--white);
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.payment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.payment-card.default {
+  border: 3px solid var(--secondary-color);
+}
+
+.payment-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.payment-card-type {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.payment-card-icon {
+  font-size: 2rem;
+}
+
+.payment-card-number {
+  font-size: 1.2rem;
+  letter-spacing: 0.1rem;
+  margin: 1rem 0;
+  font-family: 'Courier New', monospace;
+}
+
+.payment-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-card-expiry {
+  font-size: 0.9rem;
+}
+
+.payment-card-holder {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.payment-card-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.payment-card-actions button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--white);
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.payment-card-actions button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.default-badge {
+  background: var(--secondary-color);
+  color: var(--dark-color);
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Order Restaurant Info */
+.order-restaurant {
+  padding: 0.75rem 0;
+  color: #666;
+  border-bottom: 1px solid var(--light-color);
+  margin-bottom: 0.5rem;
+}
+
+.order-delivery {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--light-color);
+  margin-top: 0.5rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.text-muted {
+  color: #999;
+  font-size: 0.9rem;
+}
+
 /* Loading and Hidden States */
 .loading {
   text-align: center;

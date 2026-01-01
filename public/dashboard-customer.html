@@ -26,7 +26,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero" style="padding: 2rem 0;">
+  <section class="hero hero-compact">
     <div class="container">
       <h1>Dashboard Cliente</h1>
       <p id="welcomeMessage">Benvenuto!</p>
@@ -37,16 +37,40 @@
   <section class="container mt-2 mb-2">
     <div id="alert"></div>
 
+    <!-- Sezione Profilo e Metodi di Pagamento -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2>Il Mio Profilo</h2>
+        <button id="btnEditProfile" class="btn btn-secondary"><i class="fas fa-edit"></i> Modifica Profilo</button>
+      </div>
+      <div id="profileContainer" class="profile-info"></div>
+    </div>
+
+    <!-- Sezione Metodi di Pagamento -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2>Metodi di Pagamento</h2>
+        <button id="btnAddPaymentMethod" class="btn btn-primary"><i class="fas fa-plus"></i> Aggiungi Metodo</button>
+      </div>
+      <div id="paymentMethodsLoading" class="loading hidden">Caricamento metodi di pagamento...</div>
+      <div id="paymentMethodsContainer" class="payment-methods-grid"></div>
+      <div id="paymentMethodsEmpty" class="hidden text-center">
+        <p>Non hai ancora aggiunto metodi di pagamento.</p>
+        <p class="text-muted">Aggiungi una carta per effettuare pagamenti più velocemente.</p>
+      </div>
+    </div>
+
     <!-- Sezione Ordini Attivi -->
     <div class="dashboard-section mb-2">
       <div class="section-header">
         <h2>Ordini Attivi</h2>
+        <button id="btnRefreshOrders" class="btn btn-outline"><i class="fas fa-sync-alt"></i> Aggiorna</button>
       </div>
       <div id="activeOrdersLoading" class="loading">Caricamento ordini attivi...</div>
       <div id="activeOrdersContainer" class="grid hidden"></div>
       <div id="activeOrdersEmpty" class="hidden text-center">
         <p>Non hai ordini attivi al momento.</p>
-        <a href="/" class="btn btn-primary mt-1">Esplora i Ristoranti</a>
+        <a href="/menu.html" class="btn btn-primary mt-1">Esplora i Ristoranti</a>
       </div>
     </div>
 
@@ -67,6 +91,103 @@
       </div>
     </div>
   </section>
+
+  <!-- Modal Profilo -->
+  <div id="profileModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Modifica Profilo</h3>
+        <button class="modal-close" id="closeProfileModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="profileNome">Nome *</label>
+            <input type="text" id="profileNome" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="profileCognome">Cognome *</label>
+            <input type="text" id="profileCognome" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="profileTelefono">Telefono</label>
+            <input type="tel" id="profileTelefono" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="profileVia">Via</label>
+            <input type="text" id="profileVia" class="form-control">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profileCitta">Città</label>
+              <input type="text" id="profileCitta" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="profileCap">CAP</label>
+              <input type="text" id="profileCap" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelProfileBtn">Annulla</button>
+            <button type="submit" class="btn btn-primary">Salva</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Metodo di Pagamento -->
+  <div id="paymentMethodModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Aggiungi Metodo di Pagamento</h3>
+        <button class="modal-close" id="closePaymentMethodModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="paymentMethodForm">
+          <div class="form-group">
+            <label for="cardType">Tipo di Carta *</label>
+            <select id="cardType" class="form-control" required>
+              <option value="">Seleziona tipo</option>
+              <option value="visa">Visa</option>
+              <option value="mastercard">Mastercard</option>
+              <option value="amex">American Express</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cardNumber">Numero Carta *</label>
+            <input type="text" id="cardNumber" class="form-control" placeholder="**** **** **** 1234" maxlength="19" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expiryDate">Scadenza (MM/AA) *</label>
+              <input type="text" id="expiryDate" class="form-control" placeholder="12/25" maxlength="5" required>
+            </div>
+            <div class="form-group">
+              <label for="cvv">CVV *</label>
+              <input type="text" id="cvv" class="form-control" placeholder="123" maxlength="4" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cardholderName">Nome Titolare *</label>
+            <input type="text" id="cardholderName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="isDefault"> Imposta come metodo predefinito
+            </label>
+          </div>
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Nota: I dati della carta sono criptati e salvati in modo sicuro. Non memorizziamo il CVV.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelPaymentMethodBtn">Annulla</button>
+            <button type="submit" class="btn btn-primary">Salva Metodo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer>

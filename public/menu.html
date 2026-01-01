@@ -24,7 +24,7 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero" style="padding: 2rem 0;">
+  <section class="hero hero-compact">
     <div class="container">
       <h1><i class="fas fa-utensils"></i> Il Nostro Menu</h1>
       <p>Scopri tutti i piatti disponibili nei nostri ristoranti</p>
@@ -36,7 +36,7 @@
     <div class="filters">
       <div class="filter-group">
         <label for="categoryFilter"><i class="fas fa-filter"></i> Categoria:</label>
-        <select id="categoryFilter" class="form-control" style="max-width: 200px;">
+        <select id="categoryFilter" class="form-control filter-select-category">
           <option value="">Tutte</option>
           <option value="antipasti">Antipasti</option>
           <option value="primi">Primi</option>
@@ -49,15 +49,15 @@
           <option value="insalate">Insalate</option>
         </select>
 
-        <label for="restaurantFilter" style="margin-left: 1rem;"><i class="fas fa-store"></i> Ristorante:</label>
-        <select id="restaurantFilter" class="form-control" style="max-width: 250px;">
+        <label for="restaurantFilter" class="filter-label-spacing"><i class="fas fa-store"></i> Ristorante:</label>
+        <select id="restaurantFilter" class="form-control filter-select-restaurant">
           <option value="">Tutti</option>
         </select>
 
-        <label style="margin-left: 1rem;">
+        <label class="filter-label-spacing">
           <input type="checkbox" id="vegetarianFilter"> Vegetariano
         </label>
-        <label style="margin-left: 0.5rem;">
+        <label class="filter-label-spacing-small">
           <input type="checkbox" id="veganFilter"> Vegano
         </label>
       </div>
@@ -72,7 +72,7 @@
     </div>
     <div id="menuContainer" class="grid hidden"></div>
     <div id="menuEmpty" class="hidden text-center">
-      <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+      <i class="fas fa-exclamation-circle empty-state-icon"></i>
       <p>Nessun piatto disponibile con i filtri selezionati.</p>
     </div>
   </section>

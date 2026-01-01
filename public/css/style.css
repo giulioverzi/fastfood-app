@@ -621,6 +621,79 @@ body > footer {
   font-size: 1.05rem;
 }
 
+/* Hero con immagine di background personalizzata */
+.hero-home {
+  background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=1200&h=400&fit=crop');
+}
+
+.hero-compact {
+  padding: 2rem 0;
+}
+
+/* Auth container con immagini specifiche */
+.auth-container-login {
+  background-image: url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200&h=800&fit=crop');
+}
+
+.auth-container-register {
+  background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=800&fit=crop');
+}
+
+/* Wrapper centrato per form di autenticazione */
+.auth-form-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+}
+
+.auth-form-wrapper-wide {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Bottoni a larghezza completa */
+.btn-full-width {
+  width: 100%;
+}
+
+/* Link con stile primario */
+.link-primary {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.link-primary:hover {
+  color: var(--danger-color);
+  text-decoration: underline;
+}
+
+/* Filtri nella pagina menu */
+.filter-select-category {
+  max-width: 200px;
+}
+
+.filter-select-restaurant {
+  max-width: 250px;
+}
+
+.filter-label-spacing {
+  margin-left: 1rem;
+}
+
+.filter-label-spacing-small {
+  margin-left: 0.5rem;
+}
+
+/* Icona grande per empty state */
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .nav-links {
@@ -662,5 +735,15 @@ body > footer {
 
   .step-card {
     padding: 1.5rem 1rem;
+  }
+
+  .filter-select-category,
+  .filter-select-restaurant {
+    max-width: 100%;
+  }
+
+  .filter-label-spacing,
+  .filter-label-spacing-small {
+    margin-left: 0;
   }
 }
