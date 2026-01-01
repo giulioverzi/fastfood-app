@@ -1,9 +1,13 @@
 /**
  * Layout CSS - Stili specifici per layout complessi (dashboard)
- * Include griglie, flexbox e componenti dashboard
+ * Include griglie, flexbox, modali e componenti dashboard
+ * Fornisce strutture riutilizzabili per pagine complesse
  */
 
-/* Dashboard Section */
+/* ==========================================
+   DASHBOARD SECTIONS
+   ========================================== */
+/* Sezione principale della dashboard con sfondo bianco e ombra */
 .dashboard-section {
   background: var(--white);
   border-radius: 12px;
@@ -12,6 +16,7 @@
   margin-bottom: 2rem;
 }
 
+/* Header della sezione con titolo e azioni */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -27,20 +32,27 @@
   font-size: 1.8rem;
 }
 
-/* Grid Layout per Dashboard */
+/* ==========================================
+   GRID LAYOUTS
+   ========================================== */
+/* Grid layout responsive per elementi della dashboard */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* Filter Buttons */
+/* ==========================================
+   FILTER BUTTONS
+   ========================================== */
+/* Gruppo di pulsanti filtro */
 .filter-buttons {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
+/* Pulsante filtro con stato attivo */
 .btn-filter {
   padding: 0.5rem 1rem;
   border: 2px solid var(--light-color);
