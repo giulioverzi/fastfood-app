@@ -339,7 +339,11 @@ const swaggerOptions = {
     ]
   },
   // Percorsi dei file da cui estrarre le annotazioni JSDoc
-  apis: ['./backend/routes/*.js', './server.js']
+  // Nota: I percorsi sono relativi alla root del progetto dove viene eseguito server.js
+  apis: [
+    './backend/routes/*.js',
+    './server.js'
+  ]
 };
 
 // Genera le specifiche Swagger

@@ -1,6 +1,6 @@
 # REVISIONE FINALE - Fast Food App
 
-## Data: 2026-01-01
+## Data: 2024-12-20 (Data completamento)
 ## Progetto: Refactoring e Miglioramenti Fast Food App
 
 ---
@@ -561,6 +561,8 @@ Per una validazione completa, eseguire:
 **Stato:** 2/17 endpoint documentati con annotazioni Swagger
 
 **Motivo:** Le annotazioni Swagger richiedono tempo per essere scritte correttamente per ogni endpoint.
+
+**Nota Linguaggio:** Le annotazioni Swagger sono state scritte in italiano per coerenza con il resto della documentazione e per facilitare lo studio del progetto. In un contesto internazionale, si raccomanda l'uso dell'inglese per le descrizioni OpenAPI.
 
 **Soluzione Disponibile:**
 - ✅ Tutte le specifiche esistono in `backend/API_DOCUMENTATION.md`

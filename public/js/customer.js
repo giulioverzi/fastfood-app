@@ -71,18 +71,23 @@ async function loadProfile() {
   }
 }
 
-/**
- * Carica i metodi di pagamento del cliente
- */
-async function loadPaymentMethods() {
-  try {
-    toggleElement('paymentMethodsLoading', true);
-    toggleElement('paymentMethodsContainer', false);
-    toggleElement('paymentMethodsEmpty', false);
+  /**
+   * Carica i metodi di pagamento del cliente
+   * NOTA: Questa è un'implementazione demo che usa localStorage.
+   * In produzione, i metodi di pagamento dovrebbero essere salvati
+   * lato server per motivi di sicurezza e compliance PCI DSS.
+   */
+  async function loadPaymentMethods() {
+    try {
+      toggleElement('paymentMethodsLoading', true);
+      toggleElement('paymentMethodsContainer', false);
+      toggleElement('paymentMethodsEmpty', false);
 
-    // Simula caricamento metodi di pagamento dal localStorage
-    const savedMethods = localStorage.getItem('paymentMethods');
-    paymentMethods = savedMethods ? JSON.parse(savedMethods) : [];
+      // Simula caricamento metodi di pagamento dal localStorage
+      // TODO: In produzione, sostituire con chiamata API al server
+      // const response = await apiCall('/payment-methods');
+      const savedMethods = localStorage.getItem('paymentMethods');
+      paymentMethods = savedMethods ? JSON.parse(savedMethods) : [];
 
     if (paymentMethods.length > 0) {
       renderPaymentMethods();
