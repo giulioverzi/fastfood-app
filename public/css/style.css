@@ -1,23 +1,27 @@
 /**
  * Stylesheet principale per l'applicazione Fast Food
  * Colori ispirati al mondo fast food: rosso, giallo, arancione
+ * Include stili per layout, componenti, form e responsive design
  */
 
-/* Reset e base */
+/* ==========================================
+   RESET E BASE
+   ========================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Variabili CSS per colori e dimensioni utilizzate in tutta l'applicazione */
 :root {
-  --primary-color: #E31837;      /* Rosso fast food */
-  --secondary-color: #FFC72C;    /* Giallo */
-  --accent-color: #FF6B35;       /* Arancione */
-  --dark-color: #2C2C2C;         /* Grigio scuro */
-  --light-color: #F8F8F8;        /* Grigio chiaro */
-  --success-color: #27AE60;      /* Verde */
-  --danger-color: #C0392B;       /* Rosso scuro */
+  --primary-color: #E31837;      /* Rosso fast food - colore principale */
+  --secondary-color: #FFC72C;    /* Giallo - colore secondario */
+  --accent-color: #FF6B35;       /* Arancione - colore accento */
+  --dark-color: #2C2C2C;         /* Grigio scuro - testi */
+  --light-color: #F8F8F8;        /* Grigio chiaro - sfondi */
+  --success-color: #27AE60;      /* Verde - successo */
+  --danger-color: #C0392B;       /* Rosso scuro - errori */
   --white: #FFFFFF;
   --shadow: 0 2px 10px rgba(0,0,0,0.1);
   --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
@@ -25,6 +29,7 @@
   --footer-height: 100px;
 }
 
+/* Stili base per il body */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
@@ -32,14 +37,20 @@ body {
   background-color: var(--light-color);
 }
 
-/* Container */
+/* ==========================================
+   CONTAINER E LAYOUT
+   ========================================== */
+/* Container principale con larghezza massima e padding */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* Header e Navigation */
+/* ==========================================
+   HEADER E NAVIGATION
+   ========================================== */
+/* Header fisso con gradient e ombra */
 header {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
   color: var(--white);
@@ -50,12 +61,14 @@ header {
   z-index: 100;
 }
 
+/* Barra di navigazione con layout flex */
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* Logo con icona e testo */
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
@@ -75,6 +88,7 @@ nav {
   transform: scale(1.05);
 }
 
+/* Lista di link di navigazione */
 .nav-links {
   display: flex;
   list-style: none;
@@ -93,7 +107,10 @@ nav {
   color: var(--secondary-color);
 }
 
-/* Buttons */
+/* ==========================================
+   BUTTONS
+   ========================================== */
+/* Stile base per tutti i pulsanti */
 .btn {
   display: inline-block;
   padding: 0.7rem 1.5rem;
@@ -108,6 +125,7 @@ nav {
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
+/* Pulsante primario (rosso) */
 .btn-primary {
   background-color: var(--primary-color);
   color: var(--white);
@@ -119,6 +137,7 @@ nav {
   box-shadow: var(--shadow-hover);
 }
 
+/* Pulsante secondario (giallo) */
 .btn-secondary {
   background-color: var(--secondary-color);
   color: var(--dark-color);
@@ -129,11 +148,13 @@ nav {
   transform: translateY(-2px);
 }
 
+/* Pulsante successo (verde) */
 .btn-success {
   background-color: var(--success-color);
   color: var(--white);
 }
 
+/* Pulsante outline (trasparente con bordo) */
 .btn-outline {
   background-color: transparent;
   border: 2px solid var(--primary-color);
@@ -145,7 +166,10 @@ nav {
   color: var(--white);
 }
 
-/* Hero Section */
+/* ==========================================
+   HERO SECTION
+   ========================================== */
+/* Sezione hero con gradient e overlay */
 .hero {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
   color: var(--white);
@@ -156,6 +180,7 @@ nav {
   position: relative;
 }
 
+/* Overlay scuro per migliorare leggibilità del testo */
 .hero::before {
   content: '';
   position: absolute;
@@ -621,6 +646,79 @@ body > footer {
   font-size: 1.05rem;
 }
 
+/* Hero con immagine di background personalizzata */
+.hero-home {
+  background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=1200&h=400&fit=crop');
+}
+
+.hero-compact {
+  padding: 2rem 0;
+}
+
+/* Auth container con immagini specifiche */
+.auth-container-login {
+  background-image: url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200&h=800&fit=crop');
+}
+
+.auth-container-register {
+  background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=800&fit=crop');
+}
+
+/* Wrapper centrato per form di autenticazione */
+.auth-form-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+}
+
+.auth-form-wrapper-wide {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Bottoni a larghezza completa */
+.btn-full-width {
+  width: 100%;
+}
+
+/* Link con stile primario */
+.link-primary {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.link-primary:hover {
+  color: var(--danger-color);
+  text-decoration: underline;
+}
+
+/* Filtri nella pagina menu */
+.filter-select-category {
+  max-width: 200px;
+}
+
+.filter-select-restaurant {
+  max-width: 250px;
+}
+
+.filter-label-spacing {
+  margin-left: 1rem;
+}
+
+.filter-label-spacing-small {
+  margin-left: 0.5rem;
+}
+
+/* Icona grande per empty state */
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .nav-links {
@@ -662,5 +760,15 @@ body > footer {
 
   .step-card {
     padding: 1.5rem 1rem;
+  }
+
+  .filter-select-category,
+  .filter-select-restaurant {
+    max-width: 100%;
+  }
+
+  .filter-label-spacing,
+  .filter-label-spacing-small {
+    margin-left: 0;
   }
 }

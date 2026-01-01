@@ -123,6 +123,21 @@ Design responsive e mobile-friendly con breakpoint a 768px.
 
 Le API seguono i principi REST e sono documentate in `backend/API_DOCUMENTATION.md`.
 
+### Documentazione Interattiva Swagger
+
+**Nuova funzionalità!** La documentazione API interattiva è disponibile tramite Swagger UI:
+
+- **URL Locale:** `http://localhost:3000/api-docs`
+- **Specifiche OpenAPI:** `http://localhost:3000/api-docs.json`
+
+Swagger UI permette di:
+- Esplorare tutti gli endpoint disponibili
+- Vedere schemi di richiesta e risposta
+- Testare le API direttamente dal browser
+- Autenticarsi con JWT per testare endpoint protetti
+
+Per maggiori informazioni, consulta [SWAGGER_GUIDE.md](./SWAGGER_GUIDE.md).
+
 **Endpoint principali:**
 - `POST /api/auth/register` - Registrazione
 - `POST /api/auth/login` - Login

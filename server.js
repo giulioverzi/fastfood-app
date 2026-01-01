@@ -8,6 +8,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/database');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 // Inizializza l'app Express
 const app = express();
@@ -25,6 +27,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve anche i file dalla cartella data (per meals 1.json)
 app.use('/data', express.static(path.join(__dirname, 'data')));
+
+// Swagger UI - Documentazione API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Fast Food App API Docs',
+  customfavIcon: '/favicon.ico'
+}));
+
+// Endpoint per scaricare le specifiche OpenAPI in formato JSON
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // Routes API
 app.use('/api/auth', require('./backend/routes/auth'));
@@ -57,4 +72,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server in esecuzione sulla porta ${PORT} in modalità ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Documentazione API disponibile su: http://localhost:${PORT}/api-docs`);
 });
