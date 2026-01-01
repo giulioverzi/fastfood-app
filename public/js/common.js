@@ -126,7 +126,7 @@ function updateCartIcon() {
   cartIconContainer.innerHTML = `
     <a href="#" id="cartBtn" class="cart-link" onclick="toggleCart(); return false;">
       <i class="fas fa-shopping-cart"></i>
-      ${itemCount > 0 ? `<span class="cart-badge">${itemCount}</span>` : ''}
+      ${itemCount > 0 ? `<span class="cart-badge">${parseInt(itemCount)}</span>` : ''}
     </a>
   `;
 }
@@ -269,10 +269,11 @@ function renderCart() {
     const nome = escapeHtml(item.nome);
     const ristoranteNome = escapeHtml(item.ristoranteNome);
     const piattoId = item.piatto;
+    const immagine = escapeHtml(item.immagine || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop');
     
     return `
     <div class="cart-item">
-      <img src="${item.immagine || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop'}" 
+      <img src="${immagine}" 
            alt="${nome}" class="cart-item-image">
       <div class="cart-item-details">
         <h4>${nome}</h4>
@@ -280,9 +281,9 @@ function renderCart() {
         <p class="cart-item-price">${formatPrice(item.prezzo)}</p>
       </div>
       <div class="cart-item-controls">
-        <button onclick="updateCartQuantity('${piattoId}', ${item.quantita - 1})" class="btn-quantity">-</button>
-        <span class="cart-item-quantity">${item.quantita}</span>
-        <button onclick="updateCartQuantity('${piattoId}', ${item.quantita + 1})" class="btn-quantity">+</button>
+        <button onclick="updateCartQuantity('${piattoId}', ${parseInt(item.quantita - 1)})" class="btn-quantity">-</button>
+        <span class="cart-item-quantity">${parseInt(item.quantita)}</span>
+        <button onclick="updateCartQuantity('${piattoId}', ${parseInt(item.quantita + 1)})" class="btn-quantity">+</button>
         <button onclick="removeFromCart('${piattoId}'); renderCart();" class="btn-remove">
           <i class="fas fa-trash"></i>
         </button>

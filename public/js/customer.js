@@ -339,7 +339,6 @@ function renderActiveOrders() {
             <span class="item-price">${formatPrice(item.prezzo * item.quantita)}</span>
           </div>`;
         }).join('')}
-        `).join('')}
       </div>
 
       <div class="order-total">
