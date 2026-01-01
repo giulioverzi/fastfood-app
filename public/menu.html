@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu - Fast Food App</title>
+  <title>Ristoranti - Fast Food App</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -17,7 +17,8 @@
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="/">Home</a></li>
-        <li><a href="/menu.html">Menu</a></li>
+        <li><a href="/menu.html">Ristoranti</a></li>
+        <li id="cartIcon"></li>
         <li id="authLinks"></li>
       </ul>
     </nav>
@@ -26,8 +27,8 @@
   <!-- Hero Section -->
   <section class="hero hero-compact">
     <div class="container">
-      <h1><i class="fas fa-utensils"></i> Il Nostro Menu</h1>
-      <p>Scopri tutti i piatti disponibili nei nostri ristoranti</p>
+      <h1><i class="fas fa-store"></i> I Nostri Ristoranti</h1>
+      <p>Scopri tutti i ristoranti disponibili e ordina i tuoi piatti preferiti</p>
     </div>
   </section>
 
@@ -35,45 +36,25 @@
   <section class="container mt-2">
     <div class="filters">
       <div class="filter-group">
-        <label for="categoryFilter"><i class="fas fa-filter"></i> Categoria:</label>
-        <select id="categoryFilter" class="form-control filter-select-category">
-          <option value="">Tutte</option>
-          <option value="antipasti">Antipasti</option>
-          <option value="primi">Primi</option>
-          <option value="secondi">Secondi</option>
-          <option value="contorni">Contorni</option>
-          <option value="dessert">Dessert</option>
-          <option value="bevande">Bevande</option>
-          <option value="panini">Panini</option>
-          <option value="pizze">Pizze</option>
-          <option value="insalate">Insalate</option>
-        </select>
+        <label for="nameFilter"><i class="fas fa-search"></i> Nome:</label>
+        <input type="text" id="nameFilter" class="form-control" placeholder="Cerca per nome...">
 
-        <label for="restaurantFilter" class="filter-label-spacing"><i class="fas fa-store"></i> Ristorante:</label>
-        <select id="restaurantFilter" class="form-control filter-select-restaurant">
-          <option value="">Tutti</option>
-        </select>
-
-        <label class="filter-label-spacing">
-          <input type="checkbox" id="vegetarianFilter"> Vegetariano
-        </label>
-        <label class="filter-label-spacing-small">
-          <input type="checkbox" id="veganFilter"> Vegano
-        </label>
+        <label for="locationFilter" class="filter-label-spacing"><i class="fas fa-map-marker-alt"></i> Località:</label>
+        <input type="text" id="locationFilter" class="form-control" placeholder="Cerca per città...">
       </div>
     </div>
   </section>
 
-  <!-- Menu Items Section -->
+  <!-- Restaurants Section -->
   <section class="container mt-2 mb-2">
     <div id="alert"></div>
-    <div id="menuLoading" class="loading">
-      <i class="fas fa-spinner fa-spin"></i> Caricamento menu...
+    <div id="restaurantsLoading" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Caricamento ristoranti...
     </div>
-    <div id="menuContainer" class="grid hidden"></div>
-    <div id="menuEmpty" class="hidden text-center">
+    <div id="restaurantsContainer" class="grid hidden"></div>
+    <div id="restaurantsEmpty" class="hidden text-center">
       <i class="fas fa-exclamation-circle empty-state-icon"></i>
-      <p>Nessun piatto disponibile con i filtri selezionati.</p>
+      <p>Nessun ristorante disponibile con i filtri selezionati.</p>
     </div>
   </section>
 

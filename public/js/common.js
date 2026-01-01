@@ -90,11 +90,223 @@ function updateNavLinks() {
     // Aggiungi evento logout
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
   } else {
+    // Pulsanti Login e Registrati sempre affiancati
     authLinksContainer.innerHTML = `
       <li><a href="/login.html" class="btn btn-primary">Login</a></li>
       <li><a href="/register.html" class="btn btn-secondary">Registrati</a></li>
     `;
   }
+}
+
+/**
+ * Aggiorna l'icona del carrello nell'header
+ */
+function updateCartIcon() {
+  const cartIconContainer = document.getElementById('cartIcon');
+  if (!cartIconContainer) return;
+
+  const cart = getCart();
+  const itemCount = cart.reduce((total, item) => total + item.quantita, 0);
+
+  cartIconContainer.innerHTML = `
+    <a href="#" id="cartBtn" class="cart-link" onclick="toggleCart(); return false;">
+      <i class="fas fa-shopping-cart"></i>
+      ${itemCount > 0 ? `<span class="cart-badge">${itemCount}</span>` : ''}
+    </a>
+  `;
+}
+
+/**
+ * Ottiene il carrello dal localStorage
+ * @returns {Array} Array di articoli nel carrello
+ */
+function getCart() {
+  const cart = localStorage.getItem('cart');
+  return cart ? JSON.parse(cart) : [];
+}
+
+/**
+ * Salva il carrello nel localStorage
+ * @param {Array} cart - Array di articoli del carrello
+ */
+function saveCart(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartIcon();
+}
+
+/**
+ * Aggiunge un piatto al carrello
+ * @param {string} dishId - ID del piatto
+ * @param {object} dishData - Dati del piatto
+ */
+function addToCart(dishId, dishData) {
+  const cart = getCart();
+  const existingItem = cart.find(item => item.piatto === dishId);
+
+  if (existingItem) {
+    existingItem.quantita += 1;
+  } else {
+    cart.push({
+      piatto: dishId,
+      nome: dishData.nome,
+      prezzo: dishData.prezzo,
+      ristorante: dishData.ristorante,
+      ristoranteNome: dishData.ristoranteNome,
+      immagine: dishData.immagine,
+      quantita: 1
+    });
+  }
+
+  saveCart(cart);
+  showAlert('Piatto aggiunto al carrello!', 'success');
+}
+
+/**
+ * Rimuove un piatto dal carrello
+ * @param {string} dishId - ID del piatto
+ */
+function removeFromCart(dishId) {
+  let cart = getCart();
+  cart = cart.filter(item => item.piatto !== dishId);
+  saveCart(cart);
+}
+
+/**
+ * Aggiorna la quantità di un piatto nel carrello
+ * @param {string} dishId - ID del piatto
+ * @param {number} newQuantity - Nuova quantità
+ */
+function updateCartQuantity(dishId, newQuantity) {
+  const cart = getCart();
+  const item = cart.find(item => item.piatto === dishId);
+  
+  if (item) {
+    if (newQuantity <= 0) {
+      removeFromCart(dishId);
+    } else {
+      item.quantita = newQuantity;
+      saveCart(cart);
+    }
+  }
+}
+
+/**
+ * Svuota completamente il carrello
+ */
+function clearCart() {
+  localStorage.removeItem('cart');
+  updateCartIcon();
+}
+
+/**
+ * Mostra/nasconde il modale del carrello
+ */
+function toggleCart() {
+  const modal = document.getElementById('cartModal');
+  if (!modal) {
+    createCartModal();
+  } else {
+    modal.classList.toggle('hidden');
+  }
+  renderCart();
+}
+
+/**
+ * Crea il modale del carrello se non esiste
+ */
+function createCartModal() {
+  const modalHtml = `
+    <div id="cartModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2><i class="fas fa-shopping-cart"></i> Carrello</h2>
+          <button class="modal-close" onclick="toggleCart()">&times;</button>
+        </div>
+        <div id="cartContent" class="modal-body"></div>
+        <div class="modal-footer" id="cartFooter"></div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+/**
+ * Renderizza il contenuto del carrello
+ */
+function renderCart() {
+  const cartContent = document.getElementById('cartContent');
+  const cartFooter = document.getElementById('cartFooter');
+  
+  if (!cartContent || !cartFooter) return;
+
+  const cart = getCart();
+
+  if (cart.length === 0) {
+    cartContent.innerHTML = '<p class="text-center">Il carrello è vuoto</p>';
+    cartFooter.innerHTML = '';
+    return;
+  }
+
+  const totale = cart.reduce((sum, item) => sum + (item.prezzo * item.quantita), 0);
+
+  cartContent.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.immagine || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop'}" 
+           alt="${item.nome}" class="cart-item-image">
+      <div class="cart-item-details">
+        <h4>${item.nome}</h4>
+        <p class="cart-item-restaurant">${item.ristoranteNome}</p>
+        <p class="cart-item-price">${formatPrice(item.prezzo)}</p>
+      </div>
+      <div class="cart-item-controls">
+        <button onclick="updateCartQuantity('${item.piatto}', ${item.quantita - 1})" class="btn-quantity">-</button>
+        <span class="cart-item-quantity">${item.quantita}</span>
+        <button onclick="updateCartQuantity('${item.piatto}', ${item.quantita + 1})" class="btn-quantity">+</button>
+        <button onclick="removeFromCart('${item.piatto}'); renderCart();" class="btn-remove">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  cartFooter.innerHTML = `
+    <div class="cart-total">
+      <strong>Totale:</strong> ${formatPrice(totale)}
+    </div>
+    <button onclick="proceedToCheckout()" class="btn btn-primary btn-full-width">
+      <i class="fas fa-credit-card"></i> Procedi all'ordine
+    </button>
+  `;
+}
+
+/**
+ * Procedi al checkout
+ */
+function proceedToCheckout() {
+  if (!isAuthenticated()) {
+    showAlert('Devi effettuare il login per procedere con l\'ordine', 'error');
+    setTimeout(() => {
+      window.location.href = '/login.html';
+    }, 1500);
+    return;
+  }
+
+  const cart = getCart();
+  if (cart.length === 0) {
+    showAlert('Il carrello è vuoto', 'error');
+    return;
+  }
+
+  // Verifica che tutti gli articoli siano dello stesso ristorante
+  const restaurantIds = [...new Set(cart.map(item => item.ristorante))];
+  if (restaurantIds.length > 1) {
+    showAlert('Puoi ordinare solo da un ristorante alla volta. Svuota il carrello e riprova.', 'error');
+    return;
+  }
+
+  // Salva il carrello e vai alla pagina di checkout
+  window.location.href = '/checkout.html';
 }
 
 /**
@@ -240,7 +452,8 @@ function translateOrderStatus(status) {
   return translations[status] || status;
 }
 
-// Inizializza i link di navigazione quando il DOM è caricato
+// Inizializza i link di navigazione e il carrello quando il DOM è caricato
 document.addEventListener('DOMContentLoaded', () => {
   updateNavLinks();
+  updateCartIcon();
 });

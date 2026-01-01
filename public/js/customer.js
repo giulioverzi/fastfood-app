@@ -233,13 +233,62 @@ async function loadOrderHistory() {
 }
 
 /**
- * Renderizza gli ordini attivi
+ * Calcola la stima del tempo di consegna basata sullo stato e modalità
+ * @param {object} order - L'ordine
+ * @returns {string} Messaggio con la stima del tempo
+ */
+function calculateDeliveryEstimate(order) {
+  const now = new Date();
+  const orderDate = new Date(order.dataOrdine);
+  const elapsedMinutes = Math.floor((now - orderDate) / 60000);
+
+  let estimateMinutes = 0;
+  let message = '';
+
+  switch (order.stato) {
+    case 'ordinato':
+      estimateMinutes = order.modalitaConsegna === 'consegna' ? 45 : 30;
+      message = `Tempo stimato: ${estimateMinutes - elapsedMinutes > 0 ? estimateMinutes - elapsedMinutes : 5} minuti`;
+      break;
+    case 'in_preparazione':
+      estimateMinutes = order.modalitaConsegna === 'consegna' ? 30 : 20;
+      message = `Tempo stimato: ${estimateMinutes - elapsedMinutes > 0 ? estimateMinutes - elapsedMinutes : 5} minuti`;
+      break;
+    case 'pronto':
+      if (order.modalitaConsegna === 'ritiro') {
+        message = 'Pronto per il ritiro!';
+      } else {
+        message = 'Pronto - In attesa del corriere (circa 15 minuti)';
+      }
+      break;
+    case 'in_consegna':
+      message = 'In consegna - Arrivo previsto in 10-15 minuti';
+      break;
+    case 'consegnato':
+    case 'completato':
+      message = 'Ordine completato';
+      break;
+    case 'annullato':
+      message = 'Ordine annullato';
+      break;
+    default:
+      message = '';
+  }
+
+  return message;
+}
+
+/**
+ * Renderizza gli ordini attivi con tempi di consegna stimati
  */
 function renderActiveOrders() {
   const container = document.getElementById('activeOrdersContainer');
   if (!container) return;
 
-  container.innerHTML = activeOrders.map(order => `
+  container.innerHTML = activeOrders.map(order => {
+    const deliveryEstimate = calculateDeliveryEstimate(order);
+    
+    return `
     <div class="order-card" data-order-id="${order._id}">
       <div class="order-header">
         <div>
@@ -248,6 +297,13 @@ function renderActiveOrders() {
         </div>
         <span class="order-status ${order.stato}">${translateOrderStatus(order.stato)}</span>
       </div>
+      
+      ${deliveryEstimate && !['completato', 'consegnato', 'annullato'].includes(order.stato) ? `
+        <div class="delivery-estimate">
+          <i class="fas fa-clock"></i>
+          <strong>${deliveryEstimate}</strong>
+        </div>
+      ` : ''}
       
       <div class="order-restaurant">
         <strong>Ristorante:</strong> ${order.ristorante?.nome || 'N/A'}
@@ -272,9 +328,12 @@ function renderActiveOrders() {
 
       <div class="order-delivery">
         <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
+        ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
+          `<br><strong>Indirizzo:</strong> ${order.indirizzoConsegna.via}, ${order.indirizzoConsegna.citta}` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /**

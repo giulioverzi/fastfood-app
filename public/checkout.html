@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Fast Food App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <nav class="container">
+      <a href="/" class="logo">
+        <i class="fas fa-burger"></i>
+        <span>Fast Food</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/menu.html">Ristoranti</a></li>
+        <li id="cartIcon"></li>
+        <li id="authLinks"></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero hero-compact">
+    <div class="container">
+      <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+      <p>Completa il tuo ordine</p>
+    </div>
+  </section>
+
+  <!-- Checkout Section -->
+  <section class="container mt-2 mb-2">
+    <div id="alert"></div>
+
+    <div class="checkout-container">
+      <!-- Riepilogo Ordine -->
+      <div class="checkout-summary">
+        <h2>Riepilogo Ordine</h2>
+        <div id="orderSummary"></div>
+      </div>
+
+      <!-- Form Ordine -->
+      <div class="checkout-form">
+        <h2>Dettagli Ordine</h2>
+        <form id="checkoutForm">
+          <div class="form-group">
+            <label for="modalitaConsegna">Modalità di Consegna *</label>
+            <select id="modalitaConsegna" class="form-control" required>
+              <option value="ritiro">Ritiro al Ristorante</option>
+              <option value="consegna">Consegna a Domicilio</option>
+            </select>
+          </div>
+
+          <div id="deliveryAddressSection" class="hidden">
+            <h3>Indirizzo di Consegna</h3>
+            <div class="form-group">
+              <label for="via">Via *</label>
+              <input type="text" id="via" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="citta">Città *</label>
+              <input type="text" id="citta" class="form-control">
+            </div>
+            
+            <div class="form-group">
+              <label for="cap">CAP *</label>
+              <input type="text" id="cap" class="form-control" maxlength="5">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="note">Note per il Ristorante</label>
+            <textarea id="note" class="form-control" rows="3" maxlength="200" 
+                      placeholder="Allergie, preferenze, istruzioni speciali..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="metodoPagamento">Metodo di Pagamento</label>
+            <select id="metodoPagamento" class="form-control">
+              <option value="predefinito">Metodo Predefinito (Contanti)</option>
+            </select>
+            <small style="color: #666; display: block; margin-top: 0.5rem;">
+              Il pagamento verrà effettuato al momento del ritiro o della consegna
+            </small>
+          </div>
+
+          <div class="checkout-total">
+            <strong>Totale:</strong> <span id="totalPrice">€0.00</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full-width">
+            <i class="fas fa-check"></i> Conferma Ordine
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 Fast Food App - Progetto Programmazione Web e Mobile</p>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

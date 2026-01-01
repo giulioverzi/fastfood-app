@@ -1,227 +1,129 @@
 /**
- * menu.js - Script per la pagina del menu
- * Carica e visualizza tutti i piatti disponibili con filtri
+ * menu.js - Script per la pagina dei ristoranti
+ * Carica e visualizza tutti i ristoranti disponibili con filtri
  */
 
-// Immagine di fallback per i piatti
-const DEFAULT_DISH_IMAGE = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop';
+// Immagine di fallback per i ristoranti
+const DEFAULT_RESTAURANT_IMAGE = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop';
 
 // Variabili globali per memorizzare i dati
-let allDishes = [];
 let allRestaurants = [];
 
 /**
- * Carica tutti i ristoranti per il filtro
+ * Carica tutti i ristoranti disponibili
  */
 async function loadRestaurants() {
+  const loading = document.getElementById('restaurantsLoading');
+  const container = document.getElementById('restaurantsContainer');
+  const empty = document.getElementById('restaurantsEmpty');
+
   try {
+    toggleElement('restaurantsLoading', true);
+    toggleElement('restaurantsContainer', false);
+    toggleElement('restaurantsEmpty', false);
+    
     const response = await apiCall('/restaurants');
+
     if (response.success && response.data.length > 0) {
       allRestaurants = response.data;
-      
-      // Popola il filtro ristoranti
-      const restaurantFilter = document.getElementById('restaurantFilter');
-      allRestaurants.forEach(restaurant => {
-        const option = document.createElement('option');
-        option.value = restaurant._id;
-        option.textContent = restaurant.nome;
-        restaurantFilter.appendChild(option);
-      });
+      displayRestaurants(allRestaurants);
+    } else {
+      toggleElement('restaurantsLoading', false);
+      toggleElement('restaurantsEmpty', true);
     }
   } catch (error) {
     console.error('Errore nel caricamento dei ristoranti:', error);
+    showAlert('Errore nel caricamento dei ristoranti. Riprova più tardi.', 'error');
+    toggleElement('restaurantsLoading', false);
+    toggleElement('restaurantsEmpty', true);
   }
 }
 
 /**
- * Carica tutti i piatti disponibili
+ * Visualizza i ristoranti nel container
+ * @param {Array} restaurants - Array di ristoranti da visualizzare
  */
-async function loadDishes() {
-  const loading = document.getElementById('menuLoading');
-  const container = document.getElementById('menuContainer');
-  const empty = document.getElementById('menuEmpty');
+function displayRestaurants(restaurants) {
+  const container = document.getElementById('restaurantsContainer');
+  const empty = document.getElementById('restaurantsEmpty');
+  const loading = document.getElementById('restaurantsLoading');
 
-  try {
-    toggleElement('menuLoading', true);
-    toggleElement('menuContainer', false);
-    toggleElement('menuEmpty', false);
-    
-    const response = await apiCall('/dishes');
-
-    if (response.success && response.data.length > 0) {
-      allDishes = response.data;
-      displayDishes(allDishes);
-    } else {
-      toggleElement('menuLoading', false);
-      toggleElement('menuEmpty', true);
-    }
-  } catch (error) {
-    console.error('Errore nel caricamento dei piatti:', error);
-    showAlert('Errore nel caricamento del menu. Riprova più tardi.', 'error');
-    toggleElement('menuLoading', false);
-    toggleElement('menuEmpty', true);
-  }
-}
-
-/**
- * Escape HTML to prevent XSS attacks
- * @param {string} unsafe - Unsafe string
- * @returns {string} Escaped string
- */
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/**
- * Visualizza i piatti nel container
- * @param {Array} dishes - Array di piatti da visualizzare
- */
-function displayDishes(dishes) {
-  const container = document.getElementById('menuContainer');
-  const empty = document.getElementById('menuEmpty');
-  const loading = document.getElementById('menuLoading');
-
-  if (dishes.length === 0) {
-    toggleElement('menuLoading', false);
-    toggleElement('menuContainer', false);
-    toggleElement('menuEmpty', true);
+  if (restaurants.length === 0) {
+    toggleElement('restaurantsLoading', false);
+    toggleElement('restaurantsContainer', false);
+    toggleElement('restaurantsEmpty', true);
     return;
   }
 
-  container.innerHTML = dishes.map(dish => {
-    const restaurantName = escapeHtml(dish.ristorante?.nome || 'Ristorante');
-    const dishName = escapeHtml(dish.nome);
-    const dishDescription = escapeHtml(dish.descrizione);
-    const dishId = escapeHtml(dish._id);
-    const badges = [];
-    
-    if (dish.vegetariano) badges.push('<span class="badge badge-success"><i class="fas fa-leaf"></i> Vegetariano</span>');
-    if (dish.vegano) badges.push('<span class="badge badge-success"><i class="fas fa-seedling"></i> Vegano</span>');
-    
-    return `
-      <div class="menu-item">
-        <img src="${dish.immagine || DEFAULT_DISH_IMAGE}" 
-             alt="${dishName}"
-             onerror="this.src='${DEFAULT_DISH_IMAGE}'">
-        <div class="menu-item-content">
-          <h3 class="menu-item-title">${dishName}</h3>
-          <p class="menu-item-description">${dishDescription}</p>
-          <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
-            <i class="fas fa-store"></i> ${restaurantName}
-          </p>
-          <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">
-            <i class="fas fa-tag"></i> ${translateCategory(dish.categoria)}
-          </p>
-          <div style="margin-bottom: 1rem;">
-            ${badges.join(' ')}
-          </div>
-          <div class="menu-item-footer">
-            <span class="menu-item-price">${formatPrice(dish.prezzo)}</span>
-            ${isAuthenticated() ? 
-              `<button class="btn btn-primary" onclick="addToCart('${dishId}')">
-                <i class="fas fa-cart-plus"></i> Aggiungi
-              </button>` : 
-              `<a href="/login.html" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Login per ordinare
-              </a>`
-            }
-          </div>
+  container.innerHTML = restaurants.map(restaurant => `
+    <div class="restaurant-card" onclick="openRestaurantMenu('${restaurant._id}')">
+      <img src="${restaurant.immagine || DEFAULT_RESTAURANT_IMAGE}" 
+           alt="${restaurant.nome}"
+           onerror="this.src='${DEFAULT_RESTAURANT_IMAGE}'">
+      <div class="restaurant-card-content">
+        <h3 class="restaurant-card-title">${restaurant.nome}</h3>
+        <p class="restaurant-card-address">
+          <i class="fas fa-map-marker-alt"></i> ${restaurant.indirizzo.via}, ${restaurant.indirizzo.citta}
+        </p>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">${restaurant.descrizione}</p>
+        <div style="margin-top: 1rem;">
+          <button class="btn btn-primary" onclick="event.stopPropagation(); openRestaurantMenu('${restaurant._id}')">
+            <i class="fas fa-utensils"></i> Vedi Menu
+          </button>
         </div>
       </div>
-    `;
-  }).join('');
+    </div>
+  `).join('');
 
-  toggleElement('menuLoading', false);
-  toggleElement('menuContainer', true);
-  toggleElement('menuEmpty', false);
+  toggleElement('restaurantsLoading', false);
+  toggleElement('restaurantsContainer', true);
+  toggleElement('restaurantsEmpty', false);
 }
 
 /**
- * Traduce la categoria in italiano leggibile
- * @param {string} category - Categoria del piatto
- * @returns {string} Categoria tradotta
- */
-function translateCategory(category) {
-  const translations = {
-    'antipasti': 'Antipasti',
-    'primi': 'Primi Piatti',
-    'secondi': 'Secondi Piatti',
-    'contorni': 'Contorni',
-    'dessert': 'Dessert',
-    'bevande': 'Bevande',
-    'panini': 'Panini',
-    'pizze': 'Pizze',
-    'insalate': 'Insalate'
-  };
-  return translations[category] || category;
-}
-
-/**
- * Applica i filtri ai piatti
+ * Applica i filtri ai ristoranti
  */
 function applyFilters() {
-  const categoryFilter = document.getElementById('categoryFilter').value;
-  const restaurantFilter = document.getElementById('restaurantFilter').value;
-  const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
-  const veganFilter = document.getElementById('veganFilter').checked;
+  const nameFilter = document.getElementById('nameFilter').value.toLowerCase();
+  const locationFilter = document.getElementById('locationFilter').value.toLowerCase();
 
-  let filteredDishes = allDishes;
+  let filteredRestaurants = allRestaurants;
 
-  // Filtro categoria
-  if (categoryFilter) {
-    filteredDishes = filteredDishes.filter(dish => dish.categoria === categoryFilter);
-  }
-
-  // Filtro ristorante
-  if (restaurantFilter) {
-    filteredDishes = filteredDishes.filter(dish => 
-      dish.ristorante?._id === restaurantFilter || dish.ristorante === restaurantFilter
+  // Filtro per nome
+  if (nameFilter) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.nome.toLowerCase().includes(nameFilter)
     );
   }
 
-  // Filtro vegetariano
-  if (vegetarianFilter) {
-    filteredDishes = filteredDishes.filter(dish => dish.vegetariano);
+  // Filtro per località
+  if (locationFilter) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.indirizzo.citta.toLowerCase().includes(locationFilter) ||
+      restaurant.indirizzo.via.toLowerCase().includes(locationFilter)
+    );
   }
 
-  // Filtro vegano
-  if (veganFilter) {
-    filteredDishes = filteredDishes.filter(dish => dish.vegano);
-  }
-
-  displayDishes(filteredDishes);
+  displayRestaurants(filteredRestaurants);
 }
 
 /**
- * Aggiungi piatto al carrello
- * NOTA: Questa è una funzionalità placeholder. Per creare ordini completi,
- * gli utenti devono usare la dashboard cliente che supporta la selezione
- * multipla di piatti e la creazione di ordini completi.
- * 
- * @param {string} dishId - ID del piatto
+ * Apre la pagina del menu di un ristorante specifico
+ * @param {string} restaurantId - ID del ristorante
  */
-function addToCart(dishId) {
-  // TODO: Implementare logica carrello completa in una futura versione
-  showAlert('Per effettuare ordini, vai alla Dashboard Cliente dove puoi selezionare più piatti e creare un ordine completo.', 'info');
-  console.log('Piatto selezionato:', dishId);
+function openRestaurantMenu(restaurantId) {
+  // Naviga alla pagina del menu del ristorante utilizzando un parametro URL
+  window.location.href = `/restaurant.html?id=${restaurantId}`;
 }
 
-// Inizializzazione della pagina menu
+// Inizializzazione della pagina ristoranti
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('Pagina menu caricata');
+  console.log('Pagina ristoranti caricata');
   
-  // Carica ristoranti e piatti
+  // Carica i ristoranti
   await loadRestaurants();
-  await loadDishes();
 
   // Aggiungi event listeners per i filtri
-  document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-  document.getElementById('restaurantFilter').addEventListener('change', applyFilters);
-  document.getElementById('vegetarianFilter').addEventListener('change', applyFilters);
-  document.getElementById('veganFilter').addEventListener('change', applyFilters);
+  document.getElementById('nameFilter').addEventListener('input', applyFilters);
+  document.getElementById('locationFilter').addEventListener('input', applyFilters);
 });

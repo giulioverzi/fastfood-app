@@ -772,3 +772,368 @@ body > footer {
     margin-left: 0;
   }
 }
+
+/* ==========================================
+   CARRELLO
+   ========================================== */
+/* Icona del carrello nell'header */
+.cart-link {
+  position: relative;
+  color: var(--white) !important;
+  font-size: 1.3rem;
+  transition: color 0.3s ease;
+}
+
+.cart-link:hover {
+  color: var(--secondary-color) !important;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: var(--danger-color);
+  color: var(--white);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+/* Modale del carrello */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: var(--white);
+  margin: 5% auto;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 2px solid var(--light-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--dark-color);
+  transition: color 0.3s;
+}
+
+.modal-close:hover {
+  color: var(--primary-color);
+}
+
+.modal-body {
+  padding: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 2px solid var(--light-color);
+}
+
+/* Articoli del carrello */
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-color);
+  align-items: center;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-details h4 {
+  margin: 0 0 0.3rem 0;
+  color: var(--dark-color);
+}
+
+.cart-item-restaurant {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
+}
+
+.cart-item-price {
+  color: var(--primary-color);
+  font-weight: bold;
+  margin: 0.2rem 0;
+}
+
+.cart-item-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-quantity {
+  background-color: var(--light-color);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.btn-quantity:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+.cart-item-quantity {
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.btn-remove {
+  background-color: transparent;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.3rem;
+  transition: color 0.3s;
+}
+
+.btn-remove:hover {
+  color: #8B0000;
+}
+
+.cart-total {
+  font-size: 1.3rem;
+  text-align: right;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.cart-total strong {
+  color: var(--primary-color);
+}
+
+/* ==========================================
+   CHECKOUT
+   ========================================== */
+/* Layout della pagina di checkout */
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-summary,
+.checkout-form {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.checkout-summary h2,
+.checkout-form h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.checkout-form h3 {
+  color: var(--dark-color);
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.order-items {
+  margin-bottom: 1.5rem;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--light-color);
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item-details h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--dark-color);
+}
+
+.order-item-restaurant {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
+}
+
+.order-item-quantity {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.order-item-price {
+  font-weight: bold;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.order-summary-footer {
+  padding-top: 1rem;
+  border-top: 2px solid var(--primary-color);
+  margin-top: 1rem;
+}
+
+.checkout-total {
+  background-color: var(--light-color);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3rem;
+}
+
+.checkout-total strong {
+  color: var(--dark-color);
+}
+
+.checkout-total span {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* ==========================================
+   STATI ORDINE
+   ========================================== */
+/* Badge per gli stati degli ordini */
+.order-status {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.order-status.ordinato {
+  background-color: #3498db;
+  color: var(--white);
+}
+
+.order-status.in_preparazione {
+  background-color: #f39c12;
+  color: var(--white);
+}
+
+.order-status.pronto {
+  background-color: #9b59b6;
+  color: var(--white);
+}
+
+.order-status.in_consegna {
+  background-color: #e67e22;
+  color: var(--white);
+}
+
+.order-status.consegnato,
+.order-status.completato {
+  background-color: var(--success-color);
+  color: var(--white);
+}
+
+.order-status.annullato {
+  background-color: var(--danger-color);
+  color: var(--white);
+}
+
+/* Stima tempi di consegna */
+.delivery-estimate {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 5px;
+}
+
+.delivery-estimate i {
+  color: #ffc107;
+  margin-right: 0.5rem;
+}
+
+.delivery-estimate strong {
+  color: var(--dark-color);
+}
