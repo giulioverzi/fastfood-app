@@ -7,6 +7,21 @@
 const API_BASE_URL = '/api';
 
 /**
+ * Escape HTML per prevenire attacchi XSS
+ * @param {string} unsafe - Stringa non sicura
+ * @returns {string} Stringa con escape
+ */
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Ottiene il token JWT dal localStorage
  * @returns {string|null} Il token JWT o null se non presente
  */
@@ -250,25 +265,31 @@ function renderCart() {
 
   const totale = cart.reduce((sum, item) => sum + (item.prezzo * item.quantita), 0);
 
-  cartContent.innerHTML = cart.map(item => `
+  cartContent.innerHTML = cart.map(item => {
+    const nome = escapeHtml(item.nome);
+    const ristoranteNome = escapeHtml(item.ristoranteNome);
+    const piattoId = item.piatto;
+    
+    return `
     <div class="cart-item">
       <img src="${item.immagine || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=80&h=80&fit=crop'}" 
-           alt="${item.nome}" class="cart-item-image">
+           alt="${nome}" class="cart-item-image">
       <div class="cart-item-details">
-        <h4>${item.nome}</h4>
-        <p class="cart-item-restaurant">${item.ristoranteNome}</p>
+        <h4>${nome}</h4>
+        <p class="cart-item-restaurant">${ristoranteNome}</p>
         <p class="cart-item-price">${formatPrice(item.prezzo)}</p>
       </div>
       <div class="cart-item-controls">
-        <button onclick="updateCartQuantity('${item.piatto}', ${item.quantita - 1})" class="btn-quantity">-</button>
+        <button onclick="updateCartQuantity('${piattoId}', ${item.quantita - 1})" class="btn-quantity">-</button>
         <span class="cart-item-quantity">${item.quantita}</span>
-        <button onclick="updateCartQuantity('${item.piatto}', ${item.quantita + 1})" class="btn-quantity">+</button>
-        <button onclick="removeFromCart('${item.piatto}'); renderCart();" class="btn-remove">
+        <button onclick="updateCartQuantity('${piattoId}', ${item.quantita + 1})" class="btn-quantity">+</button>
+        <button onclick="removeFromCart('${piattoId}'); renderCart();" class="btn-remove">
           <i class="fas fa-trash"></i>
         </button>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   cartFooter.innerHTML = `
     <div class="cart-total">

@@ -10,6 +10,21 @@ let currentFilter = 'all';
 let paymentMethods = [];
 
 /**
+ * Escape HTML per prevenire attacchi XSS
+ * @param {string} unsafe - Stringa non sicura
+ * @returns {string} Stringa con escape
+ */
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Inizializza la dashboard cliente
  */
 async function initCustomerDashboard() {
@@ -287,12 +302,15 @@ function renderActiveOrders() {
 
   container.innerHTML = activeOrders.map(order => {
     const deliveryEstimate = calculateDeliveryEstimate(order);
+    const restaurantName = escapeHtml(order.ristorante?.nome || 'N/A');
+    const orderId = order._id;
+    const orderNumber = escapeHtml(order._id.slice(-6).toUpperCase());
     
     return `
-    <div class="order-card" data-order-id="${order._id}">
+    <div class="order-card" data-order-id="${orderId}">
       <div class="order-header">
         <div>
-          <div class="order-number">Ordine #${order._id.slice(-6).toUpperCase()}</div>
+          <div class="order-number">Ordine #${orderNumber}</div>
           <div class="order-date">${formatDate(order.dataOrdine)}</div>
         </div>
         <span class="order-status ${order.stato}">${translateOrderStatus(order.stato)}</span>
@@ -301,23 +319,26 @@ function renderActiveOrders() {
       ${deliveryEstimate && !['completato', 'consegnato', 'annullato'].includes(order.stato) ? `
         <div class="delivery-estimate">
           <i class="fas fa-clock"></i>
-          <strong>${deliveryEstimate}</strong>
+          <strong>${escapeHtml(deliveryEstimate)}</strong>
         </div>
       ` : ''}
       
       <div class="order-restaurant">
-        <strong>Ristorante:</strong> ${order.ristorante?.nome || 'N/A'}
+        <strong>Ristorante:</strong> ${restaurantName}
       </div>
 
       <div class="order-items">
-        ${order.piatti.map(item => `
+        ${order.piatti.map(item => {
+          const itemName = escapeHtml(item.piatto?.nome || 'Piatto');
+          return `
           <div class="order-item">
             <span class="item-name">
-              ${item.piatto?.nome || 'Piatto'} 
+              ${itemName} 
               <span class="item-quantity">x${item.quantita}</span>
             </span>
             <span class="item-price">${formatPrice(item.prezzo * item.quantita)}</span>
-          </div>
+          </div>`;
+        }).join('')}
         `).join('')}
       </div>
 
@@ -329,7 +350,7 @@ function renderActiveOrders() {
       <div class="order-delivery">
         <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
         ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
-          `<br><strong>Indirizzo:</strong> ${order.indirizzoConsegna.via}, ${order.indirizzoConsegna.citta}` : ''}
+          `<br><strong>Indirizzo:</strong> ${escapeHtml(order.indirizzoConsegna.via)}, ${escapeHtml(order.indirizzoConsegna.citta)}` : ''}
       </div>
     </div>
   `;
@@ -354,30 +375,37 @@ function renderOrderHistory() {
     return;
   }
 
-  container.innerHTML = filteredOrders.map(order => `
-    <div class="order-card" data-order-id="${order._id}">
+  container.innerHTML = filteredOrders.map(order => {
+    const restaurantName = escapeHtml(order.ristorante?.nome || 'N/A');
+    const orderId = order._id;
+    const orderNumber = escapeHtml(order._id.slice(-6).toUpperCase());
+    
+    return `
+    <div class="order-card" data-order-id="${orderId}">
       <div class="order-header">
         <div>
-          <div class="order-number">Ordine #${order._id.slice(-6).toUpperCase()}</div>
+          <div class="order-number">Ordine #${orderNumber}</div>
           <div class="order-date">${formatDate(order.dataOrdine)}</div>
         </div>
         <span class="order-status ${order.stato}">${translateOrderStatus(order.stato)}</span>
       </div>
       
       <div class="order-restaurant">
-        <strong>Ristorante:</strong> ${order.ristorante?.nome || 'N/A'}
+        <strong>Ristorante:</strong> ${restaurantName}
       </div>
 
       <div class="order-items">
-        ${order.piatti.map(item => `
+        ${order.piatti.map(item => {
+          const itemName = escapeHtml(item.piatto?.nome || 'Piatto');
+          return `
           <div class="order-item">
             <span class="item-name">
-              ${item.piatto?.nome || 'Piatto'} 
+              ${itemName} 
               <span class="item-quantity">x${item.quantita}</span>
             </span>
             <span class="item-price">${formatPrice(item.prezzo * item.quantita)}</span>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
 
       <div class="order-total">
@@ -390,7 +418,8 @@ function renderOrderHistory() {
         ${order.dataCompletamento ? `<br><strong>Completato:</strong> ${formatDate(order.dataCompletamento)}` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /**

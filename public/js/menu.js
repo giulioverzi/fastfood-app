@@ -10,6 +10,21 @@ const DEFAULT_RESTAURANT_IMAGE = 'https://images.unsplash.com/photo-151724813546
 let allRestaurants = [];
 
 /**
+ * Escape HTML per prevenire attacchi XSS
+ * @param {string} unsafe - Stringa non sicura
+ * @returns {string} Stringa con escape
+ */
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Carica tutti i ristoranti disponibili
  */
 async function loadRestaurants() {
@@ -55,25 +70,33 @@ function displayRestaurants(restaurants) {
     return;
   }
 
-  container.innerHTML = restaurants.map(restaurant => `
-    <div class="restaurant-card" onclick="openRestaurantMenu('${restaurant._id}')">
+  container.innerHTML = restaurants.map(restaurant => {
+    const nome = escapeHtml(restaurant.nome);
+    const via = escapeHtml(restaurant.indirizzo.via);
+    const citta = escapeHtml(restaurant.indirizzo.citta);
+    const descrizione = escapeHtml(restaurant.descrizione);
+    const restaurantId = restaurant._id;
+    
+    return `
+    <div class="restaurant-card" onclick="openRestaurantMenu('${restaurantId}')">
       <img src="${restaurant.immagine || DEFAULT_RESTAURANT_IMAGE}" 
-           alt="${restaurant.nome}"
+           alt="${nome}"
            onerror="this.src='${DEFAULT_RESTAURANT_IMAGE}'">
       <div class="restaurant-card-content">
-        <h3 class="restaurant-card-title">${restaurant.nome}</h3>
+        <h3 class="restaurant-card-title">${nome}</h3>
         <p class="restaurant-card-address">
-          <i class="fas fa-map-marker-alt"></i> ${restaurant.indirizzo.via}, ${restaurant.indirizzo.citta}
+          <i class="fas fa-map-marker-alt"></i> ${via}, ${citta}
         </p>
-        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">${restaurant.descrizione}</p>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">${descrizione}</p>
         <div style="margin-top: 1rem;">
-          <button class="btn btn-primary" onclick="event.stopPropagation(); openRestaurantMenu('${restaurant._id}')">
+          <button class="btn btn-primary" onclick="event.stopPropagation(); openRestaurantMenu('${restaurantId}')">
             <i class="fas fa-utensils"></i> Vedi Menu
           </button>
         </div>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   toggleElement('restaurantsLoading', false);
   toggleElement('restaurantsContainer', true);

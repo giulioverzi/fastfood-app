@@ -52,12 +52,18 @@ function displayRestaurantHeader() {
   const header = document.getElementById('restaurantHeader');
   if (!header || !currentRestaurant) return;
 
+  const nome = escapeHtml(currentRestaurant.nome);
+  const descrizione = escapeHtml(currentRestaurant.descrizione);
+  const via = escapeHtml(currentRestaurant.indirizzo.via);
+  const citta = escapeHtml(currentRestaurant.indirizzo.citta);
+  const telefono = currentRestaurant.telefono ? escapeHtml(currentRestaurant.telefono) : '';
+
   header.innerHTML = `
-    <h1><i class="fas fa-utensils"></i> ${currentRestaurant.nome}</h1>
-    <p>${currentRestaurant.descrizione}</p>
+    <h1><i class="fas fa-utensils"></i> ${nome}</h1>
+    <p>${descrizione}</p>
     <p style="margin-top: 0.5rem;">
-      <i class="fas fa-map-marker-alt"></i> ${currentRestaurant.indirizzo.via}, ${currentRestaurant.indirizzo.citta}
-      ${currentRestaurant.telefono ? ` | <i class="fas fa-phone"></i> ${currentRestaurant.telefono}` : ''}
+      <i class="fas fa-map-marker-alt"></i> ${via}, ${citta}
+      ${telefono ? ` | <i class="fas fa-phone"></i> ${telefono}` : ''}
     </p>
   `;
 }
