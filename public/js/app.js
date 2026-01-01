@@ -61,10 +61,8 @@ async function loadRecommendedRestaurants() {
  * @param {string} restaurantId - ID del ristorante
  */
 function handleRestaurantClick(restaurantId) {
-  // TODO: Implementare navigazione alla pagina del menu del ristorante
-  // Per ora mostra un messaggio
-  console.log('Click su ristorante:', restaurantId);
-  showAlert('Funzionalità menu ristorante in sviluppo', 'info');
+  // Naviga alla pagina del menu del ristorante
+  window.location.href = `/restaurant.html?id=${restaurantId}`;
 }
 
 // Inizializzazione della homepage

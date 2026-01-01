@@ -10,6 +10,21 @@ let currentFilter = 'all';
 let paymentMethods = [];
 
 /**
+ * Escape HTML per prevenire attacchi XSS
+ * @param {string} unsafe - Stringa non sicura
+ * @returns {string} Stringa con escape
+ */
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Inizializza la dashboard cliente
  */
 async function initCustomerDashboard() {
@@ -233,36 +248,97 @@ async function loadOrderHistory() {
 }
 
 /**
- * Renderizza gli ordini attivi
+ * Calcola la stima del tempo di consegna basata sullo stato e modalità
+ * @param {object} order - L'ordine
+ * @returns {string} Messaggio con la stima del tempo
+ */
+function calculateDeliveryEstimate(order) {
+  const now = new Date();
+  const orderDate = new Date(order.dataOrdine);
+  const elapsedMinutes = Math.floor((now - orderDate) / 60000);
+
+  let estimateMinutes = 0;
+  let message = '';
+
+  switch (order.stato) {
+    case 'ordinato':
+      estimateMinutes = order.modalitaConsegna === 'consegna' ? 45 : 30;
+      message = `Tempo stimato: ${estimateMinutes - elapsedMinutes > 0 ? estimateMinutes - elapsedMinutes : 5} minuti`;
+      break;
+    case 'in_preparazione':
+      estimateMinutes = order.modalitaConsegna === 'consegna' ? 30 : 20;
+      message = `Tempo stimato: ${estimateMinutes - elapsedMinutes > 0 ? estimateMinutes - elapsedMinutes : 5} minuti`;
+      break;
+    case 'pronto':
+      if (order.modalitaConsegna === 'ritiro') {
+        message = 'Pronto per il ritiro!';
+      } else {
+        message = 'Pronto - In attesa del corriere (circa 15 minuti)';
+      }
+      break;
+    case 'in_consegna':
+      message = 'In consegna - Arrivo previsto in 10-15 minuti';
+      break;
+    case 'consegnato':
+    case 'completato':
+      message = 'Ordine completato';
+      break;
+    case 'annullato':
+      message = 'Ordine annullato';
+      break;
+    default:
+      message = '';
+  }
+
+  return message;
+}
+
+/**
+ * Renderizza gli ordini attivi con tempi di consegna stimati
  */
 function renderActiveOrders() {
   const container = document.getElementById('activeOrdersContainer');
   if (!container) return;
 
-  container.innerHTML = activeOrders.map(order => `
-    <div class="order-card" data-order-id="${order._id}">
+  container.innerHTML = activeOrders.map(order => {
+    const deliveryEstimate = calculateDeliveryEstimate(order);
+    const restaurantName = escapeHtml(order.ristorante?.nome || 'N/A');
+    const orderId = order._id;
+    const orderNumber = escapeHtml(order._id.slice(-6).toUpperCase());
+    
+    return `
+    <div class="order-card" data-order-id="${orderId}">
       <div class="order-header">
         <div>
-          <div class="order-number">Ordine #${order._id.slice(-6).toUpperCase()}</div>
+          <div class="order-number">Ordine #${orderNumber}</div>
           <div class="order-date">${formatDate(order.dataOrdine)}</div>
         </div>
         <span class="order-status ${order.stato}">${translateOrderStatus(order.stato)}</span>
       </div>
       
+      ${deliveryEstimate && !['completato', 'consegnato', 'annullato'].includes(order.stato) ? `
+        <div class="delivery-estimate">
+          <i class="fas fa-clock"></i>
+          <strong>${escapeHtml(deliveryEstimate)}</strong>
+        </div>
+      ` : ''}
+      
       <div class="order-restaurant">
-        <strong>Ristorante:</strong> ${order.ristorante?.nome || 'N/A'}
+        <strong>Ristorante:</strong> ${restaurantName}
       </div>
 
       <div class="order-items">
-        ${order.piatti.map(item => `
+        ${order.piatti.map(item => {
+          const itemName = escapeHtml(item.piatto?.nome || 'Piatto');
+          return `
           <div class="order-item">
             <span class="item-name">
-              ${item.piatto?.nome || 'Piatto'} 
+              ${itemName} 
               <span class="item-quantity">x${item.quantita}</span>
             </span>
             <span class="item-price">${formatPrice(item.prezzo * item.quantita)}</span>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
 
       <div class="order-total">
@@ -272,9 +348,12 @@ function renderActiveOrders() {
 
       <div class="order-delivery">
         <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
+        ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
+          `<br><strong>Indirizzo:</strong> ${escapeHtml(order.indirizzoConsegna.via)}, ${escapeHtml(order.indirizzoConsegna.citta)}` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /**
@@ -295,30 +374,37 @@ function renderOrderHistory() {
     return;
   }
 
-  container.innerHTML = filteredOrders.map(order => `
-    <div class="order-card" data-order-id="${order._id}">
+  container.innerHTML = filteredOrders.map(order => {
+    const restaurantName = escapeHtml(order.ristorante?.nome || 'N/A');
+    const orderId = order._id;
+    const orderNumber = escapeHtml(order._id.slice(-6).toUpperCase());
+    
+    return `
+    <div class="order-card" data-order-id="${orderId}">
       <div class="order-header">
         <div>
-          <div class="order-number">Ordine #${order._id.slice(-6).toUpperCase()}</div>
+          <div class="order-number">Ordine #${orderNumber}</div>
           <div class="order-date">${formatDate(order.dataOrdine)}</div>
         </div>
         <span class="order-status ${order.stato}">${translateOrderStatus(order.stato)}</span>
       </div>
       
       <div class="order-restaurant">
-        <strong>Ristorante:</strong> ${order.ristorante?.nome || 'N/A'}
+        <strong>Ristorante:</strong> ${restaurantName}
       </div>
 
       <div class="order-items">
-        ${order.piatti.map(item => `
+        ${order.piatti.map(item => {
+          const itemName = escapeHtml(item.piatto?.nome || 'Piatto');
+          return `
           <div class="order-item">
             <span class="item-name">
-              ${item.piatto?.nome || 'Piatto'} 
+              ${itemName} 
               <span class="item-quantity">x${item.quantita}</span>
             </span>
             <span class="item-price">${formatPrice(item.prezzo * item.quantita)}</span>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
 
       <div class="order-total">
@@ -331,7 +417,8 @@ function renderOrderHistory() {
         ${order.dataCompletamento ? `<br><strong>Completato:</strong> ${formatDate(order.dataCompletamento)}` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 /**
