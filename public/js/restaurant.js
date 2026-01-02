@@ -100,21 +100,6 @@ async function loadDishes(restaurantId) {
 }
 
 /**
- * Escape HTML per prevenire attacchi XSS
- * @param {string} unsafe - Stringa non sicura
- * @returns {string} Stringa con escape
- */
-function escapeHtml(unsafe) {
-  if (!unsafe) return '';
-  return String(unsafe)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/**
  * Visualizza i piatti nel container
  * @param {Array} dishes - Array di piatti da visualizzare
  */
