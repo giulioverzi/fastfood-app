@@ -1,12 +1,12 @@
-# Fast Food App 🍔
+# Fast Food App
 
 Applicazione web completa per la gestione di ordini in un fast food, sviluppata con architettura moderna e best practices.
 
-## 📋 Descrizione
+## Descrizione
 
 Fast Food App è un'applicazione full-stack che permette ai clienti di ordinare cibo online e ai ristoratori di gestire ristoranti, menu e ordini in modo efficiente. L'applicazione offre un'interfaccia intuitiva e moderna, con una solida architettura backend modulare.
 
-## 🎯 Obiettivi del Progetto
+## Obiettivi del Progetto
 
 - **Modularità**: Architettura ben organizzata con separazione delle responsabilità
 - **Scalabilità**: Struttura che facilita l'aggiunta di nuove funzionalità
@@ -14,7 +14,7 @@ Fast Food App è un'applicazione full-stack che permette ai clienti di ordinare 
 - **User Experience**: Interfaccia intuitiva e responsive per tutti i dispositivi
 - **Best Practices**: Utilizzo di pattern standard e librerie consolidate
 
-## 🚀 Tecnologie Utilizzate
+## Tecnologie Utilizzate
 
 ### Backend
 - **Node.js** v14+ - Runtime JavaScript ad alte prestazioni
@@ -37,7 +37,7 @@ Fast Food App è un'applicazione full-stack che permette ai clienti di ordinare 
 - **npm** - Gestione dipendenze
 - **nodemon** - Auto-reload in sviluppo
 
-## 📁 Struttura del Progetto
+## Struttura del Progetto
 
 ```
 fastfood-app/
@@ -71,9 +71,9 @@ fastfood-app/
 └── .env.example              # Template configurazione ambiente
 ```
 
-## ⚙️ Avvio Rapido
+## Avvio Rapido
 
-Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Guida Introduttiva](./docs/getting-started.md).
+Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Relazione Tecnica](./docs/Relazione.md).
 
 ### Quick Start
 
@@ -100,47 +100,49 @@ Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Gui
    - Applicazione: `http://localhost:3000`
    - Documentazione API: `http://localhost:3000/api-docs`
 
-## 📱 Funzionalità
+## Funzionalità
 
 ### Gestione Utenti
-- ✅ Registrazione con ruolo (Cliente/Ristoratore)
-- ✅ Login con JWT authentication
-- ✅ Visualizzazione e modifica profilo
-- ✅ Eliminazione account
+- Registrazione con ruolo (Cliente/Ristoratore)
+- Login con JWT authentication
+- Visualizzazione e modifica profilo
+- Eliminazione account
 
 ### Gestione Ristoranti (Ristoratori)
-- ✅ Creazione ristorante con informazioni dettagliate
-- ✅ Aggiornamento informazioni ristorante
-- ✅ Visualizzazione ristoranti
-- ✅ Eliminazione ristorante
+- Creazione ristorante con informazioni dettagliate
+- Aggiornamento informazioni ristorante
+- Visualizzazione ristoranti
+- Eliminazione ristorante
 
 ### Gestione Menu (Ristoratori)
-- ✅ Aggiunta piatti con ingredienti, allergeni, prezzi
-- ✅ Categorizzazione piatti
-- ✅ Indicazione vegetariano/vegano
-- ✅ Gestione disponibilità piatti
-- ✅ Modifica ed eliminazione piatti
+- Aggiunta piatti con ingredienti, allergeni, prezzi
+- Categorizzazione piatti
+- Indicazione vegetariano/vegano
+- Gestione disponibilità piatti
+- Modifica ed eliminazione piatti
 
 ### Gestione Ordini
-- ✅ Creazione ordine da parte dei clienti
-- ✅ Selezione piatti e quantità
-- ✅ Scelta modalità (ritiro/consegna)
-- ✅ Visualizzazione stato ordine
-- ✅ Aggiornamento stato ordine (ristoratori)
-- ✅ Stati: ordinato, in preparazione, pronto, in consegna, consegnato, completato, annullato
+- Creazione ordine da parte dei clienti
+- Selezione piatti e quantità
+- Scelta modalità (ritiro/consegna)
+- Visualizzazione stato ordine
+- Aggiornamento stato ordine (ristoratori)
+- Stati: ordinato, in preparazione, pronto, in consegna, consegnato, completato, annullato
 
 ### Ricerca e Filtri
-- ✅ Filtro per ristorante
-- ✅ Filtro per categoria
-- ✅ Filtro per allergeni
-- ✅ Filtro vegetariano/vegano
+- Filtro per ristorante
+- Filtro per categoria
+- Filtro per allergeni
+- Filtro vegetariano/vegano
 
-## 📚 Documentazione
+## Documentazione
 
-### Guide e Documentazione
-- **[Guida Introduttiva](./docs/getting-started.md)** - Setup e primi passi
-- **[Documentazione API](./docs/api.md)** - Endpoint e esempi di utilizzo
-- **[Architettura](./docs/architecture.md)** - Struttura e design del sistema
+La documentazione completa del progetto è disponibile nella [Relazione Tecnica](./docs/Relazione.md), che include:
+- Analisi dei requisiti
+- Architettura del sistema
+- Modello dei dati
+- Dettagli implementazione
+- Testing e validazione
 
 ### Documentazione Interattiva Swagger
 
@@ -166,7 +168,7 @@ Funzionalità Swagger UI:
 
 Autenticazione tramite Bearer Token JWT nell'header `Authorization`.
 
-## 🧪 Testing
+## Testing
 
 ### Test Manuale
 
@@ -184,7 +186,7 @@ node seed-data.js
 
 Questo script crea utenti, ristoranti, piatti e ordini di esempio per testare l'applicazione.
 
-## 📖 Codice e Commenti
+## Codice e Commenti
 
 Il codice è completamente documentato in italiano con:
 - Commenti JSDoc per funzioni e moduli
@@ -192,22 +194,21 @@ Il codice è completamente documentato in italiano con:
 - Esempi di utilizzo dove necessario
 - Spiegazione della logica complessa
 
-## 👥 Autore
+## Autore
 
 **Marco Portante** - [GitHub](https://github.com/marcoportante)
 
 Progetto sviluppato per l'esame di Programmazione Web e Mobile
 
-## 📄 Licenza
+## Licenza
 
 MIT License - Vedi file LICENSE per dettagli
 
-## 🔗 Link Utili
+## Link Utili
 
 - [Repository GitHub](https://github.com/marcoportante/fastfood-app)
-- [Documentazione API](./docs/api.md)
-- [Guida Introduttiva](./docs/getting-started.md)
+- [Relazione Tecnica](./docs/Relazione.md)
 
 ---
 
-**Nota**: Per problemi, domande o suggerimenti, apri una issue su GitHub o consulta la documentazione nella cartella `docs/`.
+**Nota**: Per problemi, domande o suggerimenti, apri una issue su GitHub o consulta la relazione tecnica nella cartella `docs/`.

@@ -2,40 +2,33 @@
 
 Benvenuto nella documentazione completa dell'applicazione Fast Food App.
 
-## 📚 Indice della Documentazione
+## Indice della Documentazione
 
-### Guide per Sviluppatori
+### Documentazione Principale
 
-1. **[Guida Introduttiva](./getting-started.md)**
-   - Prerequisiti e installazione
-   - Configurazione iniziale
-   - Primi passi con l'applicazione
-   - Risoluzione problemi comuni
+1. **[Relazione Tecnica](./Relazione.md)**
+   - Relazione universitaria completa del progetto
+   - Analisi dei requisiti e architettura
+   - Descrizione implementazione e testing
+   - Bibliografia e riferimenti
 
-2. **[Architettura del Sistema](./architecture.md)**
-   - Panoramica dell'architettura
-   - Stack tecnologico
-   - Modelli di dati
-   - Flussi principali dell'applicazione
+2. **[Schema MongoDB](./MongoDB-Schema.md)**
+   - Struttura completa del database
+   - Descrizione dettagliata delle collezioni
+   - Relazioni tra entità
+   - Operazioni CRUD e best practices
 
-3. **[Documentazione API](./api.md)**
-   - Endpoint REST disponibili
-   - Schemi di richiesta e risposta
-   - Autenticazione JWT
-   - Esempi di utilizzo
+### Documentazione API Interattiva
 
-4. **[Guida Swagger](./swagger-guide.md)**
-   - Come utilizzare Swagger UI
-   - Test interattivo delle API
-   - Download specifiche OpenAPI
+La documentazione API è disponibile tramite Swagger UI quando il server è in esecuzione.
 
-## 🚀 Link Rapidi
+## Link Rapidi
 
 - **Applicazione**: `http://localhost:3000`
 - **Swagger UI**: `http://localhost:3000/api-docs`
 - **Specifiche API**: `http://localhost:3000/api-docs.json`
 
-## 📋 Panoramica del Progetto
+## Panoramica del Progetto
 
 Fast Food App è un'applicazione full-stack per la gestione di ordini di fast food con:
 
@@ -61,7 +54,7 @@ Fast Food App è un'applicazione full-stack per la gestione di ordini di fast fo
 - Aggiornamento stati ordine
 - Dashboard con statistiche
 
-## 🏗️ Struttura del Codice
+## Struttura del Codice
 
 ### Backend (`/backend`)
 - `models/` - Modelli Mongoose (User, Restaurant, Dish, Order)
@@ -83,27 +76,17 @@ Fast Food App è un'applicazione full-stack per la gestione di ordini di fast fo
 ### Configurazione (`/config`)
 - Configurazioni database e ambiente
 
-## 📖 Come Usare Questa Documentazione
+## Come Usare Questa Documentazione
 
-### Per Iniziare
-Se è la prima volta che lavori con questo progetto, inizia dalla [Guida Introduttiva](./getting-started.md).
-
-### Per Sviluppatori Backend
-1. Leggi l'[Architettura](./architecture.md) per capire la struttura
-2. Consulta la [Documentazione API](./api.md) per gli endpoint
-3. Esplora i moduli in `/lib` per la business logic
-
-### Per Sviluppatori Frontend
-1. Leggi l'[Architettura](./architecture.md) sezione Frontend
-2. Esplora i file in `/public`
-3. Consulta la [Documentazione API](./api.md) per integrazioni
+### Per Comprendere il Progetto
+Consulta la [Relazione Tecnica](./Relazione.md) per una comprensione completa del progetto, inclusi obiettivi, architettura, implementazione e testing.
 
 ### Per Testare le API
 1. Avvia il server locale
 2. Apri [Swagger UI](http://localhost:3000/api-docs)
-3. Segui la [Guida Swagger](./swagger-guide.md)
+3. Esplora e testa gli endpoint disponibili
 
-## 🛠️ Script Disponibili
+## Script Disponibili
 
 ```bash
 # Avvia il server (produzione)
@@ -119,7 +102,7 @@ node test-server.js
 node seed-data.js
 ```
 
-## 📦 Dipendenze Principali
+## Dipendenze Principali
 
 ### Produzione
 - `express` - Framework web
@@ -133,7 +116,7 @@ node seed-data.js
 - `nodemon` - Auto-reload in sviluppo
 - `mongodb-memory-server` - MongoDB in-memory per test
 
-## 🔐 Sicurezza
+## Sicurezza
 
 - Password hashate con bcryptjs
 - Autenticazione basata su JWT
@@ -141,7 +124,7 @@ node seed-data.js
 - Protezione route con middleware di autenticazione
 - Autorizzazione basata sui ruoli (cliente/ristoratore)
 
-## 🤝 Contribuire
+## Contribuire
 
 Per contribuire al progetto:
 
@@ -151,15 +134,14 @@ Per contribuire al progetto:
 4. Testa le modifiche localmente
 5. Aggiorna la documentazione se necessario
 
-## 📞 Supporto
+## Supporto
 
 Per domande o problemi:
 
-- Consulta la [Guida Introduttiva](./getting-started.md) per problemi comuni
-- Leggi la [Documentazione API](./api.md) per dettagli sugli endpoint
+- Consulta la [Relazione Tecnica](./Relazione.md) per informazioni dettagliate
 - Apri una issue su GitHub per bug o feature request
 
-## 📝 Note per lo Sviluppo
+## Note per lo Sviluppo
 
 ### Convenzioni di Codice
 - Commenti e documentazione in italiano
