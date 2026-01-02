@@ -57,15 +57,78 @@ function displayRestaurantHeader() {
   const via = escapeHtml(currentRestaurant.indirizzo.via);
   const citta = escapeHtml(currentRestaurant.indirizzo.citta);
   const telefono = currentRestaurant.telefono ? escapeHtml(currentRestaurant.telefono) : '';
+  const orarioApertura = currentRestaurant.orarioApertura || '11:00';
+  const orarioChiusura = currentRestaurant.orarioChiusura || '23:00';
+  const aperto = currentRestaurant.aperto !== undefined ? currentRestaurant.aperto : true;
 
   header.innerHTML = `
-    <h1><i class="fas fa-utensils"></i> ${nome}</h1>
-    <p>${descrizione}</p>
-    <p style="margin-top: 0.5rem;">
-      <i class="fas fa-map-marker-alt"></i> ${via}, ${citta}
-      ${telefono ? ` | <i class="fas fa-phone"></i> ${telefono}` : ''}
-    </p>
+    <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+      <div style="flex: 1; min-width: 300px;">
+        <h1><i class="fas fa-utensils"></i> ${nome}</h1>
+        <p>${descrizione}</p>
+        <p style="margin-top: 0.5rem;">
+          <i class="fas fa-map-marker-alt"></i> ${via}, ${citta}
+          ${telefono ? ` | <i class="fas fa-phone"></i> ${telefono}` : ''}
+        </p>
+        <p style="margin-top: 0.5rem;">
+          <i class="fas fa-clock"></i> Orari: ${orarioApertura} - ${orarioChiusura}
+        </p>
+      </div>
+      <div style="text-align: right;">
+        <div class="restaurant-status-badge ${aperto ? 'status-open' : 'status-closed'}">
+          ${aperto ? '🟢 Aperto Ora' : '🔴 Chiuso'}
+        </div>
+        <div id="waitingTimeInfo" style="margin-top: 1rem;"></div>
+      </div>
+    </div>
   `;
+  
+  // Carica informazioni sul tempo di attesa
+  loadWaitingTimeInfo(currentRestaurant._id);
+}
+
+/**
+ * Carica e visualizza informazioni sul tempo di attesa
+ * @param {string} restaurantId - ID del ristorante
+ */
+async function loadWaitingTimeInfo(restaurantId) {
+  try {
+    const response = await apiCall(`/orders/restaurant/${restaurantId}/queue`);
+    
+    if (response.success && response.data) {
+      const { numeroPersoneInAttesa, tempoAttesaStimato } = response.data;
+      const infoElement = document.getElementById('waitingTimeInfo');
+      
+      if (infoElement) {
+        if (numeroPersoneInAttesa > 0) {
+          infoElement.innerHTML = `
+            <div class="waiting-time-info">
+              <div class="info-item">
+                <i class="fas fa-users"></i> 
+                <strong>${numeroPersoneInAttesa}</strong> in attesa
+              </div>
+              <div class="info-item">
+                <i class="fas fa-clock"></i> 
+                Tempo stimato: <strong>~${tempoAttesaStimato} min</strong>
+              </div>
+            </div>
+          `;
+        } else {
+          infoElement.innerHTML = `
+            <div class="waiting-time-info">
+              <div class="info-item success">
+                <i class="fas fa-check-circle"></i> 
+                Nessuna attesa!
+              </div>
+            </div>
+          `;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Errore nel caricamento delle informazioni di attesa:', error);
+    // Non mostrare errore all'utente, è solo un'informazione supplementare
+  }
 }
 
 /**

@@ -337,7 +337,7 @@ function renderOrders() {
  */
 async function updateOrderStatus(orderId, newStatus) {
   try {
-    const response = await apiCall(`/orders/${orderId}`, {
+    const response = await apiCall(`/orders/${orderId}/status`, {
       method: 'PUT',
       body: JSON.stringify({ stato: newStatus })
     });
