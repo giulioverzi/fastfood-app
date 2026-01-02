@@ -671,15 +671,23 @@ function calculateStatistics(orders) {
   // Ricavo totale (solo ordini completati)
   const totalRevenue = orders
     .filter(order => ['completato', 'consegnato'].includes(order.stato))
-    .reduce((sum, order) => sum + order.totale, 0);
+    .reduce((sum, order) => {
+      const totale = parseFloat(order.totale) || 0;
+      return sum + totale;
+    }, 0);
   
   // Conteggio piatti ordinati
   const dishCounts = {};
   orders.forEach(order => {
+    if (!order.piatti || !Array.isArray(order.piatti)) return;
+    
     order.piatti.forEach(item => {
+      if (!item || !item.piatto) return;
+      
       const dishId = item.piatto._id || item.piatto;
       const dishName = item.piatto.nome || 'Piatto sconosciuto';
       const dishCategory = item.piatto.categoria || '';
+      const quantity = parseInt(item.quantita) || 0;
       
       if (!dishCounts[dishId]) {
         dishCounts[dishId] = {
@@ -688,7 +696,7 @@ function calculateStatistics(orders) {
           count: 0
         };
       }
-      dishCounts[dishId].count += item.quantita;
+      dishCounts[dishId].count += quantity;
     });
   });
   
