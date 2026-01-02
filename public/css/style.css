@@ -1150,3 +1150,42 @@ body > footer {
 .delivery-estimate strong {
   color: var(--dark-color);
 }
+
+/* ==========================================
+   RIMOZIONE STILI INLINE
+   ========================================== */
+
+/* Testo informativo piccolo con margine superiore */
+.text-info-small {
+  color: #666;
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Link documentazione API nel footer */
+.api-docs-link {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.api-docs-link:hover {
+  text-decoration: underline;
+}
+
+/* Icone statistiche dashboard ristorante con gradienti */
+.stat-icon-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-icon-pink {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.stat-icon-blue {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.stat-icon-green {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
