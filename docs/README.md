@@ -12,6 +12,12 @@ Benvenuto nella documentazione completa dell'applicazione Fast Food App.
    - Descrizione implementazione e testing
    - Bibliografia e riferimenti
 
+2. **[Schema MongoDB](./MongoDB-Schema.md)**
+   - Struttura completa del database
+   - Descrizione dettagliata delle collezioni
+   - Relazioni tra entità
+   - Operazioni CRUD e best practices
+
 ### Documentazione API Interattiva
 
 La documentazione API è disponibile tramite Swagger UI quando il server è in esecuzione.
