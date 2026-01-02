@@ -162,7 +162,25 @@ function saveCart(cart) {
  * @param {object} dishData - Dati del piatto
  */
 function addToCart(dishId, dishData) {
-  const cart = getCart();
+  let cart = getCart();
+  
+  // Verifica se ci sono già piatti da un altro ristorante
+  if (cart.length > 0 && cart[0].ristorante !== dishData.ristorante) {
+    const previousRestaurant = cart[0].ristoranteNome;
+    const currentRestaurant = dishData.ristoranteNome;
+    
+    // Mostra avviso e chiedi conferma
+    const message = `Hai già piatti nel carrello dal ristorante "${previousRestaurant}".\n\nAggiungendo piatti da "${currentRestaurant}", il carrello precedente verrà svuotato.\n\nVuoi continuare?`;
+    
+    if (!confirm(message)) {
+      return; // L'utente ha annullato
+    }
+    
+    // Svuota il carrello precedente e ottieni il nuovo carrello vuoto
+    localStorage.removeItem('cart');
+    cart = [];
+  }
+  
   const existingItem = cart.find(item => item.piatto === dishId);
 
   if (existingItem) {
