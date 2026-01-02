@@ -7,6 +7,8 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const Order = require('../models/Order');
+const Restaurant = require('../models/Restaurant');
 const { protect } = require('../middleware/auth');
 
 /**
@@ -78,6 +80,48 @@ router.put('/me', protect, async (req, res) => {
  */
 router.delete('/me', protect, async (req, res) => {
   try {
+    const user = await User.findById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utente non trovato'
+      });
+    }
+
+    // Se è un ristoratore, verifica che non ci siano ordini pendenti
+    if (user.ruolo === 'ristoratore') {
+      const restaurants = await Restaurant.find({ proprietario: req.user.id });
+      const restaurantIds = restaurants.map(r => r._id);
+      
+      const pendingOrders = await Order.countDocuments({
+        ristorante: { $in: restaurantIds },
+        stato: { $in: ['ordinato', 'in_preparazione', 'pronto', 'in_consegna'] }
+      });
+      
+      if (pendingOrders > 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Non puoi eliminare l\'account mentre hai ordini pendenti. Completa tutti gli ordini prima di procedere.'
+        });
+      }
+    }
+    
+    // Se è un cliente, verifica che non ci siano ordini in sospeso o da ritirare
+    if (user.ruolo === 'cliente') {
+      const pendingOrders = await Order.countDocuments({
+        cliente: req.user.id,
+        stato: { $in: ['ordinato', 'in_preparazione', 'pronto', 'in_consegna'] }
+      });
+      
+      if (pendingOrders > 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Non puoi eliminare l\'account mentre hai ordini in sospeso o da ritirare. Completa tutti gli ordini prima di procedere.'
+        });
+      }
+    }
+    
     await User.findByIdAndDelete(req.user.id);
     res.json({
       success: true,

@@ -142,6 +142,14 @@ router.post('/', [
       });
     }
 
+    // Calcola il tempo di attesa stimato
+    const pendingOrders = await Order.countDocuments({
+      ristorante,
+      stato: { $in: ['ordinato', 'in_preparazione'] }
+    });
+    
+    const tempoAttesaStimato = Order.calcolaTempoAttesa(pendingOrders + 1);
+
     // Crea l'ordine
     const order = await Order.create({
       cliente: req.user.id,
@@ -150,7 +158,8 @@ router.post('/', [
       totale: totale.toFixed(2),
       modalitaConsegna,
       indirizzoConsegna,
-      note
+      note,
+      tempoAttesaStimato
     });
 
     const populatedOrder = await Order.findById(order._id)
@@ -186,6 +195,17 @@ router.put('/:id/status', protect, authorize('ristoratore'), async (req, res) =>
       });
     }
 
+    // Validazione del flusso degli stati
+    const validTransitions = {
+      'ordinato': ['in_preparazione', 'annullato'],
+      'in_preparazione': ['pronto', 'in_consegna', 'annullato'],
+      'pronto': ['in_consegna', 'consegnato', 'completato'],
+      'in_consegna': ['consegnato', 'completato'],
+      'consegnato': ['completato'],
+      'completato': [],
+      'annullato': []
+    };
+
     const order = await Order.findById(req.params.id).populate('ristorante');
 
     if (!order) {
@@ -200,6 +220,14 @@ router.put('/:id/status', protect, authorize('ristoratore'), async (req, res) =>
       return res.status(403).json({
         success: false,
         message: 'Non autorizzato a modificare questo ordine'
+      });
+    }
+
+    // Verifica che la transizione sia valida
+    if (!validTransitions[order.stato].includes(stato)) {
+      return res.status(400).json({
+        success: false,
+        message: `Transizione non valida da "${order.stato}" a "${stato}"`
       });
     }
 
@@ -219,6 +247,36 @@ router.put('/:id/status', protect, authorize('ristoratore'), async (req, res) =>
     res.status(500).json({
       success: false,
       message: 'Errore nell\'aggiornamento dello stato',
+      error: error.message
+    });
+  }
+});
+
+/**
+ * @route   GET /api/orders/restaurant/:restaurantId/queue
+ * @desc    Ottieni informazioni sulla coda ordini per un ristorante
+ * @access  Public
+ */
+router.get('/restaurant/:restaurantId/queue', async (req, res) => {
+  try {
+    const pendingOrders = await Order.countDocuments({
+      ristorante: req.params.restaurantId,
+      stato: { $in: ['ordinato', 'in_preparazione'] }
+    });
+
+    const tempoAttesaStimato = Order.calcolaTempoAttesa(pendingOrders + 1);
+
+    res.json({
+      success: true,
+      data: {
+        numeroPersoneInAttesa: pendingOrders,
+        tempoAttesaStimato: tempoAttesaStimato
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Errore nel recupero delle informazioni sulla coda',
       error: error.message
     });
   }

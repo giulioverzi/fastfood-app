@@ -48,6 +48,14 @@ const restaurantSchema = new mongoose.Schema({
     type: String,
     default: 'Lun-Dom: 11:00-23:00'
   },
+  orarioApertura: {
+    type: String,
+    default: '11:00'
+  },
+  orarioChiusura: {
+    type: String,
+    default: '23:00'
+  },
   immagine: {
     type: String,
     default: '/images/restaurant-default.jpg'
@@ -67,5 +75,22 @@ const restaurantSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
+/**
+ * Verifica se il ristorante è attualmente aperto
+ * @returns {boolean} true se il ristorante è aperto
+ */
+restaurantSchema.methods.isOpen = function() {
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  
+  const [openHour, openMinute] = this.orarioApertura.split(':').map(Number);
+  const [closeHour, closeMinute] = this.orarioChiusura.split(':').map(Number);
+  
+  const openTime = openHour * 60 + openMinute;
+  const closeTime = closeHour * 60 + closeMinute;
+  
+  return currentTime >= openTime && currentTime <= closeTime;
+};
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
