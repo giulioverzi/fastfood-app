@@ -203,18 +203,23 @@ function displayDishes(dishes) {
           </div>
           <div class="menu-item-footer">
             <span class="menu-item-price">${formatPrice(dish.prezzo)}</span>
-            ${isAuthenticated() && getUserData().ruolo === 'cliente' ? 
-              `<button class="btn btn-primary" onclick="handleAddToCart('${dishId}')">
-                <i class="fas fa-cart-plus"></i> Aggiungi
-              </button>` : 
-              !isAuthenticated() ?
-              `<a href="/login.html" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Login per ordinare
-              </a>` :
-              `<button class="btn btn-secondary" disabled>
-                Solo per clienti
-              </button>`
-            }
+            <div class="menu-item-actions">
+              <button class="btn btn-secondary btn-sm" onclick="showDishDetails('${dishId}')">
+                <i class="fas fa-info-circle"></i> Dettagli
+              </button>
+              ${isAuthenticated() && getUserData().ruolo === 'cliente' ? 
+                `<button class="btn btn-primary" onclick="handleAddToCart('${dishId}')">
+                  <i class="fas fa-cart-plus"></i> Aggiungi
+                </button>` : 
+                !isAuthenticated() ?
+                `<a href="/login.html" class="btn btn-primary">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </a>` :
+                `<button class="btn btn-secondary" disabled>
+                  Solo per clienti
+                </button>`
+              }
+            </div>
           </div>
         </div>
       </div>
@@ -313,6 +318,122 @@ function handleAddToCart(dishId) {
   addToCart(dishId, dishData);
 }
 
+/**
+ * Mostra i dettagli completi di un piatto in un modal
+ * @param {string} dishId - ID del piatto
+ */
+function showDishDetails(dishId) {
+  const dish = allDishes.find(d => d._id === dishId);
+  if (!dish) return;
+
+  const modal = document.getElementById('dishDetailModal');
+  const title = document.getElementById('dishDetailTitle');
+  const body = document.getElementById('dishDetailBody');
+  
+  title.textContent = dish.nome;
+  
+  const badges = [];
+  if (dish.vegetariano) badges.push('<span class="badge badge-success"><i class="fas fa-leaf"></i> Vegetariano</span>');
+  if (dish.vegano) badges.push('<span class="badge badge-success"><i class="fas fa-seedling"></i> Vegano</span>');
+  
+  body.innerHTML = `
+    <div class="dish-detail-content">
+      <img src="${dish.immagine || DEFAULT_DISH_IMAGE}" 
+           alt="${escapeHtml(dish.nome)}"
+           class="dish-detail-image"
+           onerror="this.src='${DEFAULT_DISH_IMAGE}'">
+      
+      <div class="dish-detail-info">
+        <div class="dish-detail-price">
+          ${formatPrice(dish.prezzo)}
+        </div>
+        
+        ${badges.length > 0 ? `<div style="margin: 1rem 0;">${badges.join(' ')}</div>` : ''}
+        
+        <div class="dish-detail-section">
+          <h4><i class="fas fa-align-left"></i> Descrizione</h4>
+          <p>${escapeHtml(dish.descrizione)}</p>
+        </div>
+        
+        <div class="dish-detail-section">
+          <h4><i class="fas fa-tag"></i> Categoria</h4>
+          <p>${translateCategory(dish.categoria)}</p>
+        </div>
+        
+        ${dish.ingredienti && dish.ingredienti.length > 0 ? `
+          <div class="dish-detail-section">
+            <h4><i class="fas fa-list-ul"></i> Ingredienti</h4>
+            <ul class="ingredient-list">
+              ${dish.ingredienti.map(ing => `<li>${escapeHtml(ing)}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        
+        ${dish.allergeni && dish.allergeni.length > 0 ? `
+          <div class="dish-detail-section">
+            <h4><i class="fas fa-exclamation-triangle"></i> Allergeni</h4>
+            <div class="allergen-tags">
+              ${dish.allergeni.map(all => `<span class="allergen-tag">${translateAllergen(all)}</span>`).join('')}
+            </div>
+          </div>
+        ` : '<div class="dish-detail-section"><p><i class="fas fa-check-circle"></i> Nessun allergene dichiarato</p></div>'}
+        
+        <div class="dish-detail-actions">
+          ${isAuthenticated() && getUserData().ruolo === 'cliente' ? 
+            `<button class="btn btn-primary btn-full-width" onclick="handleAddToCart('${dishId}'); closeDishDetailModal();">
+              <i class="fas fa-cart-plus"></i> Aggiungi al Carrello
+            </button>` : 
+            !isAuthenticated() ?
+            `<a href="/login.html" class="btn btn-primary btn-full-width">
+              <i class="fas fa-sign-in-alt"></i> Login per ordinare
+            </a>` :
+            `<button class="btn btn-secondary btn-full-width" disabled>
+              Solo per clienti
+            </button>`
+          }
+        </div>
+      </div>
+    </div>
+  `;
+  
+  modal.classList.remove('hidden');
+  modal.classList.add('active');
+}
+
+/**
+ * Chiude il modal dei dettagli piatto
+ */
+function closeDishDetailModal() {
+  const modal = document.getElementById('dishDetailModal');
+  modal.classList.remove('active');
+  setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+/**
+ * Traduce un allergene in italiano
+ * @param {string} allergen - Nome allergene
+ * @returns {string} Nome tradotto
+ */
+function translateAllergen(allergen) {
+  const translations = {
+    'glutine': 'Glutine',
+    'crostacei': 'Crostacei',
+    'uova': 'Uova',
+    'pesce': 'Pesce',
+    'arachidi': 'Arachidi',
+    'soia': 'Soia',
+    'latte': 'Latte',
+    'frutta_a_guscio': 'Frutta a guscio',
+    'sedano': 'Sedano',
+    'senape': 'Senape',
+    'sesamo': 'Sesamo',
+    'solfiti': 'Solfiti',
+    'lupini': 'Lupini',
+    'molluschi': 'Molluschi'
+  };
+  return translations[allergen] || allergen;
+}
+
 // Inizializzazione della pagina menu ristorante
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('Pagina menu ristorante caricata');
@@ -338,4 +459,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('vegetarianFilter').addEventListener('change', applyFilters);
   document.getElementById('veganFilter').addEventListener('change', applyFilters);
   document.getElementById('allergenFilter').addEventListener('change', applyFilters);
+  
+  // Event listener per chiusura modal dettagli piatto
+  document.getElementById('closeDishDetailModal')?.addEventListener('click', closeDishDetailModal);
+  
+  // Chiudi modal cliccando fuori
+  window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+      e.target.classList.remove('active');
+      setTimeout(() => e.target.classList.add('hidden'), 300);
+    }
+  });
 });
