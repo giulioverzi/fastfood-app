@@ -133,6 +133,67 @@
       </div>
     </div>
 
+    <!-- Sezione Statistiche -->
+    <div class="dashboard-section mb-2">
+      <div class="section-header">
+        <h2><i class="fas fa-chart-bar"></i> Statistiche</h2>
+        <button id="btnRefreshStats" class="btn btn-outline"><i class="fas fa-sync-alt"></i> Aggiorna</button>
+      </div>
+      <div id="statisticsLoading" class="loading hidden">Caricamento statistiche...</div>
+      <div id="statisticsContainer" class="hidden">
+        <!-- Cards con statistiche principali -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="totalOrders">0</h3>
+              <p class="stat-label">Ordini Totali</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="pendingOrders">0</h3>
+              <p class="stat-label">Ordini in Corso</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="completedOrders">0</h3>
+              <p class="stat-label">Ordini Completati</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+              <i class="fas fa-euro-sign"></i>
+            </div>
+            <div class="stat-content">
+              <h3 class="stat-value" id="totalRevenue">€0</h3>
+              <p class="stat-label">Ricavo Totale</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Piatti più richiesti -->
+        <div class="most-ordered-section">
+          <h3><i class="fas fa-fire"></i> Piatti Più Richiesti</h3>
+          <div id="mostOrderedDishes" class="most-ordered-list">
+            <p class="text-center text-muted">Nessun dato disponibile</p>
+          </div>
+        </div>
+      </div>
+      <div id="statisticsEmpty" class="hidden text-center">
+        <p>Nessuna statistica disponibile. Inizia a ricevere ordini!</p>
+      </div>
+    </div>
+
     <!-- Sezione Ordini Ricevuti -->
     <div class="dashboard-section">
       <div class="section-header">
