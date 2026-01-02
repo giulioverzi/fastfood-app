@@ -105,7 +105,8 @@ async function loadDishes(restaurantId) {
  * @returns {string} Stringa con escape
  */
 function escapeHtml(unsafe) {
-  return unsafe
+  if (!unsafe) return '';
+  return String(unsafe)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
