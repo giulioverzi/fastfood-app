@@ -100,20 +100,6 @@ async function loadDishes(restaurantId) {
 }
 
 /**
- * Escape HTML per prevenire attacchi XSS
- * @param {string} unsafe - Stringa non sicura
- * @returns {string} Stringa con escape
- */
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/**
  * Visualizza i piatti nel container
  * @param {Array} dishes - Array di piatti da visualizzare
  */
@@ -205,6 +191,8 @@ function applyFilters() {
   const priceFilter = parseFloat(document.getElementById('priceFilter').value);
   const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
   const veganFilter = document.getElementById('veganFilter').checked;
+  const allergenFilter = document.getElementById('allergenFilter');
+  const selectedAllergens = Array.from(allergenFilter.selectedOptions).map(option => option.value);
 
   let filteredDishes = allDishes;
 
@@ -226,6 +214,18 @@ function applyFilters() {
   // Filtro vegano
   if (veganFilter) {
     filteredDishes = filteredDishes.filter(dish => dish.vegano);
+  }
+
+  // Filtro allergeni - esclude piatti che contengono gli allergeni selezionati
+  if (selectedAllergens.length > 0) {
+    filteredDishes = filteredDishes.filter(dish => {
+      // Se il piatto non ha allergeni definiti, lo includiamo
+      if (!dish.allergeni || dish.allergeni.length === 0) {
+        return true;
+      }
+      // Escludi il piatto se contiene almeno uno degli allergeni selezionati
+      return !dish.allergeni.some(allergen => selectedAllergens.includes(allergen));
+    });
   }
 
   displayDishes(filteredDishes);
@@ -274,4 +274,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('priceFilter').addEventListener('input', applyFilters);
   document.getElementById('vegetarianFilter').addEventListener('change', applyFilters);
   document.getElementById('veganFilter').addEventListener('change', applyFilters);
+  document.getElementById('allergenFilter').addEventListener('change', applyFilters);
 });

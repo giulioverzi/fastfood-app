@@ -38,6 +38,7 @@ async function initRestaurantDashboard() {
   if (restaurant) {
     await loadMenu();
     await loadOrders();
+    await loadStatistics();
   }
 
   // Setup event listeners
@@ -605,6 +606,160 @@ async function saveRestaurant(e) {
 }
 
 /**
+ * Carica e visualizza le statistiche del ristorante
+ */
+async function loadStatistics() {
+  try {
+    toggleElement('statisticsLoading', true);
+    toggleElement('statisticsContainer', false);
+    toggleElement('statisticsEmpty', false);
+
+    if (!restaurant || receivedOrders.length === 0) {
+      toggleElement('statisticsLoading', false);
+      toggleElement('statisticsEmpty', true);
+      return;
+    }
+
+    // Calcola statistiche
+    const stats = calculateStatistics(receivedOrders);
+    
+    // Visualizza statistiche
+    renderStatistics(stats);
+
+    toggleElement('statisticsLoading', false);
+    toggleElement('statisticsContainer', true);
+  } catch (error) {
+    console.error('Errore caricamento statistiche:', error);
+    toggleElement('statisticsLoading', false);
+    toggleElement('statisticsEmpty', true);
+  }
+}
+
+/**
+ * Calcola le statistiche dagli ordini
+ * @param {Array} orders - Array di ordini
+ * @returns {Object} Oggetto con le statistiche calcolate
+ */
+function calculateStatistics(orders) {
+  const totalOrders = orders.length;
+  
+  // Ordini in corso (non completati e non annullati)
+  const pendingOrders = orders.filter(order => 
+    !['completato', 'consegnato', 'annullato'].includes(order.stato)
+  ).length;
+  
+  // Ordini completati
+  const completedOrders = orders.filter(order => 
+    ['completato', 'consegnato'].includes(order.stato)
+  ).length;
+  
+  // Ricavo totale (solo ordini completati)
+  const totalRevenue = orders
+    .filter(order => ['completato', 'consegnato'].includes(order.stato))
+    .reduce((sum, order) => {
+      const totale = parseFloat(order.totale) || 0;
+      return sum + totale;
+    }, 0);
+  
+  // Conteggio piatti ordinati
+  const dishCounts = {};
+  orders.forEach(order => {
+    if (!order.piatti || !Array.isArray(order.piatti)) return;
+    
+    order.piatti.forEach(item => {
+      if (!item || !item.piatto) return;
+      
+      const dishId = item.piatto._id || item.piatto;
+      const dishName = item.piatto.nome || 'Piatto sconosciuto';
+      const dishCategory = item.piatto.categoria || '';
+      const quantity = parseInt(item.quantita) || 0;
+      
+      if (!dishCounts[dishId]) {
+        dishCounts[dishId] = {
+          name: dishName,
+          category: dishCategory,
+          count: 0
+        };
+      }
+      dishCounts[dishId].count += quantity;
+    });
+  });
+  
+  // Ordina piatti per numero di ordinazioni
+  const mostOrdered = Object.entries(dishCounts)
+    .map(([id, data]) => ({ id, ...data }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5); // Top 5
+  
+  return {
+    totalOrders,
+    pendingOrders,
+    completedOrders,
+    totalRevenue,
+    mostOrdered
+  };
+}
+
+/**
+ * Renderizza le statistiche nel DOM
+ * @param {Object} stats - Oggetto con le statistiche
+ */
+function renderStatistics(stats) {
+  // Aggiorna le card con i numeri
+  document.getElementById('totalOrders').textContent = stats.totalOrders;
+  document.getElementById('pendingOrders').textContent = stats.pendingOrders;
+  document.getElementById('completedOrders').textContent = stats.completedOrders;
+  document.getElementById('totalRevenue').textContent = formatPrice(stats.totalRevenue);
+  
+  // Renderizza i piatti più ordinati
+  const mostOrderedContainer = document.getElementById('mostOrderedDishes');
+  
+  if (stats.mostOrdered.length === 0) {
+    mostOrderedContainer.innerHTML = '<p class="text-center text-muted">Nessun dato disponibile</p>';
+    return;
+  }
+  
+  mostOrderedContainer.innerHTML = stats.mostOrdered.map((dish, index) => {
+    const rankColors = ['#FFD700', '#C0C0C0', '#CD7F32', '#E74C3C', '#9B59B6'];
+    return `
+      <div class="most-ordered-item">
+        <div class="most-ordered-rank" style="background: ${rankColors[index] || 'var(--primary-color)'};">
+          ${index + 1}
+        </div>
+        <div class="most-ordered-info">
+          <p class="most-ordered-name">${escapeHtml(dish.name)}</p>
+          <p class="most-ordered-category">${translateCategory(dish.category)}</p>
+        </div>
+        <div class="most-ordered-count">
+          <span class="most-ordered-quantity">${dish.count}</span>
+          <p class="most-ordered-label">ordinazioni</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Traduce la categoria del piatto
+ * @param {string} category - Categoria del piatto
+ * @returns {string} Categoria tradotta
+ */
+function translateCategory(category) {
+  const translations = {
+    'antipasti': 'Antipasti',
+    'primi': 'Primi Piatti',
+    'secondi': 'Secondi Piatti',
+    'contorni': 'Contorni',
+    'dessert': 'Dessert',
+    'bevande': 'Bevande',
+    'panini': 'Panini',
+    'pizze': 'Pizze',
+    'insalate': 'Insalate'
+  };
+  return translations[category] || category;
+}
+
+/**
  * Setup degli event listeners
  */
 function setupEventListeners() {
@@ -637,6 +792,9 @@ function setupEventListeners() {
   document.getElementById('closeDishesModal')?.addEventListener('click', closeDishesModal);
   document.getElementById('cancelDishesBtn')?.addEventListener('click', closeDishesModal);
   document.getElementById('addSelectedDishes')?.addEventListener('click', addSelectedDishesToMenu);
+
+  // Pulsante refresh statistiche
+  document.getElementById('btnRefreshStats')?.addEventListener('click', loadStatistics);
 
   // Chiudi modal cliccando fuori
   window.addEventListener('click', (e) => {
