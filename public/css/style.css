@@ -572,6 +572,19 @@ body > footer {
   font-size: 0.95rem;
 }
 
+/* Auth links container styling - affianca i pulsanti Login e Registrati */
+#authLinks {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#authLinks .btn {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
 /* Alert improvements */
 .alert {
   padding: 1rem;

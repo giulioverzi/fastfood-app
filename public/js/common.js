@@ -97,9 +97,16 @@ function updateNavLinks() {
       ? '/dashboard-restaurant.html' 
       : '/dashboard-customer.html';
 
+    // Rimuovi link Dashboard statico se presente e aggiungi quello dinamico
+    const navLinks = document.getElementById('navLinks');
+    const existingDashboardLink = navLinks ? navLinks.querySelector('a[href*="dashboard"]') : null;
+    if (existingDashboardLink && existingDashboardLink.parentElement) {
+      existingDashboardLink.parentElement.remove();
+    }
+
     authLinksContainer.innerHTML = `
-      <li><a href="${dashboardUrl}">Dashboard</a></li>
-      <li><a href="#" id="logoutBtn" class="btn btn-secondary">Logout</a></li>
+      <a href="${dashboardUrl}">Dashboard</a>
+      <a href="#" id="logoutBtn" class="btn btn-secondary">Logout</a>
     `;
 
     // Aggiungi evento logout
@@ -107,8 +114,8 @@ function updateNavLinks() {
   } else {
     // Pulsanti Login e Registrati sempre affiancati
     authLinksContainer.innerHTML = `
-      <li><a href="/login.html" class="btn btn-primary">Login</a></li>
-      <li><a href="/register.html" class="btn btn-secondary">Registrati</a></li>
+      <a href="/login.html" class="btn btn-primary">Login</a>
+      <a href="/register.html" class="btn btn-secondary">Registrati</a>
     `;
   }
 }
