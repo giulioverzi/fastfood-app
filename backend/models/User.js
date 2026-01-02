@@ -46,6 +46,21 @@ const userSchema = new mongoose.Schema({
     citta: String,
     cap: String
   },
+  partitaIVA: {
+    type: String,
+    trim: true,
+    // Partita IVA è obbligatoria solo per ristoratori, verrà validata a livello di route
+    validate: {
+      validator: function(v) {
+        // Se è presente, deve essere 11 cifre
+        if (v && v.length > 0) {
+          return /^\d{11}$/.test(v);
+        }
+        return true;
+      },
+      message: 'La Partita IVA deve essere di 11 cifre'
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now

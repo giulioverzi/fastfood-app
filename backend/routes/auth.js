@@ -115,7 +115,19 @@ router.post('/register', [
   body('cognome').trim().notEmpty().withMessage('Il cognome è obbligatorio'),
   body('email').isEmail().withMessage('Inserisci un\'email valida'),
   body('password').isLength({ min: 6 }).withMessage('La password deve contenere almeno 6 caratteri'),
-  body('ruolo').isIn(['cliente', 'ristoratore']).withMessage('Ruolo non valido')
+  body('ruolo').isIn(['cliente', 'ristoratore']).withMessage('Ruolo non valido'),
+  body('partitaIVA').custom((value, { req }) => {
+    // Partita IVA obbligatoria solo per ristoratori
+    if (req.body.ruolo === 'ristoratore') {
+      if (!value || value.trim().length === 0) {
+        throw new Error('La Partita IVA è obbligatoria per i ristoratori');
+      }
+      if (!/^\d{11}$/.test(value)) {
+        throw new Error('La Partita IVA deve essere di 11 cifre');
+      }
+    }
+    return true;
+  })
 ], async (req, res) => {
   // Validazione
   const errors = validationResult(req);
@@ -124,7 +136,7 @@ router.post('/register', [
   }
 
   try {
-    const { nome, cognome, email, password, ruolo, telefono, indirizzo } = req.body;
+    const { nome, cognome, email, password, ruolo, telefono, indirizzo, partitaIVA } = req.body;
 
     // Verifica se l'utente esiste già
     const userExists = await User.findOne({ email });
@@ -143,7 +155,8 @@ router.post('/register', [
       password,
       ruolo,
       telefono,
-      indirizzo
+      indirizzo,
+      partitaIVA: ruolo === 'ristoratore' ? partitaIVA : undefined
     });
 
     // Genera token

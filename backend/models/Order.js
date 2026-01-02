@@ -65,8 +65,23 @@ const orderSchema = new mongoose.Schema({
   },
   dataCompletamento: {
     type: Date
+  },
+  tempoAttesaStimato: {
+    type: Number, // Tempo in minuti
+    default: 30
   }
 });
+
+/**
+ * Calcola il tempo di attesa stimato basato sulla posizione in coda
+ * @param {number} posizioneInCoda - Posizione dell'ordine nella coda
+ * @returns {number} Tempo di attesa in minuti
+ */
+orderSchema.statics.calcolaTempoAttesa = function(posizioneInCoda) {
+  // Ogni ordine richiede circa 15 minuti
+  const tempoPerOrdine = 15;
+  return posizioneInCoda * tempoPerOrdine;
+};
 
 // Indice per migliorare le ricerche per cliente e ristorante
 orderSchema.index({ cliente: 1, dataOrdine: -1 });

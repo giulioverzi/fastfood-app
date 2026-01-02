@@ -64,8 +64,9 @@ async function loadRestaurant() {
       toggleElement('restaurantLoading', false);
       toggleElement('restaurantContainer', true);
       
-      // Abilita il pulsante per aggiungere piatti
+      // Abilita i pulsanti per aggiungere piatti
       document.getElementById('btnAddDishes').disabled = false;
+      document.getElementById('btnAddCustomDish').disabled = false;
     } else {
       toggleElement('restaurantLoading', false);
       toggleElement('restaurantEmpty', true);
@@ -85,9 +86,25 @@ function renderRestaurant() {
   const container = document.getElementById('restaurantContainer');
   if (!container || !restaurant) return;
 
+  const imageSrc = restaurant.immagine || '/images/restaurant-default.jpg';
+  const orarioApertura = restaurant.orarioApertura || '11:00';
+  const orarioChiusura = restaurant.orarioChiusura || '23:00';
+  const aperto = restaurant.aperto !== undefined ? restaurant.aperto : true;
+
   container.innerHTML = `
     <div class="restaurant-card">
-      <h3 style="color: var(--primary-color); margin-bottom: 1rem;">${restaurant.nome}</h3>
+      <div class="restaurant-header">
+        <img src="${imageSrc}" alt="${restaurant.nome}" class="restaurant-image" onerror="this.src='/images/restaurant-default.jpg'">
+        <div class="restaurant-header-info">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">${restaurant.nome}</h3>
+          <div class="restaurant-status">
+            <span class="badge ${aperto ? 'badge-success' : 'badge-danger'}">
+              ${aperto ? '🟢 Aperto' : '🔴 Chiuso'}
+            </span>
+            <span class="info-text">Orari: ${orarioApertura} - ${orarioChiusura}</span>
+          </div>
+        </div>
+      </div>
       <div class="restaurant-info">
         <div class="info-item">
           <span class="info-label">Descrizione</span>
@@ -104,7 +121,7 @@ function renderRestaurant() {
           </span>
         </div>
         <div class="info-item">
-          <span class="info-label">Stato</span>
+          <span class="info-label">Stato Ristorante</span>
           <span class="info-value">
             <span class="badge ${restaurant.attivo ? 'badge-success' : 'badge-danger'}">
               ${restaurant.attivo ? 'Attivo' : 'Non Attivo'}
@@ -163,15 +180,30 @@ function renderMenu() {
           <span class="menu-item-category">${dish.categoria || 'Generale'}</span>
         </div>
         <p style="color: #666; font-size: 0.9rem; margin: 0.5rem 0;">
-          ${dish.descrizione ? dish.descrizione.substring(0, 100) + '...' : 'Nessuna descrizione'}
+          ${dish.descrizione ? dish.descrizione.substring(0, 100) + (dish.descrizione.length > 100 ? '...' : '') : 'Nessuna descrizione'}
         </p>
+        <div class="menu-item-details">
+          ${dish.ingredienti && dish.ingredienti.length > 0 ? `
+            <div class="detail-item">
+              <small><strong>Ingredienti:</strong> ${dish.ingredienti.slice(0, 3).join(', ')}${dish.ingredienti.length > 3 ? '...' : ''}</small>
+            </div>
+          ` : ''}
+          ${dish.allergeni && dish.allergeni.length > 0 ? `
+            <div class="detail-item">
+              <small><strong>Allergeni:</strong> ${dish.allergeni.slice(0, 3).join(', ')}${dish.allergeni.length > 3 ? '...' : ''}</small>
+            </div>
+          ` : ''}
+        </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
           <span style="font-size: 1.3rem; font-weight: bold; color: var(--primary-color);">
             ${formatPrice(dish.prezzo)}
           </span>
           <div class="menu-item-actions">
-            <button class="btn btn-secondary btn-icon" onclick="removeDish('${dish._id}')">
-              🗑️ Rimuovi
+            <button class="btn btn-sm btn-secondary" onclick="editDish('${dish._id}')" title="Modifica piatto">
+              <i class="fas fa-edit"></i> Modifica
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="removeDish('${dish._id}')" title="Rimuovi piatto">
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         </div>
@@ -305,7 +337,7 @@ function renderOrders() {
  */
 async function updateOrderStatus(orderId, newStatus) {
   try {
-    const response = await apiCall(`/orders/${orderId}`, {
+    const response = await apiCall(`/orders/${orderId}/status`, {
       method: 'PUT',
       body: JSON.stringify({ stato: newStatus })
     });
@@ -454,6 +486,22 @@ async function removeDish(dishId) {
 }
 
 /**
+ * Apre il modal per modificare un piatto
+ * @param {string} dishId - ID del piatto da modificare
+ */
+async function editDish(dishId) {
+  try {
+    const response = await apiCall(`/dishes/${dishId}`);
+    if (response.success) {
+      openCustomDishModal(response.data);
+    }
+  } catch (error) {
+    console.error('Errore caricamento piatto:', error);
+    showAlert(error.message || 'Errore nel caricamento del piatto', 'error');
+  }
+}
+
+/**
  * Apre il modal per la gestione del ristorante
  * @param {boolean} isEdit - true se è una modifica, false se è creazione
  */
@@ -469,11 +517,16 @@ function openRestaurantModal(isEdit = false) {
     document.getElementById('nome').value = restaurant.nome;
     document.getElementById('descrizione').value = restaurant.descrizione;
     document.getElementById('telefono').value = restaurant.telefono;
+    document.getElementById('immagine').value = restaurant.immagine || '';
+    document.getElementById('orarioApertura').value = restaurant.orarioApertura || '11:00';
+    document.getElementById('orarioChiusura').value = restaurant.orarioChiusura || '23:00';
     document.getElementById('via').value = restaurant.indirizzo.via;
     document.getElementById('citta').value = restaurant.indirizzo.citta;
     document.getElementById('cap').value = restaurant.indirizzo.cap;
   } else {
     form.reset();
+    document.getElementById('orarioApertura').value = '11:00';
+    document.getElementById('orarioChiusura').value = '23:00';
   }
 
   modal.classList.remove('hidden');
@@ -524,6 +577,121 @@ function closeDishesModal() {
 }
 
 /**
+ * Apre il modal per creare/modificare un piatto personalizzato
+ * @param {Object} dish - Il piatto da modificare (opzionale)
+ */
+function openCustomDishModal(dish = null) {
+  const modal = document.getElementById('customDishModal');
+  const modalTitle = document.getElementById('customDishModalTitle');
+  const form = document.getElementById('customDishForm');
+  
+  modalTitle.textContent = dish ? 'Modifica Piatto' : 'Crea Piatto Personalizzato';
+  
+  if (dish) {
+    // Popola il form con i dati del piatto esistente
+    document.getElementById('dishNome').value = dish.nome;
+    document.getElementById('dishDescrizione').value = dish.descrizione;
+    document.getElementById('dishCategoria').value = dish.categoria;
+    document.getElementById('dishPrezzo').value = dish.prezzo;
+    document.getElementById('dishIngredienti').value = dish.ingredienti ? dish.ingredienti.join(', ') : '';
+    document.getElementById('dishImmagine').value = dish.immagine || '';
+    document.getElementById('dishVegetariano').checked = dish.vegetariano || false;
+    document.getElementById('dishVegano').checked = dish.vegano || false;
+    document.getElementById('dishDisponibile').checked = dish.disponibile !== false;
+    
+    // Seleziona gli allergeni
+    document.querySelectorAll('.checkbox-group input[type="checkbox"]').forEach(cb => {
+      cb.checked = dish.allergeni && dish.allergeni.includes(cb.value);
+    });
+    
+    // Salva l'ID del piatto per l'aggiornamento
+    form.dataset.dishId = dish._id;
+  } else {
+    form.reset();
+    delete form.dataset.dishId;
+    document.getElementById('dishDisponibile').checked = true;
+  }
+  
+  modal.classList.remove('hidden');
+  modal.classList.add('active');
+}
+
+/**
+ * Chiude il modal del piatto personalizzato
+ */
+function closeCustomDishModal() {
+  const modal = document.getElementById('customDishModal');
+  modal.classList.remove('active');
+  setTimeout(() => modal.classList.add('hidden'), 300);
+  
+  // Reset form
+  document.getElementById('customDishForm').reset();
+  delete document.getElementById('customDishForm').dataset.dishId;
+}
+
+/**
+ * Salva il piatto personalizzato (crea o aggiorna)
+ * @param {Event} e - L'evento submit del form
+ */
+async function saveCustomDish(e) {
+  e.preventDefault();
+  
+  const form = e.target;
+  const dishId = form.dataset.dishId;
+  
+  // Raccogli gli allergeni selezionati
+  const allergeni = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
+    .map(cb => cb.value);
+  
+  // Converti gli ingredienti da stringa a array
+  const ingredientiString = document.getElementById('dishIngredienti').value;
+  const ingredienti = ingredientiString ? ingredientiString.split(',').map(i => i.trim()).filter(i => i) : [];
+  
+  const formData = {
+    nome: document.getElementById('dishNome').value,
+    descrizione: document.getElementById('dishDescrizione').value,
+    ristorante: restaurant._id,
+    categoria: document.getElementById('dishCategoria').value,
+    prezzo: parseFloat(document.getElementById('dishPrezzo').value),
+    ingredienti: ingredienti,
+    allergeni: allergeni,
+    immagine: document.getElementById('dishImmagine').value || undefined,
+    vegetariano: document.getElementById('dishVegetariano').checked,
+    vegano: document.getElementById('dishVegano').checked,
+    disponibile: document.getElementById('dishDisponibile').checked
+  };
+  
+  try {
+    let response;
+    if (dishId) {
+      // Aggiorna piatto esistente
+      response = await apiCall(`/dishes/${dishId}`, {
+        method: 'PUT',
+        body: JSON.stringify(formData)
+      });
+    } else {
+      // Crea nuovo piatto
+      response = await apiCall('/dishes', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
+    }
+    
+    if (response.success) {
+      showAlert(
+        dishId ? 'Piatto aggiornato con successo' : 'Piatto creato con successo',
+        'success'
+      );
+      closeCustomDishModal();
+      await loadMenu();
+    }
+  } catch (error) {
+    console.error('Errore salvataggio piatto:', error);
+    showAlert(error.message || 'Errore nel salvataggio del piatto', 'error');
+  }
+}
+
+/**
  * Setup della ricerca piatti
  */
 function setupDishSearch() {
@@ -562,6 +730,9 @@ async function saveRestaurant(e) {
     nome: document.getElementById('nome').value,
     descrizione: document.getElementById('descrizione').value,
     telefono: document.getElementById('telefono').value,
+    immagine: document.getElementById('immagine').value || undefined,
+    orarioApertura: document.getElementById('orarioApertura').value,
+    orarioChiusura: document.getElementById('orarioChiusura').value,
     indirizzo: {
       via: document.getElementById('via').value,
       citta: document.getElementById('citta').value,
@@ -785,13 +956,19 @@ function setupEventListeners() {
   document.getElementById('closeModal')?.addEventListener('click', closeRestaurantModal);
   document.getElementById('cancelBtn')?.addEventListener('click', closeRestaurantModal);
 
-  // Pulsante aggiungi piatti
+  // Pulsanti piatti
+  document.getElementById('btnAddCustomDish')?.addEventListener('click', () => openCustomDishModal());
   document.getElementById('btnAddDishes')?.addEventListener('click', openDishesModal);
 
-  // Modali piatti
+  // Modali piatti catalogo
   document.getElementById('closeDishesModal')?.addEventListener('click', closeDishesModal);
   document.getElementById('cancelDishesBtn')?.addEventListener('click', closeDishesModal);
   document.getElementById('addSelectedDishes')?.addEventListener('click', addSelectedDishesToMenu);
+
+  // Modal piatto personalizzato
+  document.getElementById('closeCustomDishModal')?.addEventListener('click', closeCustomDishModal);
+  document.getElementById('cancelCustomDishBtn')?.addEventListener('click', closeCustomDishModal);
+  document.getElementById('customDishForm')?.addEventListener('submit', saveCustomDish);
 
   // Pulsante refresh statistiche
   document.getElementById('btnRefreshStats')?.addEventListener('click', loadStatistics);

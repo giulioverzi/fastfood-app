@@ -50,9 +50,13 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    // Aggiungi informazione se il ristorante è aperto
+    const restaurantData = restaurant.toObject();
+    restaurantData.aperto = restaurant.isOpen();
+
     res.json({
       success: true,
-      data: restaurant
+      data: restaurantData
     });
   } catch (error) {
     res.status(500).json({
