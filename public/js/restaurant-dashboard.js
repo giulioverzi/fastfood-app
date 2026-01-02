@@ -85,9 +85,25 @@ function renderRestaurant() {
   const container = document.getElementById('restaurantContainer');
   if (!container || !restaurant) return;
 
+  const imageSrc = restaurant.immagine || '/images/restaurant-default.jpg';
+  const orarioApertura = restaurant.orarioApertura || '11:00';
+  const orarioChiusura = restaurant.orarioChiusura || '23:00';
+  const aperto = restaurant.aperto !== undefined ? restaurant.aperto : true;
+
   container.innerHTML = `
     <div class="restaurant-card">
-      <h3 style="color: var(--primary-color); margin-bottom: 1rem;">${restaurant.nome}</h3>
+      <div class="restaurant-header">
+        <img src="${imageSrc}" alt="${restaurant.nome}" class="restaurant-image" onerror="this.src='/images/restaurant-default.jpg'">
+        <div class="restaurant-header-info">
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">${restaurant.nome}</h3>
+          <div class="restaurant-status">
+            <span class="badge ${aperto ? 'badge-success' : 'badge-danger'}">
+              ${aperto ? '🟢 Aperto' : '🔴 Chiuso'}
+            </span>
+            <span class="info-text">Orari: ${orarioApertura} - ${orarioChiusura}</span>
+          </div>
+        </div>
+      </div>
       <div class="restaurant-info">
         <div class="info-item">
           <span class="info-label">Descrizione</span>
@@ -104,7 +120,7 @@ function renderRestaurant() {
           </span>
         </div>
         <div class="info-item">
-          <span class="info-label">Stato</span>
+          <span class="info-label">Stato Ristorante</span>
           <span class="info-value">
             <span class="badge ${restaurant.attivo ? 'badge-success' : 'badge-danger'}">
               ${restaurant.attivo ? 'Attivo' : 'Non Attivo'}
@@ -469,11 +485,16 @@ function openRestaurantModal(isEdit = false) {
     document.getElementById('nome').value = restaurant.nome;
     document.getElementById('descrizione').value = restaurant.descrizione;
     document.getElementById('telefono').value = restaurant.telefono;
+    document.getElementById('immagine').value = restaurant.immagine || '';
+    document.getElementById('orarioApertura').value = restaurant.orarioApertura || '11:00';
+    document.getElementById('orarioChiusura').value = restaurant.orarioChiusura || '23:00';
     document.getElementById('via').value = restaurant.indirizzo.via;
     document.getElementById('citta').value = restaurant.indirizzo.citta;
     document.getElementById('cap').value = restaurant.indirizzo.cap;
   } else {
     form.reset();
+    document.getElementById('orarioApertura').value = '11:00';
+    document.getElementById('orarioChiusura').value = '23:00';
   }
 
   modal.classList.remove('hidden');
@@ -562,6 +583,9 @@ async function saveRestaurant(e) {
     nome: document.getElementById('nome').value,
     descrizione: document.getElementById('descrizione').value,
     telefono: document.getElementById('telefono').value,
+    immagine: document.getElementById('immagine').value || undefined,
+    orarioApertura: document.getElementById('orarioApertura').value,
+    orarioChiusura: document.getElementById('orarioChiusura').value,
     indirizzo: {
       via: document.getElementById('via').value,
       citta: document.getElementById('citta').value,

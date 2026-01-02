@@ -489,13 +489,14 @@ body > footer {
 
 /* Auth pages styling */
 .auth-container {
-  min-height: calc(100vh - var(--header-height) - var(--footer-height)); /* viewport height minus header and footer */
+  min-height: calc(100vh - var(--header-height)); /* viewport height minus header */
   display: flex;
   align-items: center;
   justify-content: center;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   position: relative;
   padding: 2rem 0;
 }
@@ -1188,4 +1189,50 @@ body > footer {
 
 .stat-icon-green {
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+/* ==========================================
+   RESTAURANT HEADER WITH IMAGE
+   ========================================== */
+.restaurant-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--light-color);
+}
+
+.restaurant-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.restaurant-header-info {
+  flex: 1;
+}
+
+.restaurant-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.info-text {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* ==========================================
+   FORM TEXT HELPERS
+   ========================================== */
+.form-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6c757d;
 }
