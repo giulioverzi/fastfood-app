@@ -90,6 +90,14 @@ restaurantSchema.methods.isOpen = function() {
   const openTime = openHour * 60 + openMinute;
   const closeTime = closeHour * 60 + closeMinute;
   
+  // Gestisce il caso in cui il ristorante è aperto oltre la mezzanotte
+  // Es: 22:00 - 02:00 (closeTime < openTime)
+  if (closeTime < openTime) {
+    // Il ristorante è aperto se l'ora corrente è >= orario apertura O < orario chiusura
+    return currentTime >= openTime || currentTime <= closeTime;
+  }
+  
+  // Caso normale: aperto nello stesso giorno
   return currentTime >= openTime && currentTime <= closeTime;
 };
 

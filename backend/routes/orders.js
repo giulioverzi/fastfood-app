@@ -264,6 +264,7 @@ router.get('/restaurant/:restaurantId/queue', async (req, res) => {
       stato: { $in: ['ordinato', 'in_preparazione'] }
     });
 
+    // Calcola il tempo di attesa per un nuovo ordine
     const tempoAttesaStimato = Order.calcolaTempoAttesa(pendingOrders + 1);
 
     res.json({
