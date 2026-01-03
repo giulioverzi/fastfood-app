@@ -1,0 +1,498 @@
+openapi: 3.0.0
+info:
+  title: Fast Food App API
+  description: API REST per l'applicazione di gestione ordini fast food
+  version: 1.0.0
+  contact:
+    name: Marco Portante
+    email: marcoportante@virgilio.it
+
+servers:
+  - url: http://localhost:5000/api
+    description: Server di sviluppo locale
+  - url: http://localhost:5000/api
+    description: Server di produzione
+
+tags:
+  - name: Auth
+    description: Autenticazione e registrazione
+  - name: Restaurants
+    description: Gestione ristoranti
+  - name: Dishes
+    description: Gestione piatti
+  - name: Orders
+    description: Gestione ordini
+  - name: Users
+    description: Gestione profilo utente
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT per l'autenticazione. Formato: Bearer {token}
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string
+          format: email
+        ruolo:
+          type: string
+          enum: [cliente, ristoratore]
+        telefono:
+          type: string
+        indirizzo:
+          type: object
+          properties:
+            via:
+              type: string
+            citta:
+              type: string
+            cap:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Restaurant:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        descrizione:
+          type: string
+        proprietario:
+          type: string
+        indirizzo:
+          type: object
+          properties:
+            via:
+              type: string
+            citta:
+              type: string
+            cap:
+              type: string
+        telefono:
+          type: string
+        email:
+          type: string
+          format: email
+        categoria:
+          type: string
+        immagine:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Dish:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        descrizione:
+          type: string
+        prezzo:
+          type: number
+        categoria:
+          type: string
+          enum: [antipasto, primo, secondo, contorno, dolce, bevanda, panino, pizza]
+        ristorante:
+          type: string
+        immagine:
+          type: string
+        ingredienti:
+          type: array
+          items:
+            type: string
+        allergeni:
+          type: array
+          items:
+            type: string
+        vegetariano:
+          type: boolean
+        vegano:
+          type: boolean
+        disponibile:
+          type: boolean
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+        cliente:
+          type: string
+        ristorante:
+          type: string
+        piatti:
+          type: array
+          items:
+            type: object
+            properties:
+              piatto:
+                type: string
+              quantita:
+                type: integer
+              prezzo:
+                type: number
+        totale:
+          type: number
+        stato:
+          type: string
+          enum: [ordinato, in preparazione, pronto, in consegna, consegnato, completato, annullato]
+        modalita:
+          type: string
+          enum: [ritiro, consegna]
+        indirizzo:
+          type: object
+          properties:
+            via:
+              type: string
+            citta:
+              type: string
+            cap:
+              type: string
+        note:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Registra un nuovo utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - cognome
+                - email
+                - password
+                - ruolo
+              properties:
+                nome:
+                  type: string
+                cognome:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+                ruolo:
+                  type: string
+                  enum: [cliente, ristoratore]
+                telefono:
+                  type: string
+                indirizzo:
+                  type: object
+      responses:
+        201:
+          description: Registrazione completata
+        400:
+          description: Dati non validi o email già registrata
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login effettuato con successo
+        401:
+          description: Credenziali non valide
+
+  /auth/verify:
+    get:
+      tags:
+        - Auth
+      summary: Verifica token JWT
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Token valido
+        401:
+          description: Token non valido
+
+  /restaurants:
+    get:
+      tags:
+        - Restaurants
+      summary: Ottieni tutti i ristoranti
+      parameters:
+        - in: query
+          name: citta
+          schema:
+            type: string
+        - in: query
+          name: categoria
+          schema:
+            type: string
+      responses:
+        200:
+          description: Lista ristoranti
+
+    post:
+      tags:
+        - Restaurants
+      summary: Crea un nuovo ristorante
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - indirizzo
+              properties:
+                nome:
+                  type: string
+                descrizione:
+                  type: string
+                indirizzo:
+                  type: object
+                  required:
+                    - via
+                    - citta
+                    - cap
+                  properties:
+                    via:
+                      type: string
+                    citta:
+                      type: string
+                    cap:
+                      type: string
+      responses:
+        201:
+          description: Ristorante creato
+        401:
+          description: Non autorizzato
+        403:
+          description: Solo i ristoratori possono creare ristoranti
+
+  /restaurants/{id}:
+    get:
+      tags:
+        - Restaurants
+      summary: Ottieni un ristorante specifico
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Dettagli ristorante
+        404:
+          description: Ristorante non trovato
+
+    put:
+      tags:
+        - Restaurants
+      summary: Aggiorna un ristorante
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ristorante aggiornato
+        403:
+          description: Non autorizzato
+
+    delete:
+      tags:
+        - Restaurants
+      summary: Elimina un ristorante
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ristorante eliminato
+        403:
+          description: Non autorizzato
+
+  /dishes:
+    get:
+      tags:
+        - Dishes
+      summary: Ottieni tutti i piatti con filtri
+      parameters:
+        - in: query
+          name: ristorante
+          schema:
+            type: string
+        - in: query
+          name: categoria
+          schema:
+            type: string
+        - in: query
+          name: vegetariano
+          schema:
+            type: boolean
+        - in: query
+          name: vegano
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Lista piatti
+
+    post:
+      tags:
+        - Dishes
+      summary: Crea un nuovo piatto
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+                - prezzo
+                - categoria
+                - ristorante
+      responses:
+        201:
+          description: Piatto creato
+        403:
+          description: Non autorizzato
+
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: Ottieni gli ordini dell'utente
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Lista ordini
+
+    post:
+      tags:
+        - Orders
+      summary: Crea un nuovo ordine
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ristorante
+                - piatti
+                - modalita
+              properties:
+                ristorante:
+                  type: string
+                piatti:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      piatto:
+                        type: string
+                      quantita:
+                        type: integer
+                modalita:
+                  type: string
+                  enum: [ritiro, consegna]
+                indirizzo:
+                  type: object
+                note:
+                  type: string
+      responses:
+        201:
+          description: Ordine creato
+        403:
+          description: Solo i clienti possono creare ordini
+
+  /users/profile:
+    get:
+      tags:
+        - Users
+      summary: Ottieni il profilo utente
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Profilo utente
+
+    put:
+      tags:
+        - Users
+      summary: Aggiorna il profilo utente
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Profilo aggiornato
