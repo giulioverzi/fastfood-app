@@ -4,12 +4,12 @@
   "description": "Applicazione frontend per la gestione di ordini in un fast food con local storage.",
   "main": "public/index.html",
   "scripts": {
-    "start": "npx http-server public -p 3000 -o",
-    "dev": "npx http-server public -p 3000 -o"
+    "start": "http-server public -p 3000 -o",
+    "dev": "http-server public -p 3000 -o"
   },
   "author": "marcoportante",
   "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
     "http-server": "^14.1.1"
   }
 }

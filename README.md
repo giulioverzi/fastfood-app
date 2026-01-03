@@ -131,6 +131,8 @@ L'applicazione utilizza **local storage** del browser per salvare:
 - Carrello e ordini
 - Informazioni sui ristoranti e piatti
 
+**Nota sulla Sicurezza:** I dati in local storage sono memorizzati lato client e possono essere accessibili tramite JavaScript. Non memorizzare informazioni sensibili o critiche. Il local storage è appropriato per applicazioni demo e prototipazione.
+
 ## Testing
 
 ### Test Manuale
