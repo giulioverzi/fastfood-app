@@ -1,72 +1,59 @@
 # Fast Food App
 
-Applicazione web completa per la gestione di ordini in un fast food, sviluppata con architettura moderna e best practices.
+Applicazione web frontend per la gestione di ordini in un fast food, basata su local storage e sviluppata seguendo il modello Marvel.
 
 ## Descrizione
 
-Fast Food App è un'applicazione full-stack che permette ai clienti di ordinare cibo online e ai ristoratori di gestire ristoranti, menu e ordini in modo efficiente. L'applicazione offre un'interfaccia intuitiva e moderna, con una solida architettura backend modulare.
+Fast Food App è un'applicazione frontend moderna che permette ai clienti di ordinare cibo online e ai ristoratori di gestire ristoranti, menu e ordini. L'applicazione utilizza **local storage** per la persistenza dei dati, salvando JWT e informazioni utente/ristoratore per il rendering dinamico delle pagine.
 
 ## Obiettivi del Progetto
 
-- **Modularità**: Architettura ben organizzata con separazione delle responsabilità
-- **Scalabilità**: Struttura che facilita l'aggiunta di nuove funzionalità
+- **Modularità**: Architettura ben organizzata con JavaScript modularizzato
+- **Persistenza Client-Side**: Utilizzo di local storage per dati utente e autenticazione
 - **Manutenibilità**: Codice pulito, ben documentato e facile da mantenere
 - **User Experience**: Interfaccia intuitiva e responsive per tutti i dispositivi
-- **Best Practices**: Utilizzo di pattern standard e librerie consolidate
+- **Best Practices**: Codice frontend moderno seguendo standard web
 
 ## Tecnologie Utilizzate
-
-### Backend
-- **Node.js** v14+ - Runtime JavaScript ad alte prestazioni
-- **Express.js** 4.18 - Framework web minimalista e flessibile
-- **MongoDB** - Database NoSQL orientato ai documenti
-- **Mongoose** 7.5 - ODM elegante per MongoDB
-- **JWT** - Autenticazione sicura basata su token
-- **bcryptjs** - Crittografia password con salt
-- **express-validator** - Validazione e sanitizzazione dati
-- **Swagger** - Documentazione API interattiva
 
 ### Frontend
 - **HTML5** - Markup semantico e accessibile
 - **CSS3** - Styling moderno con variabili CSS, flexbox e grid
-- **JavaScript ES6+** - Vanilla JavaScript moderno, nessun framework
+- **JavaScript ES6+** - Vanilla JavaScript moderno e modularizzato
+- **Local Storage** - Persistenza dati lato client
 - **Font Awesome** - Libreria di icone
 
 ### DevOps & Tools
 - **Git** - Controllo di versione
 - **npm** - Gestione dipendenze
-- **nodemon** - Auto-reload in sviluppo
+- **http-server** - Server HTTP statico per sviluppo
 
 ## Struttura del Progetto
 
 ```
 fastfood-app/
-├── models/                    # Modelli Mongoose (User, Restaurant, Dish, Order)
-├── routes/                    # Route API REST
-├── middleware/                # Middleware Express (autenticazione, validazione)
-├── lib/                       # Librerie e servizi business logic
-│   ├── users/                # Servizi per gestione utenti
-│   ├── restaurants/          # Servizi per gestione ristoranti
-│   ├── orders/               # Servizi per gestione ordini
-│   ├── dishes/               # Servizi per gestione piatti
-│   └── utils/                # Utility condivise (validazione, risposte)
-├── config/                    # Configurazioni applicazione
-│   └── database.js           # Configurazione connessione MongoDB
 ├── docs/                      # Documentazione del progetto
-│   └── Relazione.md          # Relazione tecnica del progetto
-├── public/                    # Frontend statico
+│   ├── README.md             # Guida alla documentazione
+│   ├── Relazione.md          # Relazione tecnica del progetto
+│   └── Relazione.pdf         # Versione PDF della relazione
+├── public/                    # Applicazione frontend
 │   ├── css/                  # Fogli di stile
 │   │   ├── style.css         # Stili principali
 │   │   └── layout.css        # Layout e componenti
-│   ├── scripts/              # JavaScript client-side modularizzato
+│   ├── scripts/              # JavaScript modularizzato
+│   │   ├── common.js         # Funzioni condivise
+│   │   ├── app.js            # Homepage
+│   │   ├── login.js          # Gestione login
+│   │   ├── register.js       # Gestione registrazione
+│   │   ├── menu.js           # Visualizzazione menu
+│   │   ├── checkout.js       # Gestione checkout
+│   │   ├── customer.js       # Dashboard cliente
+│   │   └── restaurant-dashboard.js  # Dashboard ristoratore
 │   └── *.html                # Pagine HTML
-├── app.js                     # Configurazione Express app
-├── server.js                  # Entry point del server
-├── swagger.js                 # Configurazione Swagger
 ├── package.json              # Dipendenze e scripts npm
-├── LICENSE                    # Licenza MIT
-├── .env                       # Variabili d'ambiente (non committato)
-└── .env.example              # Template configurazione ambiente
+├── LICENSE                   # Licenza MIT
+├── .gitignore               # File ignorati da git
+└── README.md                # Questo file
 ```
 
 ## Avvio Rapido
@@ -82,27 +69,20 @@ Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Rel
    npm install
    ```
 
-2. **Configura l'ambiente**
+2. **Avvia il server di sviluppo**
    ```bash
-   cp .env.example .env
-   # Modifica .env con le tue configurazioni
-   ```
-
-3. **Avvia MongoDB e il server**
-   ```bash
-   # Assicurati che MongoDB sia in esecuzione
    npm start
    ```
 
-4. **Apri il browser**
-   - Applicazione: `http://localhost:3000`
-   - Documentazione API: `http://localhost:3000/api-docs`
+3. **Apri il browser**
+   - L'applicazione si aprirà automaticamente su `http://localhost:3000`
+   - Inizia navigando dalla homepage per esplorare ristoranti e menu
 
 ## Funzionalità
 
 ### Gestione Utenti
-- Registrazione con ruolo (Cliente/Ristoratore)
-- Login con JWT authentication
+- Registrazione con ruolo (Cliente/Ristoratore) tramite local storage
+- Login con JWT salvato in local storage
 - Visualizzazione e modifica profilo
 - Eliminazione account
 
@@ -142,29 +122,16 @@ La documentazione completa del progetto è disponibile nella [Relazione Tecnica]
 - Dettagli implementazione
 - Testing e validazione
 
-### Documentazione Interattiva Swagger
+## Persistenza Dati
 
-La documentazione API interattiva è disponibile tramite Swagger UI:
+L'applicazione utilizza **local storage** del browser per salvare:
+- Token JWT per l'autenticazione
+- Dati utente (nome, email, ruolo)
+- Dati ristoratori
+- Carrello e ordini
+- Informazioni sui ristoranti e piatti
 
-- **URL Locale:** `http://localhost:3000/api-docs`
-- **Specifiche OpenAPI:** `http://localhost:3000/api-docs.json`
-
-Funzionalità Swagger UI:
-- Esplorare tutti gli endpoint disponibili
-- Vedere schemi di richiesta e risposta dettagliati
-- Testare le API direttamente dal browser
-- Autenticarsi con JWT per testare endpoint protetti
-
-**Endpoint principali:**
-- `POST /api/auth/register` - Registrazione nuovo utente
-- `POST /api/auth/login` - Login e ottenimento token
-- `GET /api/users/me` - Profilo utente autenticato
-- `GET /api/restaurants` - Lista ristoranti pubblici
-- `GET /api/dishes` - Lista piatti (con filtri avanzati)
-- `POST /api/orders` - Creazione nuovo ordine
-- `GET /api/orders` - Lista ordini utente
-
-Autenticazione tramite Bearer Token JWT nell'header `Authorization`.
+**Nota sulla Sicurezza:** I dati in local storage sono memorizzati lato client e possono essere accessibili tramite JavaScript. Non memorizzare informazioni sensibili o critiche. Il local storage è appropriato per applicazioni demo e prototipazione.
 
 ## Testing
 
@@ -175,10 +142,6 @@ Autenticazione tramite Bearer Token JWT nell'header `Authorization`.
 3. **Crea un account cliente**
 4. **Effettua un ordine**
 5. **Come ristoratore, gestisci l'ordine**
-
-### Test Automatico
-
-L'applicazione usa MongoDB in-memory quando MongoDB locale non è disponibile, facilitando il testing in ambiente di sviluppo.
 
 ## Codice e Commenti
 
@@ -205,4 +168,4 @@ MIT License - Vedi file LICENSE per dettagli
 
 ---
 
-**Nota**: Per problemi, domande o suggerimenti, apri una issue su GitHub o consulta la relazione tecnica nella cartella `docs/`.
+**Nota**: L'applicazione funziona completamente lato client utilizzando local storage. Non è necessario un server backend o database esterno.
