@@ -131,14 +131,27 @@ router.post('/', [
     }
 
     // Verifica che tutti i piatti esistano e appartengano al ristorante
+    const piattiIds = piatti.map(item => item.piatto);
+    const piattiDocs = await Dish.find({ _id: { $in: piattiIds } });
+    
+    if (piattiDocs.length !== piatti.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Uno o più piatti non sono stati trovati'
+      });
+    }
+    
+    // Crea un map per accesso rapido ai piatti
+    const piattiMap = new Map(piattiDocs.map(p => [p._id.toString(), p]));
+    
     const piattiConPrezzo = [];
     for (const item of piatti) {
-      const piatto = await Dish.findById(item.piatto);
+      const piatto = piattiMap.get(item.piatto);
       
       if (!piatto) {
         return res.status(404).json({
           success: false,
-          message: `Piatto ${item.piatto} non trovato`
+          message: 'Piatto non trovato'
         });
       }
       

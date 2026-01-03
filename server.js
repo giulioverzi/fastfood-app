@@ -115,17 +115,46 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Avvio del server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server in esecuzione sulla porta ${PORT}`);
   console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`API disponibili su http://localhost:${PORT}/api`);
 });
 
+// Gestione graceful shutdown
+const gracefulShutdown = async () => {
+  console.log('\nRicevuto segnale di shutdown. Chiusura connessioni...');
+  
+  server.close(async () => {
+    console.log('Server HTTP chiuso');
+    
+    try {
+      await mongoose.connection.close();
+      console.log('Connessione MongoDB chiusa');
+      process.exit(0);
+    } catch (error) {
+      console.error('Errore durante la chiusura:', error);
+      process.exit(1);
+    }
+  });
+  
+  // Forza la chiusura dopo 10 secondi
+  setTimeout(() => {
+    console.error('Timeout: chiusura forzata');
+    process.exit(1);
+  }, 10000);
+};
+
+// Gestione segnali di terminazione
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+
 // Gestione errori non gestiti
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', async (err) => {
   console.error('UNHANDLED REJECTION! Arresto...');
   console.error(err.name, err.message);
-  process.exit(1);
+  
+  await gracefulShutdown();
 });
 
 module.exports = app;

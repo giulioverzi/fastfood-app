@@ -75,7 +75,7 @@ const handleMongoCastError = (err, req, res, next) => {
   if (err.name === 'CastError') {
     return res.status(400).json({
       success: false,
-      message: `ID non valido: ${err.value}`
+      message: 'Formato ID non valido'
     });
   }
   
