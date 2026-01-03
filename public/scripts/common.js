@@ -115,7 +115,7 @@ function updateNavLinks() {
     // Pulsanti Login e Registrati sempre affiancati
     authLinksContainer.innerHTML = `
       <a href="/html/login.html" class="btn btn-primary">Login</a>
-      <a href="/register.html" class="btn btn-secondary">Registrati</a>
+      <a href="/html/register.html" class="btn btn-secondary">Registrati</a>
     `;
   }
 }
