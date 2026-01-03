@@ -1,6 +1,6 @@
 /**
  * Routes per la gestione degli utenti
- * @module backend/routes/users
+ * @module routes/users
  */
 
 const express = require('express');

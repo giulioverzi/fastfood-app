@@ -1,6 +1,6 @@
 /**
  * Modello Restaurant - Gestisce le informazioni dei ristoranti
- * @module backend/models/Restaurant
+ * @module models/Restaurant
  */
 
 const mongoose = require('mongoose');

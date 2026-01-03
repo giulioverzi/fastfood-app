@@ -49,17 +49,6 @@ const connectDB = async () => {
     });
 
     console.log(`MongoDB connesso: ${conn.connection.host}`);
-    
-    // Popola il database se vuoto
-    if (process.env.NODE_ENV === 'development' && mongod) {
-      const Restaurant = require('../backend/models/Restaurant');
-      const count = await Restaurant.countDocuments();
-      if (count === 0) {
-        console.log('Database vuoto, popolamento in corso...');
-        const seedDatabase = require('../seed-data-inline');
-        await seedDatabase();
-      }
-    }
   } catch (error) {
     console.error(`Errore connessione MongoDB: ${error.message}`);
     process.exit(1);

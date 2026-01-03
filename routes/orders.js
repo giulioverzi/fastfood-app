@@ -1,6 +1,6 @@
 /**
  * Routes per la gestione degli ordini
- * @module backend/routes/orders
+ * @module routes/orders
  */
 
 const express = require('express');

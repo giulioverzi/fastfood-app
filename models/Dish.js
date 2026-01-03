@@ -1,6 +1,6 @@
 /**
  * Modello Dish - Gestisce i piatti del menu
- * @module backend/models/Dish
+ * @module models/Dish
  */
 
 const mongoose = require('mongoose');

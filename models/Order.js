@@ -1,6 +1,6 @@
 /**
  * Modello Order - Gestisce gli ordini dei clienti
- * @module backend/models/Order
+ * @module models/Order
  */
 
 const mongoose = require('mongoose');

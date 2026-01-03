@@ -1,6 +1,6 @@
 /**
  * Routes per l'autenticazione
- * @module backend/routes/auth
+ * @module routes/auth
  */
 
 const express = require('express');

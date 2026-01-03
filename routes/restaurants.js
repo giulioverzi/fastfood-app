@@ -1,6 +1,6 @@
 /**
  * Routes per la gestione dei ristoranti
- * @module backend/routes/restaurants
+ * @module routes/restaurants
  */
 
 const express = require('express');
