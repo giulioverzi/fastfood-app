@@ -37,8 +37,12 @@ fastfood-app/
 │       ├── README.md         # Guida alla documentazione
 │       └── Relazione.md      # Relazione tecnica del progetto
 ├── lib/                       # Librerie e API
-│   └── api/
-│       └── docs/             # Documentazione API (Swagger)
+│   ├── api/
+│   │   └── docs/             # Documentazione API (Swagger)
+│   ├── utils.js              # Funzioni utility (placeholder)
+│   ├── database.js           # Connessione database (placeholder)
+│   ├── login.js              # Logica login backend (placeholder)
+│   └── register.js           # Logica registrazione backend (placeholder)
 ├── public/                    # Applicazione frontend
 │   ├── Css/                  # Fogli di stile
 │   │   ├── style.css         # Stili principali

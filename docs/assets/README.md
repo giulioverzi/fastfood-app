@@ -6,6 +6,7 @@ Questa cartella contiene la documentazione completa del progetto Fast Food App.
 
 - **Relazione.md**: Relazione tecnica completa del progetto con dettagli su architettura, implementazione, e requisiti
 - **Relazione.pdf**: Versione PDF della relazione tecnica (da generare)
+- **PWM_project_23_24.pdf**: Documentazione del progetto PWM (da aggiungere manualmente se disponibile)
 
 ## Struttura della Relazione
 
