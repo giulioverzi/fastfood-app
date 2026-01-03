@@ -2,10 +2,10 @@
   "name": "fastfood-app",
   "version": "2.0.0",
   "description": "Applicazione frontend per la gestione di ordini in un fast food con local storage.",
-  "main": "public/index.html",
+  "main": "public/html/index.html",
   "scripts": {
-    "start": "http-server public -p 3000 -o",
-    "dev": "http-server public -p 3000 -o"
+    "start": "http-server public -p 3000 -o /html/index.html",
+    "dev": "http-server public -p 3000 -o /html/index.html"
   },
   "author": "marcoportante",
   "license": "MIT",

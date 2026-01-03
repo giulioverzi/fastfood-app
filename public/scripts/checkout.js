@@ -10,7 +10,7 @@ function checkClientAuth() {
   if (!isAuthenticated()) {
     showAlert('Devi effettuare il login per completare l\'ordine', 'error');
     setTimeout(() => {
-      window.location.href = '/login.html';
+      window.location.href = '/html/login.html';
     }, 1500);
     return false;
   }
@@ -38,7 +38,7 @@ function loadOrderSummary() {
   if (!cart || cart.length === 0) {
     showAlert('Il carrello è vuoto', 'error');
     setTimeout(() => {
-      window.location.href = '/menu.html';
+      window.location.href = '/html/menu.html';
     }, 1500);
     return;
   }
@@ -167,7 +167,7 @@ async function handleCheckoutSubmit(e) {
       
       // Reindirizza alla dashboard cliente dopo 2 secondi
       setTimeout(() => {
-        window.location.href = '/dashboard-customer.html';
+        window.location.href = '/html/dashboard-customer.html';
       }, 2000);
     }
   } catch (error) {
