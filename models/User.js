@@ -1,6 +1,6 @@
 /**
  * Modello User - Gestisce utenti (Clienti e Ristoratori)
- * @module backend/models/User
+ * @module models/User
  */
 
 const mongoose = require('mongoose');

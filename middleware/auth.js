@@ -1,6 +1,6 @@
 /**
  * Middleware di autenticazione JWT
- * @module backend/middleware/auth
+ * @module middleware/auth
  */
 
 const jwt = require('jsonwebtoken');

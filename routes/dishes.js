@@ -1,6 +1,6 @@
 /**
  * Routes per la gestione dei piatti
- * @module backend/routes/dishes
+ * @module routes/dishes
  */
 
 const express = require('express');
