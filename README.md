@@ -41,10 +41,9 @@ Fast Food App è un'applicazione full-stack che permette ai clienti di ordinare 
 
 ```
 fastfood-app/
-├── backend/                    # Backend Express.js
-│   ├── models/                # Modelli Mongoose (User, Restaurant, Dish, Order)
-│   ├── routes/                # Route API REST
-│   └── middleware/            # Middleware Express (autenticazione, validazione)
+├── models/                    # Modelli Mongoose (User, Restaurant, Dish, Order)
+├── routes/                    # Route API REST
+├── middleware/                # Middleware Express (autenticazione, validazione)
 ├── lib/                       # Librerie e servizi business logic
 │   ├── users/                # Servizi per gestione utenti
 │   ├── restaurants/          # Servizi per gestione ristoranti
@@ -54,20 +53,19 @@ fastfood-app/
 ├── config/                    # Configurazioni applicazione
 │   └── database.js           # Configurazione connessione MongoDB
 ├── docs/                      # Documentazione del progetto
-│   ├── getting-started.md    # Guida introduttiva
-│   ├── api.md                # Documentazione API
-│   └── architecture.md       # Architettura dettagliata
+│   └── Relazione.md          # Relazione tecnica del progetto
 ├── public/                    # Frontend statico
 │   ├── css/                  # Fogli di stile
 │   │   ├── style.css         # Stili principali
 │   │   └── layout.css        # Layout e componenti
-│   ├── js/                   # JavaScript client-side
+│   ├── scripts/              # JavaScript client-side modularizzato
 │   └── *.html                # Pagine HTML
-├── data/                      # Dati e risorse statiche
+├── app.js                     # Configurazione Express app
 ├── server.js                  # Entry point del server
 ├── swagger.js                 # Configurazione Swagger
-├── seed-data.js              # Script per popolare il database
 ├── package.json              # Dipendenze e scripts npm
+├── LICENSE                    # Licenza MIT
+├── .env                       # Variabili d'ambiente (non committato)
 └── .env.example              # Template configurazione ambiente
 ```
 
@@ -178,13 +176,9 @@ Autenticazione tramite Bearer Token JWT nell'header `Authorization`.
 4. **Effettua un ordine**
 5. **Come ristoratore, gestisci l'ordine**
 
-### Popola Database con Dati di Esempio
+### Test Automatico
 
-```bash
-node seed-data.js
-```
-
-Questo script crea utenti, ristoranti, piatti e ordini di esempio per testare l'applicazione.
+L'applicazione usa MongoDB in-memory quando MongoDB locale non è disponibile, facilitando il testing in ambiente di sviluppo.
 
 ## Codice e Commenti
 
