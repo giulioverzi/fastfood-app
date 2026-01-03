@@ -16,37 +16,36 @@ const protect = async (req, res, next) => {
 
   // Verifica se il token è presente nell'header Authorization
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Estrae il token dall'header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verifica il token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Trova l'utente dal token (esclude la password)
-      req.user = await User.findById(decoded.id).select('-password');
-
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Utente non trovato'
-        });
-      }
-
-      next();
-    } catch (error) {
-      console.error('Errore autenticazione:', error);
-      return res.status(401).json({
-        success: false,
-        message: 'Non autorizzato, token non valido'
-      });
-    }
+    token = req.headers.authorization.split(' ')[1];
   }
 
   if (!token) {
     return res.status(401).json({
       success: false,
       message: 'Non autorizzato, nessun token fornito'
+    });
+  }
+
+  try {
+    // Verifica il token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Trova l'utente dal token (esclude la password)
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Utente non trovato'
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Errore autenticazione:', error);
+    return res.status(401).json({
+      success: false,
+      message: 'Non autorizzato, token non valido'
     });
   }
 };

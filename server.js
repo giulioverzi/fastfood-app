@@ -50,10 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Connessione al Database MongoDB
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`MongoDB connesso: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Errore connessione MongoDB: ${error.message}`);
@@ -96,6 +93,14 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/dishes', dishRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+
+// Error handling middleware per API non trovate
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Endpoint API non trovato: ${req.originalUrl}`
+  });
+});
 
 // Serve la homepage per tutte le altre route (per supportare client-side routing)
 app.get('*', (req, res) => {
