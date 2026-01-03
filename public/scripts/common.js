@@ -70,7 +70,7 @@ function isAuthenticated() {
  */
 function checkAuth(requiredRole = null) {
   if (!isAuthenticated()) {
-    window.location.href = '/login.html';
+    window.location.href = '/html/login.html';
     return false;
   }
 
@@ -94,8 +94,8 @@ function updateNavLinks() {
   if (isAuthenticated()) {
     const user = getUserData();
     const dashboardUrl = user.ruolo === 'ristoratore' 
-      ? '/dashboard-restaurant.html' 
-      : '/dashboard-customer.html';
+      ? '/html/dashboard-restaurant.html' 
+      : '/html/dashboard-customer.html';
 
     // Rimuovi link Dashboard statico se presente e aggiungi quello dinamico
     const navLinks = document.getElementById('navLinks');
@@ -114,8 +114,8 @@ function updateNavLinks() {
   } else {
     // Pulsanti Login e Registrati sempre affiancati
     authLinksContainer.innerHTML = `
-      <a href="/login.html" class="btn btn-primary">Login</a>
-      <a href="/register.html" class="btn btn-secondary">Registrati</a>
+      <a href="/html/login.html" class="btn btn-primary">Login</a>
+      <a href="/html/register.html" class="btn btn-secondary">Registrati</a>
     `;
   }
 }
@@ -334,7 +334,7 @@ function proceedToCheckout() {
   if (!isAuthenticated()) {
     showAlert('Devi effettuare il login per procedere con l\'ordine', 'error');
     setTimeout(() => {
-      window.location.href = '/login.html';
+      window.location.href = '/html/login.html';
     }, 1500);
     return;
   }
@@ -353,7 +353,7 @@ function proceedToCheckout() {
   }
 
   // Salva il carrello e vai alla pagina di checkout
-  window.location.href = '/checkout.html';
+  window.location.href = '/html/checkout.html';
 }
 
 /**

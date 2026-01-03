@@ -136,7 +136,7 @@ function applyFilters() {
  */
 function openRestaurantMenu(restaurantId) {
   // Naviga alla pagina del menu del ristorante utilizzando un parametro URL
-  window.location.href = `/restaurant.html?id=${restaurantId}`;
+  window.location.href = `/html/restaurant.html?id=${restaurantId}`;
 }
 
 // Inizializzazione della pagina ristoranti

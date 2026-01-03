@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isAuthenticated()) {
     const user = getUserData();
     const dashboardUrl = user.ruolo === 'ristoratore' 
-      ? '/dashboard-restaurant.html' 
-      : '/dashboard-customer.html';
+      ? '/html/dashboard-restaurant.html' 
+      : '/html/dashboard-customer.html';
     window.location.href = dashboardUrl;
     return;
   }
@@ -82,8 +82,8 @@ async function handleRegister(e) {
       // Redirect dopo 1 secondo alla dashboard appropriata
       setTimeout(() => {
         const dashboardUrl = response.data.ruolo === 'ristoratore' 
-          ? '/dashboard-restaurant.html' 
-          : '/dashboard-customer.html';
+          ? '/html/dashboard-restaurant.html' 
+          : '/html/dashboard-customer.html';
         window.location.href = dashboardUrl;
       }, 1000);
     } else {

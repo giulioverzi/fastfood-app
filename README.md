@@ -33,23 +33,35 @@ Fast Food App è un'applicazione frontend moderna che permette ai clienti di ord
 ```
 fastfood-app/
 ├── docs/                      # Documentazione del progetto
-│   ├── README.md             # Guida alla documentazione
-│   ├── Relazione.md          # Relazione tecnica del progetto
-│   └── Relazione.pdf         # Versione PDF della relazione
+│   └── assets/               # Risorse documentazione
+│       ├── README.md         # Guida alla documentazione
+│       └── Relazione.md      # Relazione tecnica del progetto
+├── lib/                       # Librerie e API
+│   └── api/
+│       └── docs/             # Documentazione API (Swagger)
 ├── public/                    # Applicazione frontend
-│   ├── css/                  # Fogli di stile
+│   ├── Css/                  # Fogli di stile
 │   │   ├── style.css         # Stili principali
 │   │   └── layout.css        # Layout e componenti
-│   ├── scripts/              # JavaScript modularizzato
-│   │   ├── common.js         # Funzioni condivise
-│   │   ├── app.js            # Homepage
-│   │   ├── login.js          # Gestione login
-│   │   ├── register.js       # Gestione registrazione
-│   │   ├── menu.js           # Visualizzazione menu
-│   │   ├── checkout.js       # Gestione checkout
-│   │   ├── customer.js       # Dashboard cliente
-│   │   └── restaurant-dashboard.js  # Dashboard ristoratore
-│   └── *.html                # Pagine HTML
+│   ├── html/                 # Pagine HTML
+│   │   ├── index.html        # Homepage
+│   │   ├── login.html        # Pagina login
+│   │   ├── register.html     # Pagina registrazione
+│   │   ├── menu.html         # Lista ristoranti
+│   │   ├── restaurant.html   # Dettaglio ristorante
+│   │   ├── checkout.html     # Checkout ordine
+│   │   ├── dashboard-customer.html     # Dashboard cliente
+│   │   └── dashboard-restaurant.html   # Dashboard ristoratore
+│   ├── images/               # Immagini statiche
+│   └── scripts/              # JavaScript modularizzato
+│       ├── common.js         # Funzioni condivise
+│       ├── app.js            # Homepage
+│       ├── login.js          # Gestione login
+│       ├── register.js       # Gestione registrazione
+│       ├── menu.js           # Visualizzazione menu
+│       ├── checkout.js       # Gestione checkout
+│       ├── customer.js       # Dashboard cliente
+│       └── restaurant-dashboard.js  # Dashboard ristoratore
 ├── package.json              # Dipendenze e scripts npm
 ├── LICENSE                   # Licenza MIT
 ├── .gitignore               # File ignorati da git

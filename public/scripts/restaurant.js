@@ -33,14 +33,14 @@ async function loadRestaurant(restaurantId) {
     } else {
       showAlert('Ristorante non trovato', 'error');
       setTimeout(() => {
-        window.location.href = '/menu.html';
+        window.location.href = '/html/menu.html';
       }, 2000);
     }
   } catch (error) {
     console.error('Errore nel caricamento del ristorante:', error);
     showAlert('Errore nel caricamento del ristorante. Riprova più tardi.', 'error');
     setTimeout(() => {
-      window.location.href = '/menu.html';
+      window.location.href = '/html/menu.html';
     }, 2000);
   }
 }
@@ -212,7 +212,7 @@ function displayDishes(dishes) {
                   <i class="fas fa-cart-plus"></i> Aggiungi
                 </button>` : 
                 !isAuthenticated() ?
-                `<a href="/login.html" class="btn btn-primary">
+                `<a href="/html/login.html" class="btn btn-primary">
                   <i class="fas fa-sign-in-alt"></i> Login
                 </a>` :
                 `<button class="btn btn-secondary" disabled>
@@ -384,7 +384,7 @@ function showDishDetails(dishId) {
               <i class="fas fa-cart-plus"></i> Aggiungi al Carrello
             </button>` : 
             !isAuthenticated() ?
-            `<a href="/login.html" class="btn btn-primary btn-full-width">
+            `<a href="/html/login.html" class="btn btn-primary btn-full-width">
               <i class="fas fa-sign-in-alt"></i> Login per ordinare
             </a>` :
             `<button class="btn btn-secondary btn-full-width" disabled>
@@ -444,7 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!restaurantId) {
     showAlert('ID ristorante non valido', 'error');
     setTimeout(() => {
-      window.location.href = '/menu.html';
+      window.location.href = '/html/menu.html';
     }, 2000);
     return;
   }

@@ -62,7 +62,7 @@ async function loadRecommendedRestaurants() {
  */
 function handleRestaurantClick(restaurantId) {
   // Naviga alla pagina del menu del ristorante
-  window.location.href = `/restaurant.html?id=${restaurantId}`;
+  window.location.href = `/html/restaurant.html?id=${restaurantId}`;
 }
 
 // Inizializzazione della homepage
