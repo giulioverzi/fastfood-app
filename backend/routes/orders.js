@@ -172,7 +172,7 @@ router.post('/', [
       piattiConPrezzo.push({
         piatto: piatto._id,
         quantita: item.quantita,
-        prezzo: piatto.prezzo
+        prezzoCentesimi: piatto.prezzoCentesimi
       });
     }
 

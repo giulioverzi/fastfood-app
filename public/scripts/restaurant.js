@@ -202,7 +202,7 @@ function displayDishes(dishes) {
             ${badges.join(' ')}
           </div>
           <div class="menu-item-footer">
-            <span class="menu-item-price">${formatPrice(dish.prezzo)}</span>
+            <span class="menu-item-price">${formatPrice(dish.prezzoCentesimi)}</span>
             <div class="menu-item-actions">
               <button class="btn btn-secondary btn-sm" onclick="showDishDetails('${dishId}')">
                 <i class="fas fa-info-circle"></i> Dettagli
@@ -271,7 +271,8 @@ function applyFilters() {
 
   // Filtro prezzo massimo
   if (!isNaN(priceFilter) && priceFilter > 0) {
-    filteredDishes = filteredDishes.filter(dish => dish.prezzo <= priceFilter);
+    const priceFilterCentesimi = euroToCentesimi(priceFilter);
+    filteredDishes = filteredDishes.filter(dish => dish.prezzoCentesimi <= priceFilterCentesimi);
   }
 
   // Filtro vegetariano
@@ -309,7 +310,7 @@ function handleAddToCart(dishId) {
 
   const dishData = {
     nome: dish.nome,
-    prezzo: dish.prezzo,
+    prezzoCentesimi: dish.prezzoCentesimi,
     ristorante: currentRestaurant._id,
     ristoranteNome: currentRestaurant.nome,
     immagine: dish.immagine
@@ -345,7 +346,7 @@ function showDishDetails(dishId) {
       
       <div class="dish-detail-info">
         <div class="dish-detail-price">
-          ${formatPrice(dish.prezzo)}
+          ${formatPrice(dish.prezzoCentesimi)}
         </div>
         
         ${badges.length > 0 ? `<div style="margin: 1rem 0;">${badges.join(' ')}</div>` : ''}

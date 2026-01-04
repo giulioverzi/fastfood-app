@@ -9,8 +9,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
 
 // Import routes
 const authRoutes = require('./backend/routes/auth');
@@ -18,6 +18,11 @@ const restaurantRoutes = require('./backend/routes/restaurants');
 const dishRoutes = require('./backend/routes/dishes');
 const orderRoutes = require('./backend/routes/orders');
 const userRoutes = require('./backend/routes/users');
+
+// Import models
+const Restaurant = require('./backend/models/Restaurant');
+const Dish = require('./backend/models/Dish');
+const User = require('./backend/models/User');
 
 // Import middleware
 const { 
@@ -52,9 +57,112 @@ const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`MongoDB connesso: ${conn.connection.host}`);
+    
+    // Carica dati iniziali da meal.json se il database è vuoto
+    await caricaDatiIniziali();
   } catch (error) {
     console.error(`Errore connessione MongoDB: ${error.message}`);
     process.exit(1);
+  }
+};
+
+/**
+ * Funzione per caricare i dati iniziali da meal.json
+ * Viene eseguita solo se il database è vuoto
+ */
+const caricaDatiIniziali = async () => {
+  try {
+    // Verifica se esistono già ristoranti nel database
+    const conteggioRistoranti = await Restaurant.countDocuments();
+    
+    if (conteggioRistoranti > 0) {
+      console.log('Database già popolato. Salto il caricamento dei dati iniziali.');
+      return;
+    }
+    
+    console.log('Database vuoto. Caricamento dati iniziali da meal.json...');
+    
+    // Leggi il file meal.json
+    const mealDataPath = path.join(__dirname, 'data', 'meal.json');
+    
+    if (!fs.existsSync(mealDataPath)) {
+      console.log('File meal.json non trovato. Salto il caricamento dei dati iniziali.');
+      return;
+    }
+    
+    const mealData = JSON.parse(fs.readFileSync(mealDataPath, 'utf8'));
+    
+    // Crea un utente ristoratore di default per i ristoranti
+    let utenteRistoratore = await User.findOne({ email: 'ristoratore@example.com' });
+    
+    if (!utenteRistoratore) {
+      utenteRistoratore = await User.create({
+        nome: 'Admin',
+        cognome: 'Ristorante',
+        email: 'ristoratore@example.com',
+        password: 'password123',
+        ruolo: 'ristoratore',
+        telefono: '3331234567',
+        indirizzo: {
+          via: 'Via Example 1',
+          citta: 'Milano',
+          cap: '20100'
+        }
+      });
+      console.log('Utente ristoratore di default creato');
+    }
+    
+    // Carica i ristoranti
+    const mappaRistoranti = new Map();
+    
+    for (const ristorante of mealData.ristoranti) {
+      const nuovoRistorante = await Restaurant.create({
+        nome: ristorante.nome,
+        descrizione: ristorante.descrizione,
+        indirizzo: ristorante.indirizzo,
+        telefono: ristorante.telefono,
+        email: ristorante.email,
+        categoria: ristorante.categoria,
+        orari: ristorante.orari,
+        proprietario: utenteRistoratore._id
+      });
+      
+      mappaRistoranti.set(ristorante.nome, nuovoRistorante._id);
+      console.log(`Ristorante creato: ${ristorante.nome}`);
+    }
+    
+    // Carica i piatti
+    for (const piatto of mealData.piatti) {
+      const ristoranteId = mappaRistoranti.get(piatto.ristorante);
+      
+      if (!ristoranteId) {
+        console.log(`Ristorante non trovato per il piatto: ${piatto.nome}`);
+        continue;
+      }
+      
+      await Dish.create({
+        nome: piatto.nome,
+        descrizione: piatto.descrizione,
+        prezzoCentesimi: piatto.prezzoCentesimi,
+        categoria: piatto.categoria,
+        ristorante: ristoranteId,
+        ingredienti: piatto.ingredienti,
+        allergeni: piatto.allergeni,
+        vegetariano: piatto.vegetariano,
+        vegano: piatto.vegano,
+        disponibile: piatto.disponibile
+      });
+      
+      console.log(`Piatto creato: ${piatto.nome}`);
+    }
+    
+    console.log('Dati iniziali caricati con successo!');
+    console.log('Credenziali utente ristoratore:');
+    console.log('  Email: ristoratore@example.com');
+    console.log('  Password: password123');
+    
+  } catch (error) {
+    console.error('Errore durante il caricamento dei dati iniziali:', error);
   }
 };
 
@@ -63,7 +171,7 @@ connectDB();
 
 // Swagger Documentation (se il file esiste)
 try {
-  const swaggerDocument = YAML.load('./lib/api/docs/swagger.yaml');
+  const swaggerDocument = require('./lib/api/docs/swagger.json');
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   console.log('Swagger UI disponibile su /api-docs');
 } catch (error) {

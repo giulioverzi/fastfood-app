@@ -51,6 +51,55 @@ fastfood-app/
 │   ├── models/                # Modelli Mongoose
 │   │   ├── User.js           # Modello utente
 │   │   ├── Restaurant.js     # Modello ristorante
+│   │   ├── Dish.js           # Modello piatto (prezzi in centesimi)
+│   │   └── Order.js          # Modello ordine (prezzi in centesimi)
+│   └── routes/                # Route API REST
+│       ├── auth.js           # Autenticazione e registrazione
+│       ├── restaurants.js    # CRUD ristoranti
+│       ├── dishes.js         # CRUD piatti
+│       ├── orders.js         # CRUD ordini
+│       └── users.js          # Gestione profilo utente
+├── data/                      # Dati iniziali
+│   └── meal.json             # Dati di esempio per popolamento DB
+├── lib/                       # Librerie e API
+│   └── api/
+│       └── docs/             # Documentazione API
+│           ├── swagger.json  # Specifica OpenAPI/Swagger (JSON)
+│           └── swagger.yaml  # Specifica OpenAPI/Swagger (YAML)
+├── public/                    # Applicazione frontend
+│   ├── Css/                  # Fogli di stile
+│   │   ├── style.css         # Stili principali
+│   │   └── layout.css        # Layout e componenti
+│   ├── html/                 # Pagine HTML
+│   │   ├── index.html        # Homepage
+│   │   ├── login.html        # Pagina login
+│   │   ├── register.html     # Pagina registrazione
+│   │   ├── menu.html         # Lista ristoranti
+│   │   ├── restaurant.html   # Dettaglio ristorante
+│   │   ├── checkout.html     # Checkout ordine
+│   │   ├── dashboard-customer.html     # Dashboard cliente
+│   │   └── dashboard-restaurant.html   # Dashboard ristoratore
+│   ├── images/               # Immagini statiche
+│   └── scripts/              # JavaScript modularizzato
+│       ├── common.js         # Funzioni condivise (con commenti localStorage)
+│       ├── app.js            # Homepage
+│       ├── login.js          # Gestione login
+│       ├── register.js       # Gestione registrazione
+│       ├── menu.js           # Visualizzazione menu
+│       ├── checkout.js       # Gestione checkout
+│       ├── customer.js       # Dashboard cliente
+│       ├── restaurant.js     # Visualizzazione ristorante
+│       └── restaurant-dashboard.js  # Dashboard ristoratore
+├── server.js                  # Entry point (gestisce file statici e carica dati iniziali)
+├── package.json              # Dipendenze e scripts npm
+├── .env.example              # Template variabili ambiente
+├── .gitignore               # File ignorati da git
+├── Relazione.md             # Relazione tecnica completa (A.A. 2025/2026)
+└── README.md                # Questo file
+```
+│   ├── models/                # Modelli Mongoose
+│   │   ├── User.js           # Modello utente
+│   │   ├── Restaurant.js     # Modello ristorante
 │   │   ├── Dish.js           # Modello piatto
 │   │   └── Order.js          # Modello ordine
 │   └── routes/                # Route API REST
@@ -100,7 +149,7 @@ fastfood-app/
 
 ## Avvio Rapido
 
-Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Relazione Tecnica](./docs/assets/Relazione.md).
+Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Relazione Tecnica](./Relazione.md).
 
 ### Prerequisiti
 
@@ -168,9 +217,18 @@ Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Rel
 
 ### Scripts NPM Disponibili
 
-- `npm start` - Avvia il server in modalità produzione
+- `npm start` - Avvia il server in modalità produzione (gestisce file statici con Express)
 - `npm run dev` - Avvia il server in modalità sviluppo con nodemon (auto-restart)
-- `npm run frontend` - Avvia solo il frontend statico con http-server (deprecato, usare npm start)
+
+**Nota:** I file statici sono serviti direttamente da Express. Non è più necessario usare http-server.
+
+### Caratteristiche Implementate (A.A. 2025/2026)
+
+- **Caricamento Dati Iniziali**: Il server carica automaticamente i dati da `data/meal.json` al primo avvio se il database è vuoto
+- **Gestione Prezzi**: Tutti i prezzi sono gestiti come numeri interi in centesimi per evitare problemi di arrotondamento
+- **LocalStorage**: Implementato con commenti didattici dettagliati per spiegare la persistenza della sessione
+- **Documentazione API**: Disponibile in formato JSON (`swagger.json`) per migliore portabilità
+- **Stati Ordine**: Implementato il flusso completo: ordinato → in preparazione → pronto → consegnato
 
 ## Funzionalità
 
@@ -216,13 +274,15 @@ Per istruzioni dettagliate sull'installazione e configurazione, consulta la [Rel
 ## Documentazione
 
 ### Relazione Tecnica
-La documentazione completa del progetto è disponibile nella [Relazione Tecnica](./docs/assets/Relazione.md), che include:
+La documentazione completa del progetto è disponibile nel file [Relazione.md](./Relazione.md) nella root del progetto, che include:
 - Analisi dei requisiti
 - Architettura del sistema a tre livelli
 - Modello dei dati MongoDB
 - Dettagli implementazione backend e frontend
 - Sicurezza e autenticazione
 - Testing e validazione
+
+**Anno Accademico:** 2025/2026
 
 ### API Documentation
 - **Swagger UI**: Documentazione interattiva disponibile su `/api-docs` quando il server è in esecuzione
@@ -329,7 +389,7 @@ MIT License - Vedi file LICENSE per dettagli
 ## Link Utili
 
 - [Repository GitHub](https://github.com/marcoportante/fastfood-app)
-- [Relazione Tecnica](./docs/assets/Relazione.md)
+- [Relazione Tecnica](./Relazione.md)
 - [Documentazione API](http://localhost:5000/api-docs) (quando il server è in esecuzione)
 
 ---

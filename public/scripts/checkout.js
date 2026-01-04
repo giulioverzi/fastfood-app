@@ -44,7 +44,7 @@ function loadOrderSummary() {
   }
 
   // Calcola il totale
-  const totale = cart.reduce((sum, item) => sum + (item.prezzo * item.quantita), 0);
+  const totaleCentesimi = cart.reduce((sum, item) => sum + (item.prezzoCentesimi * item.quantita), 0);
 
   // Visualizza il riepilogo
   summaryContainer.innerHTML = `
@@ -57,7 +57,7 @@ function loadOrderSummary() {
             <p class="order-item-quantity">Quantità: ${item.quantita}</p>
           </div>
           <div class="order-item-price">
-            ${formatPrice(item.prezzo * item.quantita)}
+            ${formatPrice(item.prezzoCentesimi * item.quantita)}
           </div>
         </div>
       `).join('')}
@@ -67,7 +67,7 @@ function loadOrderSummary() {
     </div>
   `;
 
-  totalPriceElement.textContent = formatPrice(totale);
+  totalPriceElement.textContent = formatPrice(totaleCentesimi);
 }
 
 /**
@@ -131,7 +131,7 @@ async function handleCheckoutSubmit(e) {
     piatti: cart.map(item => ({
       piatto: item.piatto,
       quantita: item.quantita,
-      prezzo: item.prezzo
+      prezzoCentesimi: item.prezzoCentesimi
     })),
     modalitaConsegna: modalitaConsegna,
     note: note

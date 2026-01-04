@@ -343,11 +343,11 @@ function renderActiveOrders() {
 
       <div class="order-total">
         <span>Totale:</span>
-        <span>${formatPrice(order.totale)}</span>
+        <span>${formatPrice(order.totaleCentesimi)}</span>
       </div>
 
       <div class="order-delivery">
-        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
+        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? 'Consegna' : 'Ritiro'}
         ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
           `<br><strong>Indirizzo:</strong> ${escapeHtml(order.indirizzoConsegna.via)}, ${escapeHtml(order.indirizzoConsegna.citta)}` : ''}
       </div>
@@ -409,11 +409,11 @@ function renderOrderHistory() {
 
       <div class="order-total">
         <span>Totale:</span>
-        <span>${formatPrice(order.totale)}</span>
+        <span>${formatPrice(order.totaleCentesimi)}</span>
       </div>
 
       <div class="order-delivery">
-        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
+        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? 'Consegna' : 'Ritiro'}
         ${order.dataCompletamento ? `<br><strong>Completato:</strong> ${formatDate(order.dataCompletamento)}` : ''}
       </div>
     </div>

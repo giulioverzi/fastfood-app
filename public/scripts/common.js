@@ -23,36 +23,54 @@ function escapeHtml(unsafe) {
 
 /**
  * Ottiene il token JWT dal localStorage
+ * Questo permette di mantenere la sessione utente anche dopo il refresh della pagina
  * @returns {string|null} Il token JWT o null se non presente
  */
 function getToken() {
+  // localStorage.getItem recupera il token JWT salvato precedentemente
+  // Questo è necessario per mantenere l'utente autenticato tra le diverse pagine e dopo il refresh
   return localStorage.getItem('token');
 }
 
 /**
  * Ottiene i dati dell'utente dal localStorage
+ * Permette di accedere alle informazioni utente (nome, ruolo, etc.) senza fare chiamate API
  * @returns {object|null} I dati dell'utente o null se non presente
  */
 function getUserData() {
+  // localStorage.getItem recupera i dati utente salvati come stringa JSON
+  // Questi dati persistono anche dopo il refresh della pagina
   const userData = localStorage.getItem('user');
   return userData ? JSON.parse(userData) : null;
 }
 
 /**
  * Salva il token e i dati utente nel localStorage
- * @param {string} token - Il token JWT
- * @param {object} user - I dati dell'utente
+ * Questo permette di mantenere l'autenticazione tra le pagine e dopo il refresh del browser
+ * @param {string} token - Il token JWT ricevuto dal server dopo login/registrazione
+ * @param {object} user - I dati dell'utente (nome, email, ruolo, etc.)
  */
 function saveAuthData(token, user) {
+  // localStorage.setItem salva il token JWT nel browser
+  // Questo permette la persistenza della sessione tra i refresh della pagina
   localStorage.setItem('token', token);
+  
+  // localStorage.setItem salva i dati utente come stringa JSON nel browser
+  // Permette di accedere rapidamente alle informazioni utente senza chiamate API
   localStorage.setItem('user', JSON.stringify(user));
 }
 
 /**
  * Rimuove i dati di autenticazione dal localStorage
+ * Utilizzato durante il logout per cancellare la sessione utente
  */
 function clearAuthData() {
+  // localStorage.removeItem rimuove il token JWT salvato
+  // Questo invalida la sessione utente nel browser
   localStorage.removeItem('token');
+  
+  // localStorage.removeItem rimuove i dati utente salvati
+  // L'utente dovrà effettuare nuovamente il login per accedere
   localStorage.removeItem('user');
 }
 
@@ -140,18 +158,24 @@ function updateCartIcon() {
 
 /**
  * Ottiene il carrello dal localStorage
+ * Il carrello persiste anche dopo il refresh della pagina
  * @returns {Array} Array di articoli nel carrello
  */
 function getCart() {
+  // localStorage.getItem recupera il carrello salvato come stringa JSON
+  // Questo permette di mantenere gli articoli nel carrello tra i refresh
   const cart = localStorage.getItem('cart');
   return cart ? JSON.parse(cart) : [];
 }
 
 /**
  * Salva il carrello nel localStorage
+ * Permette di mantenere il carrello anche dopo il refresh della pagina
  * @param {Array} cart - Array di articoli del carrello
  */
 function saveCart(cart) {
+  // localStorage.setItem salva il carrello come stringa JSON nel browser
+  // Gli articoli nel carrello persistono tra i refresh della pagina
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCartIcon();
 }
@@ -177,6 +201,8 @@ function addToCart(dishId, dishData) {
     }
     
     // Svuota il carrello precedente e ottieni il nuovo carrello vuoto
+    // localStorage.removeItem cancella il carrello precedente dal browser
+    // Necessario perché non si possono ordinare piatti da ristoranti diversi
     localStorage.removeItem('cart');
     cart = [];
   }
@@ -189,7 +215,7 @@ function addToCart(dishId, dishData) {
     cart.push({
       piatto: dishId,
       nome: dishData.nome,
-      prezzo: dishData.prezzo,
+      prezzoCentesimi: dishData.prezzoCentesimi,
       ristorante: dishData.ristorante,
       ristoranteNome: dishData.ristoranteNome,
       immagine: dishData.immagine,
@@ -232,8 +258,11 @@ function updateCartQuantity(dishId, newQuantity) {
 
 /**
  * Svuota completamente il carrello
+ * Rimuove tutti gli articoli dal carrello e dal localStorage
  */
 function clearCart() {
+  // localStorage.removeItem cancella il carrello dal browser
+  // Utilizzato dopo aver completato un ordine o per svuotare manualmente
   localStorage.removeItem('cart');
   updateCartIcon();
 }
@@ -288,7 +317,7 @@ function renderCart() {
     return;
   }
 
-  const totale = cart.reduce((sum, item) => sum + (item.prezzo * item.quantita), 0);
+  const totaleCentesimi = cart.reduce((sum, item) => sum + (item.prezzoCentesimi * item.quantita), 0);
 
   cartContent.innerHTML = cart.map(item => {
     const nome = escapeHtml(item.nome);
@@ -303,7 +332,7 @@ function renderCart() {
       <div class="cart-item-details">
         <h4>${nome}</h4>
         <p class="cart-item-restaurant">${ristoranteNome}</p>
-        <p class="cart-item-price">${formatPrice(item.prezzo)}</p>
+        <p class="cart-item-price">${formatPrice(item.prezzoCentesimi)}</p>
       </div>
       <div class="cart-item-controls">
         <button onclick="updateCartQuantity('${piattoId}', ${parseInt(item.quantita - 1)})" class="btn-quantity">-</button>
@@ -319,7 +348,7 @@ function renderCart() {
 
   cartFooter.innerHTML = `
     <div class="cart-total">
-      <strong>Totale:</strong> ${formatPrice(totale)}
+      <strong>Totale:</strong> ${formatPrice(totaleCentesimi)}
     </div>
     <button onclick="proceedToCheckout()" class="btn btn-primary btn-full-width">
       <i class="fas fa-credit-card"></i> Procedi all'ordine
@@ -455,14 +484,35 @@ function formatDate(date) {
 
 /**
  * Formatta un prezzo in euro
- * @param {number} price - Il prezzo da formattare
- * @returns {string} Il prezzo formattato
+ * Converte da centesimi a euro e formatta in valuta italiana
+ * @param {number} prezzoCentesimi - Il prezzo in centesimi da formattare
+ * @returns {string} Il prezzo formattato in euro
  */
-function formatPrice(price) {
+function formatPrice(prezzoCentesimi) {
+  // Converte da centesimi a euro dividendo per 100
+  const prezzoEuro = prezzoCentesimi / 100;
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
     currency: 'EUR'
-  }).format(price);
+  }).format(prezzoEuro);
+}
+
+/**
+ * Converte un prezzo da euro a centesimi
+ * @param {number} prezzoEuro - Il prezzo in euro
+ * @returns {number} Il prezzo in centesimi
+ */
+function euroToCentesimi(prezzoEuro) {
+  return Math.round(prezzoEuro * 100);
+}
+
+/**
+ * Converte un prezzo da centesimi a euro
+ * @param {number} prezzoCentesimi - Il prezzo in centesimi
+ * @returns {number} Il prezzo in euro
+ */
+function centesimiToEuro(prezzoCentesimi) {
+  return prezzoCentesimi / 100;
 }
 
 /**
