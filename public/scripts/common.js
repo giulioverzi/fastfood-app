@@ -215,7 +215,7 @@ function addToCart(dishId, dishData) {
     cart.push({
       piatto: dishId,
       nome: dishData.nome,
-      prezzo: dishData.prezzo,
+      prezzoCentesimi: dishData.prezzoCentesimi,
       ristorante: dishData.ristorante,
       ristoranteNome: dishData.ristoranteNome,
       immagine: dishData.immagine,
@@ -317,7 +317,7 @@ function renderCart() {
     return;
   }
 
-  const totale = cart.reduce((sum, item) => sum + (item.prezzo * item.quantita), 0);
+  const totaleCentesimi = cart.reduce((sum, item) => sum + (item.prezzoCentesimi * item.quantita), 0);
 
   cartContent.innerHTML = cart.map(item => {
     const nome = escapeHtml(item.nome);
@@ -332,7 +332,7 @@ function renderCart() {
       <div class="cart-item-details">
         <h4>${nome}</h4>
         <p class="cart-item-restaurant">${ristoranteNome}</p>
-        <p class="cart-item-price">${formatPrice(item.prezzo)}</p>
+        <p class="cart-item-price">${formatPrice(item.prezzoCentesimi)}</p>
       </div>
       <div class="cart-item-controls">
         <button onclick="updateCartQuantity('${piattoId}', ${parseInt(item.quantita - 1)})" class="btn-quantity">-</button>
@@ -348,7 +348,7 @@ function renderCart() {
 
   cartFooter.innerHTML = `
     <div class="cart-total">
-      <strong>Totale:</strong> ${formatPrice(totale)}
+      <strong>Totale:</strong> ${formatPrice(totaleCentesimi)}
     </div>
     <button onclick="proceedToCheckout()" class="btn btn-primary btn-full-width">
       <i class="fas fa-credit-card"></i> Procedi all'ordine
@@ -484,14 +484,17 @@ function formatDate(date) {
 
 /**
  * Formatta un prezzo in euro
- * @param {number} price - Il prezzo da formattare
- * @returns {string} Il prezzo formattato
+ * Converte da centesimi a euro e formatta in valuta italiana
+ * @param {number} prezzoCentesimi - Il prezzo in centesimi da formattare
+ * @returns {string} Il prezzo formattato in euro
  */
-function formatPrice(price) {
+function formatPrice(prezzoCentesimi) {
+  // Converte da centesimi a euro dividendo per 100
+  const prezzoEuro = prezzoCentesimi / 100;
   return new Intl.NumberFormat('it-IT', {
     style: 'currency',
     currency: 'EUR'
-  }).format(price);
+  }).format(prezzoEuro);
 }
 
 /**

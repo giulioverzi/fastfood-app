@@ -287,7 +287,7 @@ function renderOrders() {
 
       <div class="order-total">
         <span>Totale:</span>
-        <span>${formatPrice(order.totale)}</span>
+        <span>${formatPrice(order.totaleCentesimi)}</span>
       </div>
 
       <div style="margin-top: 1rem;">
@@ -828,8 +828,8 @@ function calculateStatistics(orders) {
   const totalRevenue = orders
     .filter(order => ['completato', 'consegnato'].includes(order.stato))
     .reduce((sum, order) => {
-      const totale = parseFloat(order.totale) || 0;
-      return sum + totale;
+      const totaleCentesimi = parseInt(order.totaleCentesimi) || 0;
+      return sum + totaleCentesimi;
     }, 0);
   
   // Conteggio piatti ordinati
