@@ -271,7 +271,8 @@ function applyFilters() {
 
   // Filtro prezzo massimo
   if (!isNaN(priceFilter) && priceFilter > 0) {
-    filteredDishes = filteredDishes.filter(dish => dish.prezzoCentesimi <= priceFilter * 100);
+    const priceFilterCentesimi = euroToCentesimi(priceFilter);
+    filteredDishes = filteredDishes.filter(dish => dish.prezzoCentesimi <= priceFilterCentesimi);
   }
 
   // Filtro vegetariano

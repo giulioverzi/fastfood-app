@@ -106,7 +106,7 @@ components:
           type: string
         descrizione:
           type: string
-        prezzo:
+        prezzoCentesimi:
           type: number
         categoria:
           type: string
@@ -148,9 +148,9 @@ components:
                 type: string
               quantita:
                 type: integer
-              prezzo:
+              prezzoCentesimi:
                 type: number
-        totale:
+        totaleCentesimi:
           type: number
         stato:
           type: string

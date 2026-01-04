@@ -828,7 +828,7 @@ function calculateStatistics(orders) {
   const totalRevenue = orders
     .filter(order => ['completato', 'consegnato'].includes(order.stato))
     .reduce((sum, order) => {
-      const totaleCentesimi = parseInt(order.totaleCentesimi) || 0;
+      const totaleCentesimi = Number(order.totaleCentesimi) || 0;
       return sum + totaleCentesimi;
     }, 0);
   

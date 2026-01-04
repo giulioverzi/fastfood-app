@@ -498,6 +498,24 @@ function formatPrice(prezzoCentesimi) {
 }
 
 /**
+ * Converte un prezzo da euro a centesimi
+ * @param {number} prezzoEuro - Il prezzo in euro
+ * @returns {number} Il prezzo in centesimi
+ */
+function euroToCentesimi(prezzoEuro) {
+  return Math.round(prezzoEuro * 100);
+}
+
+/**
+ * Converte un prezzo da centesimi a euro
+ * @param {number} prezzoCentesimi - Il prezzo in centesimi
+ * @returns {number} Il prezzo in euro
+ */
+function centesimiToEuro(prezzoCentesimi) {
+  return prezzoCentesimi / 100;
+}
+
+/**
  * Mostra/nasconde un elemento
  * @param {string} elementId - L'ID dell'elemento
  * @param {boolean} show - true per mostrare, false per nascondere

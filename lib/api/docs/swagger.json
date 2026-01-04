@@ -157,7 +157,7 @@
           "descrizione": {
             "type": "string"
           },
-          "prezzo": {
+          "prezzoCentesimi": {
             "type": "number"
           },
           "categoria": {
@@ -225,13 +225,13 @@
                 "quantita": {
                   "type": "integer"
                 },
-                "prezzo": {
+                "prezzoCentesimi": {
                   "type": "number"
                 }
               }
             }
           },
-          "totale": {
+          "totaleCentesimi": {
             "type": "number"
           },
           "stato": {
