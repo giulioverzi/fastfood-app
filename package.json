@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "frontend": "http-server public -p 3000 -o /html/index.html"
+    "dev": "nodemon server.js"
   },
   "author": "marcoportante",
   "license": "MIT",

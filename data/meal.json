@@ -1,0 +1,144 @@
+{
+  "ristoranti": [
+    {
+      "nome": "Burger Palace",
+      "descrizione": "I migliori hamburger della città",
+      "indirizzo": {
+        "via": "Via Roma 10",
+        "citta": "Milano",
+        "cap": "20100"
+      },
+      "telefono": "0212345678",
+      "email": "info@burgerpalace.it",
+      "categoria": "Fast Food",
+      "orari": {
+        "lunedi": "10:00-22:00",
+        "martedi": "10:00-22:00",
+        "mercoledi": "10:00-22:00",
+        "giovedi": "10:00-22:00",
+        "venerdi": "10:00-23:00",
+        "sabato": "10:00-23:00",
+        "domenica": "11:00-22:00"
+      }
+    },
+    {
+      "nome": "Pizza Express",
+      "descrizione": "Pizza napoletana autentica",
+      "indirizzo": {
+        "via": "Corso Vittorio Emanuele 25",
+        "citta": "Milano",
+        "cap": "20122"
+      },
+      "telefono": "0298765432",
+      "email": "contatti@pizzaexpress.it",
+      "categoria": "Pizzeria",
+      "orari": {
+        "lunedi": "11:00-23:00",
+        "martedi": "11:00-23:00",
+        "mercoledi": "11:00-23:00",
+        "giovedi": "11:00-23:00",
+        "venerdi": "11:00-00:00",
+        "sabato": "11:00-00:00",
+        "domenica": "11:00-23:00"
+      }
+    }
+  ],
+  "piatti": [
+    {
+      "nome": "Hamburger Classico",
+      "descrizione": "Hamburger di manzo con lattuga, pomodoro e salse",
+      "prezzoCentesimi": 850,
+      "categoria": "panino",
+      "ristorante": "Burger Palace",
+      "ingredienti": ["pane", "carne di manzo", "lattuga", "pomodoro", "cipolla", "salsa"],
+      "allergeni": ["glutine", "senape"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Hamburger Vegetariano",
+      "descrizione": "Hamburger di verdure grigliate",
+      "prezzoCentesimi": 750,
+      "categoria": "panino",
+      "ristorante": "Burger Palace",
+      "ingredienti": ["pane", "verdure grigliate", "lattuga", "pomodoro"],
+      "allergeni": ["glutine"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Patatine Fritte",
+      "descrizione": "Patatine fritte croccanti",
+      "prezzoCentesimi": 300,
+      "categoria": "contorno",
+      "ristorante": "Burger Palace",
+      "ingredienti": ["patate", "olio", "sale"],
+      "allergeni": [],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Coca Cola",
+      "descrizione": "Bevanda gassata",
+      "prezzoCentesimi": 250,
+      "categoria": "bevanda",
+      "ristorante": "Burger Palace",
+      "ingredienti": ["acqua", "zucchero", "anidride carbonica"],
+      "allergeni": [],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Pizza Margherita",
+      "descrizione": "Pomodoro, mozzarella e basilico",
+      "prezzoCentesimi": 700,
+      "categoria": "pizza",
+      "ristorante": "Pizza Express",
+      "ingredienti": ["farina", "pomodoro", "mozzarella", "basilico", "olio"],
+      "allergeni": ["glutine", "lattosio"],
+      "vegetariano": true,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Pizza Diavola",
+      "descrizione": "Pomodoro, mozzarella e salame piccante",
+      "prezzoCentesimi": 850,
+      "categoria": "pizza",
+      "ristorante": "Pizza Express",
+      "ingredienti": ["farina", "pomodoro", "mozzarella", "salame piccante"],
+      "allergeni": ["glutine", "lattosio"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Pizza Vegana",
+      "descrizione": "Pomodoro, verdure grigliate",
+      "prezzoCentesimi": 800,
+      "categoria": "pizza",
+      "ristorante": "Pizza Express",
+      "ingredienti": ["farina", "pomodoro", "verdure grigliate", "olio"],
+      "allergeni": ["glutine"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Birra Artigianale",
+      "descrizione": "Birra locale",
+      "prezzoCentesimi": 450,
+      "categoria": "bevanda",
+      "ristorante": "Pizza Express",
+      "ingredienti": ["acqua", "malto", "luppolo"],
+      "allergeni": ["glutine"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    }
+  ]
+}

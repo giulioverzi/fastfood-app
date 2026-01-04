@@ -28,16 +28,24 @@ const OrderSchema = new mongoose.Schema({
       required: true,
       min: [1, 'La quantità deve essere almeno 1']
     },
-    prezzo: {
+    prezzoCentesimi: {
       type: Number,
       required: true,
-      min: [0, 'Il prezzo non può essere negativo']
+      min: [0, 'Il prezzo non può essere negativo'],
+      validate: {
+        validator: Number.isInteger,
+        message: 'Il prezzo deve essere un numero intero (centesimi)'
+      }
     }
   }],
-  totale: {
+  totaleCentesimi: {
     type: Number,
     required: [true, 'Il totale è obbligatorio'],
-    min: [0, 'Il totale non può essere negativo']
+    min: [0, 'Il totale non può essere negativo'],
+    validate: {
+      validator: Number.isInteger,
+      message: 'Il totale deve essere un numero intero (centesimi)'
+    }
   },
   stato: {
     type: String,
@@ -87,8 +95,8 @@ OrderSchema.index({ createdAt: -1 });
  */
 OrderSchema.pre('save', function(next) {
   if (this.piatti && this.piatti.length > 0) {
-    this.totale = this.piatti.reduce((sum, item) => {
-      return sum + (item.prezzo * item.quantita);
+    this.totaleCentesimi = this.piatti.reduce((sum, item) => {
+      return sum + (item.prezzoCentesimi * item.quantita);
     }, 0);
   }
   next();

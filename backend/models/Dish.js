@@ -16,10 +16,14 @@ const DishSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
-  prezzo: {
+  prezzoCentesimi: {
     type: Number,
     required: [true, 'Il prezzo è obbligatorio'],
-    min: [0, 'Il prezzo non può essere negativo']
+    min: [0, 'Il prezzo non può essere negativo'],
+    validate: {
+      validator: Number.isInteger,
+      message: 'Il prezzo deve essere un numero intero (centesimi)'
+    }
   },
   categoria: {
     type: String,

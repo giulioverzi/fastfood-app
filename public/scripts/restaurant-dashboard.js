@@ -291,7 +291,7 @@ function renderOrders() {
       </div>
 
       <div style="margin-top: 1rem;">
-        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? '🚚 Consegna' : '🏪 Ritiro'}
+        <strong>Modalità:</strong> ${order.modalitaConsegna === 'consegna' ? 'Consegna' : 'Ritiro'}
         ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
           `<br><strong>Indirizzo:</strong> ${order.indirizzoConsegna.via}, ${order.indirizzoConsegna.citta}` : ''}
       </div>
@@ -306,12 +306,12 @@ function renderOrders() {
         ` : ''}
         ${order.stato === 'in_preparazione' ? `
           <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'pronto')">
-            ✅ Segna come Pronto
+            Segna come Pronto
           </button>
         ` : ''}
         ${order.stato === 'pronto' && order.modalitaConsegna === 'consegna' ? `
           <button class="btn btn-primary" onclick="updateOrderStatus('${order._id}', 'in_consegna')">
-            🚚 In Consegna
+            In Consegna
           </button>
         ` : ''}
         ${(order.stato === 'pronto' && order.modalitaConsegna === 'ritiro') || order.stato === 'in_consegna' ? `
