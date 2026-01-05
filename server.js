@@ -12,19 +12,22 @@ const path = require('path');
 const fs = require('fs');
 const swaggerUi = require('swagger-ui-express');
 
-// Import routes
+// Importa configurazione database
+const { connettiDatabase } = require('./backend/config/database');
+
+// Importa rotte
 const authRoutes = require('./backend/routes/auth');
 const restaurantRoutes = require('./backend/routes/restaurants');
 const dishRoutes = require('./backend/routes/dishes');
 const orderRoutes = require('./backend/routes/orders');
 const userRoutes = require('./backend/routes/users');
 
-// Import models
+// Importa modelli
 const Restaurant = require('./backend/models/Restaurant');
 const Dish = require('./backend/models/Dish');
 const User = require('./backend/models/User');
 
-// Import middleware
+// Importa middleware
 const { 
   notFound, 
   errorHandler,
@@ -43,7 +46,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS configuration
+// Configurazione CORS
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
@@ -51,20 +54,6 @@ app.use(cors({
 
 // Serve file statici dalla cartella public
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Connessione al Database MongoDB
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`MongoDB connesso: ${conn.connection.host}`);
-    
-    // Carica dati iniziali da meal.json se il database è vuoto
-    await caricaDatiIniziali();
-  } catch (error) {
-    console.error(`Errore connessione MongoDB: ${error.message}`);
-    process.exit(1);
-  }
-};
 
 /**
  * Funzione per caricare i dati iniziali da meal.json
@@ -166,8 +155,18 @@ const caricaDatiIniziali = async () => {
   }
 };
 
-// Connetti al database
-connectDB();
+// Connetti al database e carica dati iniziali
+const inizializzaDatabase = async () => {
+  try {
+    await connettiDatabase();
+    await caricaDatiIniziali();
+  } catch (errore) {
+    console.error('Errore durante l\'inizializzazione del database:', errore);
+    process.exit(1);
+  }
+};
+
+inizializzaDatabase();
 
 // Swagger Documentation (se il file esiste)
 try {
@@ -195,7 +194,7 @@ app.get('/api', (req, res) => {
   });
 });
 
-// API Routes
+// Rotte API
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/dishes', dishRoutes);
