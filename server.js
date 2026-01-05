@@ -157,8 +157,13 @@ const caricaDatiIniziali = async () => {
 
 // Connetti al database e carica dati iniziali
 const inizializzaDatabase = async () => {
-  await connettiDatabase();
-  await caricaDatiIniziali();
+  try {
+    await connettiDatabase();
+    await caricaDatiIniziali();
+  } catch (errore) {
+    console.error('Errore durante l\'inizializzazione del database:', errore);
+    process.exit(1);
+  }
 };
 
 inizializzaDatabase();
