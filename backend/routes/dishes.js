@@ -19,7 +19,7 @@ const { handleValidationErrors } = require('../middleware/validation');
  */
 router.get('/', async (req, res) => {
   try {
-    const { ristorante, categoria, vegetariano, vegano, disponibile } = req.query;
+    const { ristorante, categoria, vegetariano, vegano, disponibile, name, maxPrice, ingredients, allergeni } = req.query;
     
     let query = {};
     
@@ -29,6 +29,19 @@ router.get('/', async (req, res) => {
     if (vegano !== undefined) query.vegano = vegano === 'true';
     if (disponibile !== undefined) query.disponibile = disponibile === 'true';
     else query.disponibile = true; // Di default mostra solo piatti disponibili
+    // Filtri aggiuntivi richiesti
+    if (name) query.nome = new RegExp(name, 'i');
+    if (maxPrice) query.prezzoCentesimi = { $lte: Math.round(parseFloat(maxPrice) * 100) };
+    if (ingredients) {
+      // Cerca piatti che contengono almeno uno degli ingredienti specificati
+      const ingredientiList = ingredients.split(',').map(i => i.trim());
+      query.ingredienti = { $elemMatch: { $in: ingredientiList.map(i => new RegExp(i, 'i')) } };
+    }
+    if (allergeni) {
+      // Escludi piatti che contengono gli allergeni specificati (corrispondenza esatta)
+      const allergeniList = allergeni.split(',').map(a => a.trim());
+      query.allergeni = { $nin: allergeniList };
+    }
     
     const piatti = await Dish.find(query)
       .populate('ristorante', 'nome indirizzo')

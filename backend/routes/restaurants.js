@@ -18,11 +18,14 @@ const { handleValidationErrors } = require('../middleware/validation');
  */
 router.get('/', async (req, res) => {
   try {
-    const { citta, categoria } = req.query;
+    const { citta, categoria, location, name } = req.query;
     
     let query = {};
-    if (citta) query['indirizzo.citta'] = new RegExp(citta, 'i');
+    // location è un alias per citta (compatibilità con i requisiti)
+    const filtroCitta = location || citta;
+    if (filtroCitta) query['indirizzo.citta'] = new RegExp(filtroCitta, 'i');
     if (categoria) query.categoria = new RegExp(categoria, 'i');
+    if (name) query.nome = new RegExp(name, 'i');
     
     const ristoranti = await Restaurant.find(query)
       .populate('proprietario', 'nome cognome email')
