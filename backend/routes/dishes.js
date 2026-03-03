@@ -30,17 +30,17 @@ router.get('/', async (req, res) => {
     if (disponibile !== undefined) query.disponibile = disponibile === 'true';
     else query.disponibile = true; // Di default mostra solo piatti disponibili
     // Filtri aggiuntivi richiesti
-    if (name) query.nome = new RegExp(name, 'i');
+    if (name) query.nome = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
     if (maxPrice) query.prezzoCentesimi = { $lte: Math.round(parseFloat(maxPrice) * 100) };
     if (ingredients) {
       // Cerca piatti che contengono almeno uno degli ingredienti specificati
       const ingredientiList = ingredients.split(',').map(i => i.trim());
-      query.ingredienti = { $elemMatch: { $in: ingredientiList.map(i => new RegExp(i, 'i')) } };
+      query.ingredienti = { $in: ingredientiList.map(i => new RegExp(i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')) };
     }
     if (allergeni) {
-      // Escludi piatti che contengono gli allergeni specificati (corrispondenza esatta)
+      // Escludi piatti che contengono gli allergeni specificati (case-insensitive)
       const allergeniList = allergeni.split(',').map(a => a.trim());
-      query.allergeni = { $nin: allergeniList };
+      query.allergeni = { $not: { $elemMatch: { $in: allergeniList.map(a => new RegExp(`^${a}$`, 'i')) } } };
     }
     
     const piatti = await Dish.find(query)
@@ -91,6 +91,38 @@ router.get('/restaurant/:restaurantId', [
     res.status(500).json({
       success: false,
       message: 'Errore durante il recupero dei piatti'
+    });
+  }
+});
+
+/**
+ * @route   GET /api/dishes/by-ingredient
+ * @desc    Cerca piatti per ingrediente
+ * @access  Public
+ */
+router.get('/by-ingredient', [
+  query('ingrediente').trim().notEmpty().withMessage('Il parametro ingrediente è obbligatorio'),
+  handleValidationErrors
+], async (req, res) => {
+  try {
+    const ingrediente = req.query.ingrediente;
+    // Escape special regex characters to prevent injection
+    const ingredienteEscaped = ingrediente.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const piatti = await Dish.find({
+      ingredienti: new RegExp(ingredienteEscaped, 'i'),
+      disponibile: true
+    }).populate('ristorante', 'nome indirizzo').sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: piatti.length,
+      data: piatti
+    });
+  } catch (error) {
+    console.error('Errore ricerca per ingrediente:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante la ricerca per ingrediente'
     });
   }
 });

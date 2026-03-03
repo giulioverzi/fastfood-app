@@ -8,6 +8,7 @@ const express = require('express');
 const router = express.Router();
 const { body, param } = require('express-validator');
 const Restaurant = require('../models/Restaurant');
+const Dish = require('../models/Dish');
 const { protect, authorize } = require('../middleware/auth');
 const { handleValidationErrors } = require('../middleware/validation');
 
@@ -23,9 +24,9 @@ router.get('/', async (req, res) => {
     let query = {};
     // location è un alias per citta (compatibilità con i requisiti)
     const filtroCitta = location || citta;
-    if (filtroCitta) query['indirizzo.citta'] = new RegExp(filtroCitta, 'i');
-    if (categoria) query.categoria = new RegExp(categoria, 'i');
-    if (name) query.nome = new RegExp(name, 'i');
+    if (filtroCitta) query['indirizzo.citta'] = new RegExp(filtroCitta.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    if (categoria) query.categoria = new RegExp(categoria.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    if (name) query.nome = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
     
     const ristoranti = await Restaurant.find(query)
       .populate('proprietario', 'nome cognome email')
@@ -41,6 +42,48 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Errore durante il recupero dei ristoranti'
+    });
+  }
+});
+
+/**
+ * @route   GET /api/restaurants/serving-dish/:dishId
+ * @desc    Ottieni i ristoranti che servono un piatto specifico
+ * @access  Public
+ */
+router.get('/serving-dish/:dishId', [
+  param('dishId').isMongoId().withMessage('ID piatto non valido'),
+  handleValidationErrors
+], async (req, res) => {
+  try {
+    const piatto = await Dish.findById(req.params.dishId);
+
+    if (!piatto) {
+      return res.status(404).json({
+        success: false,
+        message: 'Piatto non trovato'
+      });
+    }
+
+    const ristorante = await Restaurant.findById(piatto.ristorante)
+      .populate('proprietario', 'nome cognome email');
+
+    if (!ristorante) {
+      return res.status(404).json({
+        success: false,
+        message: 'Ristorante non trovato'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: ristorante
+    });
+  } catch (error) {
+    console.error('Errore ricerca ristoranti per piatto:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante la ricerca dei ristoranti'
     });
   }
 });

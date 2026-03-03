@@ -20,7 +20,7 @@ router.post('/register', [
   body('nome').trim().notEmpty().withMessage('Il nome è obbligatorio'),
   body('cognome').trim().notEmpty().withMessage('Il cognome è obbligatorio'),
   body('email').isEmail().normalizeEmail().withMessage('Email non valida'),
-  body('password').isLength({ min: 6 }).withMessage('La password deve essere di almeno 6 caratteri'),
+  body('password').isLength({ min: 8 }).withMessage('La password deve essere di almeno 8 caratteri'),
   body('ruolo').isIn(['cliente', 'ristoratore']).withMessage('Il ruolo deve essere cliente o ristoratore'),
   handleValidationErrors
 ], async (req, res) => {
