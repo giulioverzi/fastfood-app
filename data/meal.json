@@ -2,7 +2,7 @@
   "ristoranti": [
     {
       "nome": "Burger Palace",
-      "descrizione": "I migliori hamburger della città",
+      "descrizione": "I migliori hamburger della città, carne fresca ogni giorno",
       "indirizzo": {
         "via": "Via Roma 10",
         "citta": "Milano",
@@ -23,7 +23,7 @@
     },
     {
       "nome": "Pizza Express",
-      "descrizione": "Pizza napoletana autentica",
+      "descrizione": "Pizza napoletana autentica con ingredienti freschi",
       "indirizzo": {
         "via": "Corso Vittorio Emanuele 25",
         "citta": "Milano",
@@ -40,6 +40,48 @@
         "venerdi": "11:00-00:00",
         "sabato": "11:00-00:00",
         "domenica": "11:00-23:00"
+      }
+    },
+    {
+      "nome": "Sushi Tokyo",
+      "descrizione": "Sushi e cucina giapponese autentica nel cuore di Roma",
+      "indirizzo": {
+        "via": "Via Nazionale 45",
+        "citta": "Roma",
+        "cap": "00184"
+      },
+      "telefono": "0664321987",
+      "email": "info@sushitokyo.it",
+      "categoria": "Giapponese",
+      "orari": {
+        "lunedi": "12:00-22:30",
+        "martedi": "12:00-22:30",
+        "mercoledi": "12:00-22:30",
+        "giovedi": "12:00-22:30",
+        "venerdi": "12:00-23:30",
+        "sabato": "12:00-23:30",
+        "domenica": "12:00-22:00"
+      }
+    },
+    {
+      "nome": "Trattoria da Luigi",
+      "descrizione": "Cucina italiana tradizionale, pasta fatta in casa",
+      "indirizzo": {
+        "via": "Piazza Garibaldi 7",
+        "citta": "Torino",
+        "cap": "10122"
+      },
+      "telefono": "0113456789",
+      "email": "luigi@trattorialuigi.it",
+      "categoria": "Italiana",
+      "orari": {
+        "lunedi": "Chiuso",
+        "martedi": "12:00-22:00",
+        "mercoledi": "12:00-22:00",
+        "giovedi": "12:00-22:00",
+        "venerdi": "12:00-23:00",
+        "sabato": "12:00-23:00",
+        "domenica": "12:00-21:00"
       }
     }
   ],
@@ -58,19 +100,19 @@
     },
     {
       "nome": "Hamburger Vegetariano",
-      "descrizione": "Hamburger di verdure grigliate",
+      "descrizione": "Hamburger di verdure grigliate con salsa yogurt",
       "prezzoCentesimi": 750,
       "categoria": "panino",
       "ristorante": "Burger Palace",
-      "ingredienti": ["pane", "verdure grigliate", "lattuga", "pomodoro"],
-      "allergeni": ["glutine"],
+      "ingredienti": ["pane", "verdure grigliate", "lattuga", "pomodoro", "yogurt"],
+      "allergeni": ["glutine", "latte"],
       "vegetariano": true,
-      "vegano": true,
+      "vegano": false,
       "disponibile": true
     },
     {
       "nome": "Patatine Fritte",
-      "descrizione": "Patatine fritte croccanti",
+      "descrizione": "Patatine fritte croccanti con sale",
       "prezzoCentesimi": 300,
       "categoria": "contorno",
       "ristorante": "Burger Palace",
@@ -81,8 +123,20 @@
       "disponibile": true
     },
     {
+      "nome": "Chicken Burger",
+      "descrizione": "Hamburger di pollo croccante con maionese e insalata",
+      "prezzoCentesimi": 780,
+      "categoria": "panino",
+      "ristorante": "Burger Palace",
+      "ingredienti": ["pane", "pollo", "maionese", "insalata", "pomodoro"],
+      "allergeni": ["glutine", "uova", "senape"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
       "nome": "Coca Cola",
-      "descrizione": "Bevanda gassata",
+      "descrizione": "Bevanda gassata in lattina",
       "prezzoCentesimi": 250,
       "categoria": "bevanda",
       "ristorante": "Burger Palace",
@@ -94,51 +148,184 @@
     },
     {
       "nome": "Pizza Margherita",
-      "descrizione": "Pomodoro, mozzarella e basilico",
+      "descrizione": "Pomodoro, mozzarella e basilico fresco",
       "prezzoCentesimi": 700,
       "categoria": "pizza",
       "ristorante": "Pizza Express",
       "ingredienti": ["farina", "pomodoro", "mozzarella", "basilico", "olio"],
-      "allergeni": ["glutine", "lattosio"],
+      "allergeni": ["glutine", "latte"],
       "vegetariano": true,
       "vegano": false,
       "disponibile": true
     },
     {
       "nome": "Pizza Diavola",
-      "descrizione": "Pomodoro, mozzarella e salame piccante",
+      "descrizione": "Pomodoro, mozzarella e salame piccante calabrese",
       "prezzoCentesimi": 850,
       "categoria": "pizza",
       "ristorante": "Pizza Express",
       "ingredienti": ["farina", "pomodoro", "mozzarella", "salame piccante"],
-      "allergeni": ["glutine", "lattosio"],
+      "allergeni": ["glutine", "latte"],
       "vegetariano": false,
       "vegano": false,
       "disponibile": true
     },
     {
       "nome": "Pizza Vegana",
-      "descrizione": "Pomodoro, verdure grigliate",
+      "descrizione": "Pomodoro, verdure grigliate e olio extravergine",
       "prezzoCentesimi": 800,
       "categoria": "pizza",
       "ristorante": "Pizza Express",
-      "ingredienti": ["farina", "pomodoro", "verdure grigliate", "olio"],
+      "ingredienti": ["farina", "pomodoro", "zucchine", "peperoni", "melanzane", "olio"],
       "allergeni": ["glutine"],
       "vegetariano": true,
       "vegano": true,
       "disponibile": true
     },
     {
+      "nome": "Pizza Quattro Stagioni",
+      "descrizione": "Pomodoro, mozzarella, funghi, prosciutto, carciofi e olive",
+      "prezzoCentesimi": 950,
+      "categoria": "pizza",
+      "ristorante": "Pizza Express",
+      "ingredienti": ["farina", "pomodoro", "mozzarella", "funghi", "prosciutto", "carciofi", "olive"],
+      "allergeni": ["glutine", "latte"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
       "nome": "Birra Artigianale",
-      "descrizione": "Birra locale",
+      "descrizione": "Birra artigianale locale alla spina",
       "prezzoCentesimi": 450,
       "categoria": "bevanda",
       "ristorante": "Pizza Express",
-      "ingredienti": ["acqua", "malto", "luppolo"],
+      "ingredienti": ["acqua", "malto", "luppolo", "lievito"],
       "allergeni": ["glutine"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Nigiri Salmone",
+      "descrizione": "Riso vinaigrato con salmone fresco",
+      "prezzoCentesimi": 1200,
+      "categoria": "secondo",
+      "ristorante": "Sushi Tokyo",
+      "ingredienti": ["riso", "salmone", "aceto di riso", "wasabi"],
+      "allergeni": ["pesce"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "California Roll",
+      "descrizione": "Maki con granchio, avocado e cetriolo",
+      "prezzoCentesimi": 1000,
+      "categoria": "secondo",
+      "ristorante": "Sushi Tokyo",
+      "ingredienti": ["riso", "alga nori", "granchio", "avocado", "cetriolo", "maionese"],
+      "allergeni": ["pesce", "uova"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Edamame",
+      "descrizione": "Fagioli di soia al vapore con sale marino",
+      "prezzoCentesimi": 500,
+      "categoria": "antipasto",
+      "ristorante": "Sushi Tokyo",
+      "ingredienti": ["soia", "sale"],
+      "allergeni": ["soia"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Ramen al Pollo",
+      "descrizione": "Zuppa di noodles con brodo di pollo, uovo e verdure",
+      "prezzoCentesimi": 1300,
+      "categoria": "primo",
+      "ristorante": "Sushi Tokyo",
+      "ingredienti": ["noodles", "pollo", "uovo", "alga wakame", "cipollotto", "salsa di soia"],
+      "allergeni": ["glutine", "uova", "soia"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Taiyaki",
+      "descrizione": "Dolce giapponese a forma di pesce ripieno di pasta di fagioli",
+      "prezzoCentesimi": 600,
+      "categoria": "dolce",
+      "ristorante": "Sushi Tokyo",
+      "ingredienti": ["farina", "uova", "latte", "pasta di fagioli rossi", "zucchero"],
+      "allergeni": ["glutine", "uova", "latte"],
+      "vegetariano": true,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Pasta al Pomodoro",
+      "descrizione": "Spaghetti con sugo di pomodoro fresco e basilico",
+      "prezzoCentesimi": 900,
+      "categoria": "primo",
+      "ristorante": "Trattoria da Luigi",
+      "ingredienti": ["spaghetti", "pomodoro", "aglio", "olio", "basilico"],
+      "allergeni": ["glutine"],
+      "vegetariano": true,
+      "vegano": true,
+      "disponibile": true
+    },
+    {
+      "nome": "Carbonara",
+      "descrizione": "Spaghetti con guanciale, uova, pecorino e pepe nero",
+      "prezzoCentesimi": 1100,
+      "categoria": "primo",
+      "ristorante": "Trattoria da Luigi",
+      "ingredienti": ["spaghetti", "guanciale", "uova", "pecorino", "pepe nero"],
+      "allergeni": ["glutine", "uova", "latte"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Scaloppina al Limone",
+      "descrizione": "Fettine di vitello con salsa al limone e capperi",
+      "prezzoCentesimi": 1400,
+      "categoria": "secondo",
+      "ristorante": "Trattoria da Luigi",
+      "ingredienti": ["vitello", "limone", "capperi", "farina", "burro"],
+      "allergeni": ["glutine", "latte"],
+      "vegetariano": false,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Tiramisù",
+      "descrizione": "Dolce classico italiano con mascarpone, savoiardi e caffè",
+      "prezzoCentesimi": 700,
+      "categoria": "dolce",
+      "ristorante": "Trattoria da Luigi",
+      "ingredienti": ["mascarpone", "savoiardi", "uova", "caffè", "zucchero", "cacao"],
+      "allergeni": ["glutine", "uova", "latte"],
+      "vegetariano": true,
+      "vegano": false,
+      "disponibile": true
+    },
+    {
+      "nome": "Acqua Naturale",
+      "descrizione": "Acqua naturale in bottiglia da 500ml",
+      "prezzoCentesimi": 200,
+      "categoria": "bevanda",
+      "ristorante": "Trattoria da Luigi",
+      "ingredienti": ["acqua"],
+      "allergeni": [],
       "vegetariano": true,
       "vegano": true,
       "disponibile": true
     }
   ]
 }
+

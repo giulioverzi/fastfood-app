@@ -205,6 +205,94 @@ router.post('/', [
 });
 
 /**
+ * @route   PUT /api/orders/:id/status
+ * @desc    Aggiorna lo stato di un ordine con validazione transizioni
+ * @access  Private (solo ristoratori)
+ */
+router.put('/:id/status', [
+  protect,
+  authorize('ristoratore'),
+  param('id').isMongoId().withMessage('ID ordine non valido'),
+  body('stato').isIn(['ordinato', 'in_preparazione', 'pronto', 'in_consegna', 'consegnato', 'completato', 'annullato'])
+    .withMessage('Stato non valido'),
+  handleValidationErrors
+], async (req, res) => {
+  try {
+    const ordine = await Order.findById(req.params.id);
+
+    if (!ordine) {
+      return res.status(404).json({
+        success: false,
+        message: 'Ordine non trovato'
+      });
+    }
+
+    // Verifica che il ristoratore sia il proprietario del ristorante
+    const ristorante = await Restaurant.findById(ordine.ristorante);
+    if (!ristorante || ristorante.proprietario.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Non sei autorizzato a modificare questo ordine'
+      });
+    }
+
+    // Mappa stati con underscore ai valori interni (con spazi)
+    const mappaStati = {
+      'ordinato': 'ordinato',
+      'in_preparazione': 'in preparazione',
+      'pronto': 'pronto',
+      'in_consegna': 'in consegna',
+      'consegnato': 'consegnato',
+      'completato': 'completato',
+      'annullato': 'annullato'
+    };
+
+    // Transizioni valide per ogni stato
+    const transizioniValide = {
+      'ordinato': ['in_preparazione', 'annullato'],
+      'in preparazione': ['pronto', 'annullato'],
+      'pronto': ['in_consegna', 'completato', 'consegnato', 'annullato'],
+      'in consegna': ['consegnato', 'annullato'],
+      'consegnato': ['completato'],
+      'completato': [],
+      'annullato': []
+    };
+
+    const statoRichiesto = req.body.stato;
+    const statoAttuale = ordine.stato;
+    const transizioniConsentite = transizioniValide[statoAttuale] || [];
+
+    if (!transizioniConsentite.includes(statoRichiesto)) {
+      return res.status(400).json({
+        success: false,
+        message: `Transizione non valida: da "${statoAttuale}" non è possibile passare a "${statoRichiesto}"`
+      });
+    }
+
+    const nuovoStato = mappaStati[statoRichiesto];
+    const ordineAggiornato = await Order.findByIdAndUpdate(
+      req.params.id,
+      { stato: nuovoStato },
+      { new: true, runValidators: true }
+    )
+    .populate('ristorante', 'nome')
+    .populate('piatti.piatto', 'nome');
+
+    res.status(200).json({
+      success: true,
+      message: 'Stato ordine aggiornato con successo',
+      data: ordineAggiornato
+    });
+  } catch (error) {
+    console.error('Errore aggiornamento stato ordine:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante l\'aggiornamento dello stato'
+    });
+  }
+});
+
+/**
  * @route   PUT /api/orders/:id
  * @desc    Aggiorna lo stato di un ordine
  * @access  Private (ristoratori per i propri ordini)
