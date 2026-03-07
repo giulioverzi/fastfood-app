@@ -351,9 +351,33 @@ function renderActiveOrders() {
         ${order.indirizzoConsegna && order.modalitaConsegna === 'consegna' ? 
           `<br><strong>Indirizzo:</strong> ${escapeHtml(order.indirizzoConsegna.via)}, ${escapeHtml(order.indirizzoConsegna.citta)}` : ''}
       </div>
+
+      ${order.stato === 'in consegna' ? `
+        <div class="order-actions">
+          <button class="btn btn-success" onclick="confermaRicezione('${orderId}')">
+            <i class="fas fa-check"></i> Conferma ricezione
+          </button>
+        </div>
+      ` : ''}
     </div>
   `;
   }).join('');
+}
+
+/**
+ * Conferma la ricezione di un ordine in consegna
+ */
+async function confermaRicezione(idOrdine) {
+  const conferma = confirm('Confermi di aver ricevuto l\'ordine?');
+  if (!conferma) return;
+
+  try {
+    const risposta = await apiCall('/orders/' + idOrdine + '/consegnato', { method: 'PUT' });
+    alert('Ricezione confermata con successo!');
+    await loadActiveOrders();
+  } catch (errore) {
+    alert('Errore durante la conferma della ricezione: ' + (errore.message || 'Errore sconosciuto'));
+  }
 }
 
 /**
