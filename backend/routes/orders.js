@@ -52,6 +52,35 @@ router.get('/', protect, async (req, res) => {
 });
 
 /**
+ * @route   GET /api/orders/restaurant/:restaurantId/queue
+ * @desc    Ottieni il numero di ordini in coda e il tempo di attesa stimato
+ * @access  Public
+ */
+router.get('/restaurant/:restaurantId/queue', async (req, res) => {
+  try {
+    const numeroOrdiniInCoda = await Order.countDocuments({
+      ristorante: req.params.restaurantId,
+      stato: { $nin: ['consegnato', 'completato', 'annullato'] }
+    });
+    const tempoAttesaStimato = numeroOrdiniInCoda * 10;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        numeroOrdiniInCoda,
+        tempoAttesaStimato
+      }
+    });
+  } catch (error) {
+    console.error('Errore recupero coda ordini:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante il recupero della coda degli ordini'
+    });
+  }
+});
+
+/**
  * @route   GET /api/orders/:id
  * @desc    Ottieni un ordine specifico
  * @access  Private
