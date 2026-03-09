@@ -104,11 +104,64 @@ function displayRestaurants(restaurants) {
 }
 
 /**
+ * Cerca i ristoranti che servono un piatto con il nome indicato
+ * @param {string} nomePiatto - Nome del piatto da cercare
+ */
+async function cercaRistorantiPerPiatto(nomePiatto) {
+  try {
+    toggleElement('restaurantsLoading', true);
+    toggleElement('restaurantsContainer', false);
+    toggleElement('restaurantsEmpty', false);
+
+    const risposta = await apiCall('/dishes?name=' + encodeURIComponent(nomePiatto));
+
+    // Aggiorna il messaggio per il caso vuoto
+    const emptyEl = document.getElementById('restaurantsEmpty');
+    const emptyP = emptyEl ? emptyEl.querySelector('p') : null;
+    if (emptyP) emptyP.textContent = 'Nessun ristorante trovato per questo piatto.';
+
+    if (!risposta.success || risposta.data.length === 0) {
+      toggleElement('restaurantsLoading', false);
+      toggleElement('restaurantsEmpty', true);
+      return;
+    }
+
+    // De-duplica i ristoranti per _id
+    const ristorantiMap = new Map();
+    risposta.data.forEach(piatto => {
+      if (piatto.ristorante && piatto.ristorante._id) {
+        ristorantiMap.set(String(piatto.ristorante._id), piatto.ristorante);
+      }
+    });
+
+    displayRestaurants(Array.from(ristorantiMap.values()));
+  } catch (errore) {
+    console.error('Errore nella ricerca per piatto:', errore);
+    showAlert('Errore nella ricerca per piatto. Riprova più tardi.', 'error');
+    toggleElement('restaurantsLoading', false);
+    toggleElement('restaurantsEmpty', true);
+  }
+}
+
+/**
  * Applica i filtri ai ristoranti
  */
-function applyFilters() {
+async function applyFilters() {
+  const nomePiatto = document.getElementById('dishNameFilter').value.trim();
+
+  // Se l'utente cerca per piatto, ignora gli altri filtri e usa l'API
+  if (nomePiatto) {
+    await cercaRistorantiPerPiatto(nomePiatto);
+    return;
+  }
+
   const nameFilter = document.getElementById('nameFilter').value.toLowerCase();
   const locationFilter = document.getElementById('locationFilter').value.toLowerCase();
+
+  // Ripristina il messaggio vuoto predefinito
+  const emptyEl = document.getElementById('restaurantsEmpty');
+  const emptyP = emptyEl ? emptyEl.querySelector('p') : null;
+  if (emptyP) emptyP.textContent = 'Nessun ristorante disponibile con i filtri selezionati.';
 
   let filteredRestaurants = allRestaurants;
 
@@ -149,4 +202,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Aggiungi event listeners per i filtri
   document.getElementById('nameFilter').addEventListener('input', applyFilters);
   document.getElementById('locationFilter').addEventListener('input', applyFilters);
+  document.getElementById('dishNameFilter').addEventListener('input', applyFilters);
 });
