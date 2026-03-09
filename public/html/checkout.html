@@ -81,9 +81,8 @@
 
           <div class="form-group">
             <label for="metodoPagamento">Metodo di Pagamento</label>
-            <select id="metodoPagamento" class="form-control">
-              <option value="predefinito">Metodo Predefinito (Contanti)</option>
-            </select>
+            <div id="paymentMethodsLoading" class="text-info-small">Caricamento metodi di pagamento...</div>
+            <select id="metodoPagamento" class="form-control"></select>
             <small class="text-info-small">
               Il pagamento verrà effettuato al momento del ritiro o della consegna
             </small>

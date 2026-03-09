@@ -110,6 +110,48 @@ function handleDeliveryModeChange() {
 }
 
 /**
+ * Carica i metodi di pagamento salvati e popola il select
+ */
+async function caricaMetodiPagamento() {
+  const selectMetodo = document.getElementById('metodoPagamento');
+  const loadingDiv = document.getElementById('paymentMethodsLoading');
+
+  try {
+    const risposta = await apiCall('/users/payment-methods');
+    const metodiPagamento = risposta.data || [];
+
+    if (loadingDiv) loadingDiv.style.display = 'none';
+    selectMetodo.innerHTML = '';
+
+    if (metodiPagamento.length === 0) {
+      const opzioneContanti = document.createElement('option');
+      opzioneContanti.value = 'contanti';
+      opzioneContanti.textContent = 'Pagamento alla consegna';
+      selectMetodo.appendChild(opzioneContanti);
+    } else {
+      metodiPagamento.forEach((metodo, indice) => {
+        const opzione = document.createElement('option');
+        opzione.value = indice;
+        const tipo = metodo.tipo || 'Carta';
+        const ultime4 = metodo.ultime4Cifre || '****';
+        const scadenza = metodo.scadenza || '--/--';
+        const intestatario = metodo.intestatario || '';
+        opzione.textContent = `${tipo} **** ${ultime4} - Scad: ${scadenza} (${intestatario})`;
+        selectMetodo.appendChild(opzione);
+      });
+      const opzioneContanti = document.createElement('option');
+      opzioneContanti.value = 'contanti';
+      opzioneContanti.textContent = 'Pagamento alla consegna';
+      selectMetodo.appendChild(opzioneContanti);
+    }
+  } catch (errore) {
+    console.error('Errore caricamento metodi di pagamento:', errore);
+    if (loadingDiv) loadingDiv.style.display = 'none';
+    selectMetodo.innerHTML = '<option value="contanti">Pagamento alla consegna</option>';
+  }
+}
+
+/**
  * Gestisce l'invio del form di checkout
  * @param {Event} e - L'evento submit
  */
@@ -134,6 +176,7 @@ async function handleCheckoutSubmit(e) {
       prezzoCentesimi: item.prezzoCentesimi
     })),
     modalitaConsegna: modalitaConsegna,
+    metodoPagamento: document.getElementById('metodoPagamento').value,
     note: note
   };
 
@@ -194,6 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Pre-compila i dati utente
   prefillUserData();
+
+  // Carica i metodi di pagamento salvati
+  caricaMetodiPagamento();
 
   // Event listener per modalità di consegna
   document.getElementById('modalitaConsegna').addEventListener('change', handleDeliveryModeChange);
