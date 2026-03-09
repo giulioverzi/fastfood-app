@@ -84,6 +84,11 @@ const UserSchema = new mongoose.Schema({
       }
     }
   ],
+  preferenze: [{
+    type: String,
+    enum: ['antipasto', 'primo', 'secondo', 'contorno', 'dolce', 'bevanda', 'panino', 'pizza'],
+    trim: true
+  }],
   createdAt: {
     type: Date,
     default: Date.now

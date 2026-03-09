@@ -43,6 +43,7 @@ async function initCustomerDashboard() {
   // Carica profilo, metodi di pagamento, ordini attivi e storico
   await loadProfile();
   await loadPaymentMethods();
+  await loadConsigliati();
   await loadActiveOrders();
   await loadOrderHistory();
 
@@ -77,6 +78,14 @@ async function loadProfile() {
           <div class="profile-item-label"><i class="fas fa-map-marker-alt"></i> Indirizzo</div>
           <div class="profile-item-value">
             ${user.indirizzo ? `${user.indirizzo.via}, ${user.indirizzo.citta} ${user.indirizzo.cap}` : 'Non specificato'}
+          </div>
+        </div>
+        <div class="profile-item">
+          <div class="profile-item-label"><i class="fas fa-heart"></i> Preferenze</div>
+          <div class="profile-item-value">
+            ${user.preferenze && user.preferenze.length > 0 
+              ? user.preferenze.join(', ') 
+              : 'Nessuna preferenza selezionata'}
           </div>
         </div>
       </div>
@@ -155,6 +164,72 @@ async function deletePaymentMethod(indice) {
   } catch (errore) {
     showAlert(errore.message || 'Errore nell\'eliminazione', 'error');
   }
+}
+
+/**
+ * Carica i piatti consigliati in base alle preferenze del cliente
+ */
+async function loadConsigliati() {
+  const user = getUserData();
+
+  // Se non ci sono preferenze, mostra messaggio apposito
+  if (!user.preferenze || user.preferenze.length === 0) {
+    toggleElement('consigliatiLoading', false);
+    toggleElement('consigliatiNessunaPref', true);
+    return;
+  }
+
+  try {
+    toggleElement('consigliatiLoading', true);
+    toggleElement('consigliatiContainer', false);
+    toggleElement('consigliatiEmpty', false);
+    toggleElement('consigliatiNessunaPref', false);
+
+    // Prendi la prima preferenza dell'utente per la ricerca
+    const categoriaPreferita = user.preferenze[0];
+    const risposta = await apiCall('/dishes?categoria=' + encodeURIComponent(categoriaPreferita) + '&disponibile=true');
+
+    if (risposta.success && risposta.data.length > 0) {
+      renderConsigliati(risposta.data.slice(0, 6)); // mostra max 6 piatti
+      toggleElement('consigliatiLoading', false);
+      toggleElement('consigliatiContainer', true);
+    } else {
+      toggleElement('consigliatiLoading', false);
+      toggleElement('consigliatiEmpty', true);
+    }
+  } catch (errore) {
+    console.error('Errore caricamento consigli:', errore);
+    toggleElement('consigliatiLoading', false);
+    toggleElement('consigliatiEmpty', true);
+  }
+}
+
+/**
+ * Renderizza i piatti consigliati nella dashboard
+ * @param {Array} piatti - Array di piatti da visualizzare
+ */
+function renderConsigliati(piatti) {
+  const container = document.getElementById('consigliatiContainer');
+  if (!container) return;
+
+  container.innerHTML = piatti.map(piatto => {
+    const nome = escapeHtml(piatto.nome);
+    const ristorante = escapeHtml(piatto.ristorante?.nome || 'N/A');
+    const prezzo = formatPrice(piatto.prezzoCentesimi);
+    const immagine = piatto.immagine || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop';
+
+    return `
+      <div class="menu-item">
+        <img src="${immagine}" alt="${nome}"
+             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop'">
+        <div class="menu-item-content">
+          <h4 class="menu-item-title">${nome}</h4>
+          <p style="color: #666; font-size: 0.85rem;">${ristorante}</p>
+          <p class="menu-item-price">${prezzo}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /**
