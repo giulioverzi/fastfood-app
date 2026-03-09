@@ -87,10 +87,7 @@ async function loadProfile() {
 }
 
   /**
-   * Carica i metodi di pagamento del cliente
-   * NOTA: Questa è un'implementazione demo che usa localStorage.
-   * In produzione, i metodi di pagamento dovrebbero essere salvati
-   * lato server per motivi di sicurezza e compliance PCI DSS.
+   * Carica i metodi di pagamento del cliente dal database
    */
   async function loadPaymentMethods() {
     try {
@@ -98,11 +95,8 @@ async function loadProfile() {
       toggleElement('paymentMethodsContainer', false);
       toggleElement('paymentMethodsEmpty', false);
 
-      // Simula caricamento metodi di pagamento dal localStorage
-      // TODO: In produzione, sostituire con chiamata API al server
-      // const response = await apiCall('/payment-methods');
-      const savedMethods = localStorage.getItem('paymentMethods');
-      paymentMethods = savedMethods ? JSON.parse(savedMethods) : [];
+      const risposta = await apiCall('/users/payment-methods');
+      paymentMethods = risposta.data || [];
 
     if (paymentMethods.length > 0) {
       renderPaymentMethods();
@@ -112,8 +106,8 @@ async function loadProfile() {
       toggleElement('paymentMethodsLoading', false);
       toggleElement('paymentMethodsEmpty', true);
     }
-  } catch (error) {
-    console.error('Errore caricamento metodi di pagamento:', error);
+  } catch (errore) {
+    console.error('Errore caricamento metodi di pagamento:', errore);
     toggleElement('paymentMethodsLoading', false);
     toggleElement('paymentMethodsEmpty', true);
   }
@@ -127,23 +121,22 @@ function renderPaymentMethods() {
   if (!container) return;
 
   container.innerHTML = paymentMethods.map((method, index) => `
-    <div class="payment-card ${method.isDefault ? 'default' : ''}" data-method-id="${index}">
-      ${method.isDefault ? '<span class="default-badge">Predefinito</span>' : ''}
+    <div class="payment-card ${method.predefinito ? 'default' : ''}" data-method-id="${index}">
+      ${method.predefinito ? '<span class="default-badge">Predefinito</span>' : ''}
       <div class="payment-card-header">
-        <div class="payment-card-type">${method.cardType}</div>
+        <div class="payment-card-type">${method.tipo}</div>
         <div class="payment-card-icon">
-          <i class="fab fa-cc-${method.cardType.toLowerCase()}"></i>
+          <i class="fab fa-cc-${method.tipo.toLowerCase()}"></i>
         </div>
       </div>
-      <div class="payment-card-number">**** **** **** ${method.lastFourDigits}</div>
+      <div class="payment-card-number">**** **** **** ${method.ultime4Cifre}</div>
       <div class="payment-card-footer">
         <div>
-          <div class="payment-card-expiry">Scad: ${method.expiryDate}</div>
-          <div class="payment-card-holder">${method.cardholderName}</div>
+          <div class="payment-card-expiry">Scad: ${method.scadenza}</div>
+          <div class="payment-card-holder">${method.intestatario}</div>
         </div>
       </div>
       <div class="payment-card-actions">
-        ${!method.isDefault ? `<button onclick="setDefaultPaymentMethod(${index})" title="Imposta come predefinito"><i class="fas fa-star"></i></button>` : ''}
         <button onclick="deletePaymentMethod(${index})" title="Elimina"><i class="fas fa-trash"></i></button>
       </div>
     </div>
@@ -151,32 +144,16 @@ function renderPaymentMethods() {
 }
 
 /**
- * Imposta un metodo di pagamento come predefinito
- */
-function setDefaultPaymentMethod(index) {
-  paymentMethods.forEach((method, i) => {
-    method.isDefault = (i === index);
-  });
-  localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
-  renderPaymentMethods();
-  showAlert('Metodo di pagamento predefinito aggiornato', 'success');
-}
-
-/**
  * Elimina un metodo di pagamento
  */
-function deletePaymentMethod(index) {
-  if (confirm('Sei sicuro di voler eliminare questo metodo di pagamento?')) {
-    paymentMethods.splice(index, 1);
-    localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
-    
-    if (paymentMethods.length > 0) {
-      renderPaymentMethods();
-    } else {
-      toggleElement('paymentMethodsContainer', false);
-      toggleElement('paymentMethodsEmpty', true);
-    }
+async function deletePaymentMethod(indice) {
+  if (!confirm('Sei sicuro di voler eliminare questo metodo di pagamento?')) return;
+  try {
+    await apiCall('/users/payment-methods/' + indice, { method: 'DELETE' });
     showAlert('Metodo di pagamento eliminato', 'success');
+    await loadPaymentMethods();
+  } catch (errore) {
+    showAlert(errore.message || 'Errore nell\'eliminazione', 'error');
   }
 }
 
@@ -643,40 +620,29 @@ function openPaymentMethodModal() {
 /**
  * Gestisce l'aggiunta di un nuovo metodo di pagamento
  */
-function handlePaymentMethodAdd(e) {
+async function handlePaymentMethodAdd(e) {
   e.preventDefault();
-  
   try {
-    const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-    const newMethod = {
-      cardType: document.getElementById('cardType').value,
-      lastFourDigits: cardNumber.slice(-4),
-      expiryDate: document.getElementById('expiryDate').value,
-      cardholderName: document.getElementById('cardholderName').value,
-      isDefault: document.getElementById('isDefault').checked || paymentMethods.length === 0
+    const numeroCarta = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+    const nuovoMetodo = {
+      tipo: document.getElementById('cardType').value,
+      intestatario: document.getElementById('cardholderName').value,
+      ultime4Cifre: numeroCarta.slice(-4),
+      scadenza: document.getElementById('expiryDate').value,
+      predefinito: document.getElementById('isDefault').checked
     };
 
-    // Se questo è impostato come predefinito, rimuovi il flag dagli altri
-    if (newMethod.isDefault) {
-      paymentMethods.forEach(method => method.isDefault = false);
-    }
-
-    paymentMethods.push(newMethod);
-    localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
+    await apiCall('/users/payment-methods', {
+      method: 'POST',
+      body: JSON.stringify(nuovoMetodo)
+    });
 
     showAlert('Metodo di pagamento aggiunto con successo', 'success');
-    
-    // Chiudi il modal
     document.getElementById('paymentMethodModal').classList.remove('active');
     document.getElementById('paymentMethodModal').classList.add('hidden');
-    
-    // Aggiorna la visualizzazione
-    toggleElement('paymentMethodsEmpty', false);
-    toggleElement('paymentMethodsContainer', true);
-    renderPaymentMethods();
-  } catch (error) {
-    console.error('Errore aggiunta metodo di pagamento:', error);
-    showAlert('Errore nell\'aggiunta del metodo di pagamento: ' + error.message, 'error');
+    await loadPaymentMethods();
+  } catch (errore) {
+    showAlert(errore.message || 'Errore nell\'aggiunta', 'error');
   }
 }
 
