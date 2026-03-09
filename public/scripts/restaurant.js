@@ -254,15 +254,29 @@ function translateCategory(category) {
 /**
  * Applica i filtri ai piatti
  */
-function applyFilters() {
+async function applyFilters() {
   const categoryFilter = document.getElementById('categoryFilter').value;
   const priceFilter = parseFloat(document.getElementById('priceFilter').value);
   const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
   const veganFilter = document.getElementById('veganFilter').checked;
   const allergenFilter = document.getElementById('allergenFilter');
   const selectedAllergens = Array.from(allergenFilter.selectedOptions).map(option => option.value);
+  const ingredientFilter = document.getElementById('ingredientFilter').value.trim();
 
   let filteredDishes = allDishes;
+
+  // Filtro ingrediente - usa l'API per filtrare i piatti
+  if (ingredientFilter) {
+    const restaurantId = getRestaurantIdFromUrl();
+    try {
+      const risposta = await apiCall(`/dishes?ristorante=${restaurantId}&ingredients=${encodeURIComponent(ingredientFilter)}`);
+      if (risposta.success) {
+        filteredDishes = risposta.data;
+      }
+    } catch (errore) {
+      console.error('Errore nel filtro per ingrediente:', errore);
+    }
+  }
 
   // Filtro categoria
   if (categoryFilter) {
@@ -457,6 +471,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Aggiungi event listeners per i filtri
   document.getElementById('categoryFilter').addEventListener('change', applyFilters);
   document.getElementById('priceFilter').addEventListener('input', applyFilters);
+  document.getElementById('ingredientFilter').addEventListener('input', applyFilters);
   document.getElementById('vegetarianFilter').addEventListener('change', applyFilters);
   document.getElementById('veganFilter').addEventListener('change', applyFilters);
   document.getElementById('allergenFilter').addEventListener('change', applyFilters);
