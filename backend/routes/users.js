@@ -179,4 +179,68 @@ router.delete('/account', protect, async (req, res) => {
   }
 });
 
+/**
+ * @route   GET /api/users/payment-methods
+ * @desc    Ottieni i metodi di pagamento dell'utente autenticato
+ * @access  Private
+ */
+router.get('/payment-methods', protect, async (req, res) => {
+  try {
+    const utente = await User.findById(req.user._id);
+    res.status(200).json({
+      success: true,
+      data: utente.metodiPagamento || []
+    });
+  } catch (errore) {
+    res.status(500).json({ success: false, message: 'Errore nel recupero dei metodi di pagamento' });
+  }
+});
+
+/**
+ * @route   POST /api/users/payment-methods
+ * @desc    Aggiunge un nuovo metodo di pagamento
+ * @access  Private
+ */
+router.post('/payment-methods', protect, async (req, res) => {
+  try {
+    const { tipo, intestatario, ultime4Cifre, scadenza, predefinito } = req.body;
+    const utente = await User.findById(req.user._id);
+
+    // Se predefinito, rimuovi il flag dagli altri
+    if (predefinito) {
+      utente.metodiPagamento.forEach(m => m.predefinito = false);
+    }
+
+    utente.metodiPagamento.push({ tipo, intestatario, ultime4Cifre, scadenza, predefinito: predefinito || utente.metodiPagamento.length === 0 });
+    await utente.save();
+
+    res.status(201).json({ success: true, message: 'Metodo di pagamento aggiunto', data: utente.metodiPagamento });
+  } catch (errore) {
+    res.status(500).json({ success: false, message: 'Errore nell\'aggiunta del metodo di pagamento' });
+  }
+});
+
+/**
+ * @route   DELETE /api/users/payment-methods/:indice
+ * @desc    Rimuove un metodo di pagamento per indice
+ * @access  Private
+ */
+router.delete('/payment-methods/:indice', protect, async (req, res) => {
+  try {
+    const indice = parseInt(req.params.indice);
+    const utente = await User.findById(req.user._id);
+
+    if (isNaN(indice) || indice < 0 || indice >= utente.metodiPagamento.length) {
+      return res.status(400).json({ success: false, message: 'Indice non valido' });
+    }
+
+    utente.metodiPagamento.splice(indice, 1);
+    await utente.save();
+
+    res.status(200).json({ success: true, message: 'Metodo di pagamento eliminato', data: utente.metodiPagamento });
+  } catch (errore) {
+    res.status(500).json({ success: false, message: 'Errore nell\'eliminazione del metodo di pagamento' });
+  }
+});
+
 module.exports = router;

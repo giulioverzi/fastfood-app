@@ -60,6 +60,30 @@ const UserSchema = new mongoose.Schema({
       trim: true
     }
   },
+  metodiPagamento: [
+    {
+      tipo: {
+        type: String,
+        trim: true
+      },
+      intestatario: {
+        type: String,
+        trim: true
+      },
+      ultime4Cifre: {
+        type: String,
+        trim: true
+      },
+      scadenza: {
+        type: String,
+        trim: true
+      },
+      predefinito: {
+        type: Boolean,
+        default: false
+      }
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now
