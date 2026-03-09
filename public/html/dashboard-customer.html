@@ -61,6 +61,21 @@
       </div>
     </div>
 
+    <!-- Sezione Consigliati per te -->
+    <div class="dashboard-section mb-2" id="consigliatiSection">
+      <div class="section-header">
+        <h2>⭐ Consigliati per Te</h2>
+      </div>
+      <div id="consigliatiLoading" class="loading hidden">Caricamento consigli...</div>
+      <div id="consigliatiContainer" class="grid hidden"></div>
+      <div id="consigliatiEmpty" class="hidden text-center">
+        <p>Nessun consiglio disponibile. Aggiorna le tue preferenze nel profilo!</p>
+      </div>
+      <div id="consigliatiNessunaPref" class="hidden text-center">
+        <p>Non hai selezionato preferenze. <a href="#" onclick="document.getElementById('btnEditProfile').click(); return false;" class="link-primary">Modifica il tuo profilo</a> per ricevere consigli personalizzati.</p>
+      </div>
+    </div>
+
     <!-- Sezione Ordini Attivi -->
     <div class="dashboard-section mb-2">
       <div class="section-header">

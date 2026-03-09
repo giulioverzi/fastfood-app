@@ -24,10 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.value === 'ristoratore') {
       partitaIVAGroup.style.display = 'block';
       partitaIVAInput.required = true;
+      document.getElementById('preferenzeGroup').style.display = 'none';
     } else {
       partitaIVAGroup.style.display = 'none';
       partitaIVAInput.required = false;
       partitaIVAInput.value = '';
+      document.getElementById('preferenzeGroup').style.display = 'block';
     }
   });
 
@@ -65,6 +67,14 @@ async function handleRegister(e) {
       return;
     }
     formData.partitaIVA = partitaIVA;
+  }
+
+  // Aggiungi preferenze solo per i clienti
+  if (ruolo === 'cliente') {
+    const preferenzeSelezionate = Array.from(
+      document.querySelectorAll('input[name="preferenze"]:checked')
+    ).map(cb => cb.value);
+    formData.preferenze = preferenzeSelezionate;
   }
 
   try {
