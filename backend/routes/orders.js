@@ -253,19 +253,30 @@ router.put('/:id/consegnato', [
       });
     }
 
-    // Verifica che l'utente sia il cliente proprietario dell'ordine
-    if (ordine.cliente.toString() !== req.user._id.toString()) {
+    // Verifica che l'utente sia il cliente proprietario dell'ordine oppure il ristoratore per il ritiro
+    const isCliente = ordine.cliente.toString() === req.user._id.toString();
+    const isRistoratore = req.user.ruolo === 'ristoratore';
+
+    if (!isCliente && !isRistoratore) {
       return res.status(403).json({
         success: false,
         message: 'Non sei autorizzato a modificare questo ordine'
       });
     }
 
-    // Verifica che lo stato corrente sia 'in consegna'
-    if (ordine.stato !== 'in consegna') {
+    // Il cliente può confermare solo ordini in consegna
+    // Il ristoratore può segnare come consegnato ordini in ritiro allo stato pronto
+    if (isCliente && ordine.stato !== 'in consegna') {
       return res.status(400).json({
         success: false,
         message: 'Puoi confermare la ricezione solo per ordini in consegna'
+      });
+    }
+
+    if (isRistoratore && !(ordine.stato === 'pronto' && ordine.modalita === 'ritiro')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Puoi segnare come consegnato solo ordini di ritiro allo stato pronto'
       });
     }
 

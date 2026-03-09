@@ -8,6 +8,8 @@ const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
 const User = require('../models/User');
+const Restaurant = require('../models/Restaurant');
+const Dish = require('../models/Dish');
 const { protect } = require('../middleware/auth');
 const { handleValidationErrors } = require('../middleware/validation');
 
@@ -145,6 +147,23 @@ router.put('/password', [
  */
 router.delete('/account', protect, async (req, res) => {
   try {
+    const utente = await User.findById(req.user._id);
+
+    if (!utente) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utente non trovato'
+      });
+    }
+
+    if (utente.ruolo === 'ristoratore') {
+      const ristoranti = await Restaurant.find({ proprietario: req.user._id });
+      for (const ristorante of ristoranti) {
+        await Dish.deleteMany({ ristorante: ristorante._id });
+      }
+      await Restaurant.deleteMany({ proprietario: req.user._id });
+    }
+
     await User.findByIdAndDelete(req.user._id);
 
     res.status(200).json({

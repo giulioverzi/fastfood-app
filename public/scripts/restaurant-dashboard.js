@@ -314,7 +314,12 @@ function renderOrders() {
             In Consegna
           </button>
         ` : ''}
-        ${(order.stato === 'pronto' && order.modalitaConsegna === 'ritiro') || order.stato === 'in_consegna' ? `
+        ${order.stato === 'pronto' && (order.modalita === 'ritiro' || order.modalitaConsegna === 'ritiro') ? `
+          <button class="btn btn-success" onclick="segnaConsegnato('${order._id}')">
+            ✔️ Ordine Ritirato
+          </button>
+        ` : ''}
+        ${order.stato === 'in consegna' || order.stato === 'in_consegna' ? `
           <button class="btn btn-success" onclick="updateOrderStatus('${order._id}', 'completato')">
             ✔️ Completa Ordine
           </button>
@@ -940,6 +945,12 @@ function setupEventListeners() {
     btnEdit.addEventListener('click', () => openRestaurantModal(true));
   }
 
+  // Pulsante elimina account
+  const btnEliminaAccount = document.getElementById('btn-elimina-account');
+  if (btnEliminaAccount) {
+    btnEliminaAccount.addEventListener('click', eliminaAccount);
+  }
+
   // Pulsante crea ristorante
   const btnCreate = document.getElementById('btnCreateRestaurant');
   if (btnCreate) {
@@ -995,6 +1006,44 @@ function setupFilterButtons() {
       renderOrders();
     });
   });
+}
+
+/**
+ * Elimina l'account del ristoratore
+ */
+async function eliminaAccount() {
+  if (!confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.')) {
+    return;
+  }
+
+  try {
+    const risposta = await apiCall('/users/account', { method: 'DELETE' });
+
+    if (risposta.success) {
+      clearAuthData();
+      alert('Account eliminato con successo');
+      window.location.href = '/html/index.html';
+    }
+  } catch (errore) {
+    showAlert(errore.message, 'error');
+  }
+}
+
+/**
+ * Segna un ordine di ritiro come consegnato
+ * @param {string} idOrdine - ID dell'ordine
+ */
+async function segnaConsegnato(idOrdine) {
+  try {
+    const risposta = await apiCall('/orders/' + idOrdine + '/consegnato', { method: 'PUT' });
+    if (risposta.success) {
+      showAlert('Ordine segnato come consegnato', 'success');
+      await loadOrders();
+      await loadStatistics();
+    }
+  } catch (errore) {
+    showAlert(errore.message || 'Errore nella conferma', 'error');
+  }
 }
 
 // Inizializza la dashboard quando il DOM è pronto
