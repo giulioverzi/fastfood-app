@@ -496,3 +496,82 @@ paths:
       responses:
         200:
           description: Profilo aggiornato
+
+  /users/password:
+    put:
+      tags:
+        - Users
+      summary: Aggiorna la password utente
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Password aggiornata
+
+  /users/account:
+    delete:
+      tags:
+        - Users
+      summary: Elimina l'account utente
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Account eliminato
+
+  /users/payment-methods:
+    get:
+      tags:
+        - Users
+      summary: Ottieni i metodi di pagamento salvati
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Lista metodi di pagamento
+        401:
+          description: Non autorizzato
+
+    post:
+      tags:
+        - Users
+      summary: Aggiungi un metodo di pagamento
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tipo:
+                  type: string
+                dettagli:
+                  type: object
+      responses:
+        201:
+          description: Metodo di pagamento aggiunto
+        401:
+          description: Non autorizzato
+
+    delete:
+      tags:
+        - Users
+      summary: Rimuovi un metodo di pagamento
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        200:
+          description: Metodo di pagamento rimosso
+        401:
+          description: Non autorizzato

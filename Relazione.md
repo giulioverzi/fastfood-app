@@ -175,6 +175,8 @@ Memorizza i dati degli utenti registrati.
 | ruolo | String | "cliente" oppure "ristoratore" |
 | telefono | String | Numero di telefono |
 | indirizzo | Object | Oggetto con via, citta, cap |
+| preferenze | Array di String | Categorie di cibo preferite |
+| metodiPagamento | Array di Object | Metodi di pagamento salvati |
 | createdAt | Date | Data di registrazione |
 
 ### Collezione: restaurants
