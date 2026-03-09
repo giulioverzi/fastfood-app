@@ -489,6 +489,12 @@ function setupEventListeners() {
     btnEditProfile.addEventListener('click', openProfileModal);
   }
 
+  // Event listener per il pulsante elimina account
+  const btnEliminaAccount = document.getElementById('btn-elimina-account');
+  if (btnEliminaAccount) {
+    btnEliminaAccount.addEventListener('click', eliminaAccount);
+  }
+
   // Event listener per il pulsante aggiungi metodo di pagamento
   const btnAddPaymentMethod = document.getElementById('btnAddPaymentMethod');
   if (btnAddPaymentMethod) {
@@ -671,6 +677,27 @@ function handlePaymentMethodAdd(e) {
   } catch (error) {
     console.error('Errore aggiunta metodo di pagamento:', error);
     showAlert('Errore nell\'aggiunta del metodo di pagamento: ' + error.message, 'error');
+  }
+}
+
+/**
+ * Elimina l'account dell'utente
+ */
+async function eliminaAccount() {
+  if (!confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.')) {
+    return;
+  }
+
+  try {
+    const risposta = await apiCall('/users/account', { method: 'DELETE' });
+
+    if (risposta.success) {
+      clearAuthData();
+      alert('Account eliminato con successo');
+      window.location.href = '/html/index.html';
+    }
+  } catch (errore) {
+    showAlert(errore.message, 'error');
   }
 }
 
