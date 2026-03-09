@@ -168,15 +168,6 @@ const inizializzaDatabase = async () => {
 
 inizializzaDatabase();
 
-// Swagger Documentation (se il file esiste)
-try {
-  const swaggerDocument = require('./lib/api/docs/swagger.json');
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  console.log('Swagger UI disponibile su /api-docs');
-} catch (error) {
-  console.log('Swagger documentation non disponibile');
-}
-
 // Route di benvenuto API
 app.get('/api', (req, res) => {
   res.json({
@@ -200,6 +191,10 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/dishes', dishRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+
+// Documentazione Swagger
+const swaggerDocument = require('./lib/api/docs/swagger.json');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Error handling middleware per API non trovate
 app.use('/api/*', (req, res) => {
