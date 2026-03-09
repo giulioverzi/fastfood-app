@@ -42,6 +42,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  partitaIVA: {
+    type: String,
+    trim: true
+  },
   indirizzo: {
     via: {
       type: String,

@@ -25,7 +25,7 @@ router.post('/register', [
   handleValidationErrors
 ], async (req, res) => {
   try {
-    const { nome, cognome, email, password, ruolo, telefono, indirizzo } = req.body;
+    const { nome, cognome, email, password, ruolo, telefono, partitaIVA, indirizzo } = req.body;
 
     // Verifica se l'utente esiste già
     const utenteEsistente = await User.findOne({ email });
@@ -44,6 +44,7 @@ router.post('/register', [
       password,
       ruolo,
       telefono,
+      partitaIVA,
       indirizzo
     });
 
